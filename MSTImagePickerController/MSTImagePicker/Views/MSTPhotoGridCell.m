@@ -20,7 +20,7 @@
 @end
 
 @implementation MSTPhotoGridCell
-#pragma mark - Initialized Method
+#pragma mark - Initialization Method
 - (instancetype)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
         [self imageView];

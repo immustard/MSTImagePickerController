@@ -148,18 +148,27 @@
     }];
 }
 
-- (void)getPreviewImageFromPHAsset:(PHAsset *)asset comletionBlock:(void (^)(UIImage *))completionBlock{
-    PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
-    //    options.resizeMode = PHImageRequestOptionsResizeModeFast;
-    options.synchronous = YES;
-    
+- (void)getPreviewImageFromPHAsset:(PHAsset *)asset photoWidth:(CGFloat)photoWidth comletionBlock:(void (^)(UIImage *, NSDictionary *))completionBlock {
     CGFloat scale = [UIScreen mainScreen].scale;
     CGSize screenSize = [UIScreen mainScreen].bounds.size;
-    [self.cacheImageManager requestImageForAsset:asset targetSize:CGSizeMake(screenSize.width*scale, screenSize.height*scale) contentMode:PHImageContentModeAspectFit options:options resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
-        result = [UIImage fixOrientation:result];
-        result = [result resizeImageWithNewSize:[UIImage retriveScaleDstSize:result.size]];
-        //回调
-        completionBlock ? completionBlock(result) : nil;
+    
+    CGFloat aspectRatio = asset.pixelWidth / asset.pixelHeight;
+    CGFloat pixelWidth = photoWidth * scale;
+    CGFloat pixelHeight = photoWidth / aspectRatio;
+    CGSize imageSize = CGSizeMake(pixelWidth, pixelHeight);
+    
+    PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
+    options.resizeMode = PHImageRequestOptionsResizeModeFast;
+    options.synchronous = NO;
+    
+    [self.cacheImageManager requestImageForAsset:asset targetSize:imageSize contentMode:PHImageContentModeAspectFill options:options resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
+        BOOL finished = (![[info objectForKey:PHImageCancelledKey] boolValue] && ![info objectForKey:PHImageErrorKey]);
+        if (finished && !result) {
+            result = [UIImage fixOrientation:result];
+//            result = [result resizeImageWithNewSize:[UIImage retriveScaleDstSize:result.size]];
+            //回调
+            completionBlock ? completionBlock(result, info) : nil;
+        }
     }];
 }
 

@@ -49,7 +49,7 @@
 - (void)getThumbnailImageFromPHAsset:(PHAsset *)asset completionBlock:(void(^)(UIImage *result))completionBlock;
 
 /** 读取预览图片 */
-- (void)getPreviewImageFromPHAsset:(PHAsset *)asset comletionBlock:(void(^)(UIImage *result))completionBlock;
+- (void)getPreviewImageFromPHAsset:(PHAsset *)asset photoWidth:(CGFloat)photoWidth comletionBlock:(void(^)(UIImage *result, NSDictionary *info))completionBlock;
 
 /** 读取原始图片 */
 - (void)getOriginImageFromPHAsset:(PHAsset *)asset comletionBlock:(void(^)(UIImage *result))completionBlock;

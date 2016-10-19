@@ -35,7 +35,7 @@
     [self mp_checkAuthorizationStatus];
 }
 
-#pragma mark - Initialized Methods
+#pragma mark - Initialization Methods
 - (instancetype)initWithAccessType:(MSTImagePickerAccessType)accessType{
     if (self = [super init]) {
         self.accessType = accessType;
