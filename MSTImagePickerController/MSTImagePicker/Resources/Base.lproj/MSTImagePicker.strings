@@ -1,0 +1,11 @@
+/* 
+  MSTImagePicker.strings
+  MSTImagePickerController
+
+  Created by Mustard on 2016/10/13.
+  Copyright © 2016年 Mustard. All rights reserved.
+*/
+
+"str_confirm" = "Confirm";
+"str_allow_photoLibrary" = "Please enter \"Setting-Privacy-Photos\" and allow to access Photos.";
+"str_photos" = "Photos";

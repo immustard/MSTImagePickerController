@@ -1,0 +1,11 @@
+/* 
+  MSTImagePicker.strings
+  MSTImagePickerController
+
+  Created by Mustard on 2016/10/13.
+  Copyright © 2016年 Mustard. All rights reserved.
+*/
+
+"str_confirm" = "确认";
+"str_allow_photoLibrary" = "请在设备的\"设置-隐私-相机\"中允许访问相册。";
+"str_photos" = "相册";

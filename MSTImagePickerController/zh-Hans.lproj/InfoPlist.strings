@@ -1,0 +1,25 @@
+/* 
+  InfoPlist.strings
+  MSTImagePickerController
+
+  Created by Mustard on 2016/10/9.
+  Copyright © 2016年 Mustard. All rights reserved.
+*/
+// 访问相机
+NSCameraUsageDescription            = "请点击“好”以允许访问。";
+// 访问通讯录
+NSContactsUsageDescription          = "请点击“好”以允许访问。";
+// 始终访问位置
+NSLocationAlwaysUsageDescription    = "请点击“允许”以允许访问。";
+// 访问位置
+NSLocationUsageDescription          = "请点击“允许”以允许访问。";
+// 使用期间访问位置
+NSLocationWhenInUseUsageDescription = "请点击“允许”以允许访问。";
+// 访问麦克风
+NSMicrophoneUsageDescription        = "请点击“好”以允许访问。";
+// 访问相册
+NSPhotoLibraryUsageDescription      = "请点击“好”以允许访问。";
+// 访问Siri
+NSSiriUsageDescription              = "请点击“好”以允许访问。";
+// 语音识别
+NSSpeechRecognitionUsageDescription = "请点击“好”以允许访问。";
