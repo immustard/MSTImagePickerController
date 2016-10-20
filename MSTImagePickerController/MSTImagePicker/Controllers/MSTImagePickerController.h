@@ -52,6 +52,11 @@ typedef NS_ENUM(NSUInteger, MSTImagePickerAccessType) {
 @property (assign, nonatomic) BOOL allowsSelectedAnimation;
 
 /**
+ 显示类型，默认为 light
+ */
+@property (assign, nonatomic) MSTImagePickerStyle themeStyle;
+
+/**
  图片分组类型，默认为 MSTImageGroupTypeNone
  */
 @property (assign, nonatomic) MSTImageMomentGroupType photoMomentGroupType;
@@ -85,6 +90,11 @@ typedef NS_ENUM(NSUInteger, MSTImagePickerAccessType) {
  是否显示 Live Photo 图标，默认为 YES
  */
 @property (assign, nonatomic) BOOL isShowLivePhotoIcon;
+
+/**
+ 是否返回 Live Photo, 默认为 YES
+ */
+@property (assign, nonatomic) BOOL isCallBackLivePhoto;
 
 /**
  第一个图标是否为相机，倒序为第一个，正序为最后一个

@@ -15,6 +15,11 @@ typedef NS_ENUM(NSUInteger, MSTImageMomentGroupType) {
     MSTImageMomentGroupTypeDay            //日
 };
 
+typedef NS_ENUM(NSUInteger, MSTImagePickerStyle) {
+    MSTImagePickerStyleLight,       //浅色
+    MSTImagePickerStyleDark         //深色
+};
+
 @interface MSTPhotoConfiguration : NSObject
 /**
  是否多选，默认为 YES
@@ -40,6 +45,11 @@ typedef NS_ENUM(NSUInteger, MSTImageMomentGroupType) {
  是否有选中动画，默认为 YES
  */
 @property (assign, nonatomic) BOOL allowsSelectedAnimation;
+
+/**
+ 显示类型，默认为 light
+ */
+@property (assign, nonatomic) MSTImagePickerStyle themeStyle;
 
 /**
  图片分组类型，默认为 MSTImageGroupTypeNone
@@ -75,6 +85,11 @@ typedef NS_ENUM(NSUInteger, MSTImageMomentGroupType) {
  是否显示 Live Photo 图标，默认为 YES
  */
 @property (assign, nonatomic) BOOL isShowLivePhotoIcon;
+
+/**
+ 是否返回 Live Photo, 默认为 YES
+ */
+@property (assign, nonatomic) BOOL isCallBackLivePhoto;
 
 /**
  第一个图标是否为相机，默认为 YES
