@@ -134,22 +134,7 @@
 }
 
 #pragma mark -
-- (void)getThumbnailImageFromPHAsset:(PHAsset *)asset completionBlock:(void (^)(UIImage *))completionBlock{
-    //创建异步读取图片的options
-    PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
-    options.resizeMode = PHImageRequestOptionsResizeModeFast;
-    options.synchronous = YES;
-    
-    CGFloat scale = [UIScreen mainScreen].scale;
-    [self.cacheImageManager requestImageForAsset:asset targetSize:CGSizeMake(70*scale, 70*scale) contentMode:PHImageContentModeAspectFill options:options resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
-        result = [UIImage fixOrientation:result];
-        result = [result resizeImageWithNewSize:[UIImage retriveScaleDstSize:result.size]];
-        //回调读取的图片
-        completionBlock ? completionBlock(result) : nil;
-    }];
-}
-
-- (void)getPreviewImageFromPHAsset:(PHAsset *)asset isHighQuality:(BOOL)isHighQuality comletionBlock:(void (^)(UIImage *, NSDictionary *, BOOL isDegraded))completionBlock {
+- (void)getPreviewImageFromPHAsset:(PHAsset *)asset isHighQuality:(BOOL)isHighQuality completionBlock:(void (^)(UIImage *, NSDictionary *, BOOL))completionBlock {
     CGFloat scale = isHighQuality ? [UIScreen mainScreen].scale : .1f;
     CGFloat width = [UIScreen mainScreen].bounds.size.width;
     
@@ -173,6 +158,23 @@
     }];
 }
 
+- (void)getLivePhotoFromPHAsset:(PHAsset *)asset completionBlock:(void (^)(PHLivePhoto *))completionBlock {
+    CGFloat scale = [UIScreen mainScreen].scale;
+    CGFloat width = [UIScreen mainScreen].bounds.size.width;
+    
+    CGFloat aspectRatio = asset.pixelWidth / (CGFloat)asset.pixelHeight;
+    CGFloat pixelWidth = width * scale;
+    CGFloat pixelHeight = width / aspectRatio;
+    CGSize imageSize = CGSizeMake(pixelWidth, pixelHeight);
+    
+    PHLivePhotoRequestOptions *options = [[PHLivePhotoRequestOptions alloc] init];
+    options.deliveryMode = PHImageRequestOptionsDeliveryModeOpportunistic;
+    
+    [self.imageManager requestLivePhotoForAsset:asset targetSize:imageSize contentMode:PHImageContentModeAspectFill options:options resultHandler:^(PHLivePhoto * _Nullable livePhoto, NSDictionary * _Nullable info) {
+        completionBlock ? completionBlock(livePhoto) : nil;
+    }];
+}
+
 - (void)getOriginImageFromPHAsset:(PHAsset *)asset comletionBlock:(void (^)(UIImage *))completionBlock{
     PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
     options.resizeMode = PHImageRequestOptionsResizeModeExact;
@@ -180,7 +182,7 @@
     
     [self.cacheImageManager requestImageForAsset:asset targetSize:PHImageManagerMaximumSize contentMode:PHImageContentModeAspectFit options:options resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
         result = [UIImage fixOrientation:result];
-        //回调
+
         completionBlock ? completionBlock(result) : nil;
     }];
 }

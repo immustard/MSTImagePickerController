@@ -8,7 +8,7 @@
 
 #import "UIView+MSTUtils.h"
 
-@implementation UIView (MSTUtils)
+@implementation UIView (MSTUtilsLayout)
 
 - (CGFloat)top{
     return self.frame.origin.y;
@@ -108,6 +108,9 @@
     [self setFrame:CGRectMake(origin.x, origin.y, self.frame.size.width, self.frame.size.height)];
 }
 
+@end
+
+@implementation UIView (MSTUtils)
 #pragma mark ----- removeSubviews
 - (void)MSTRemoveAllSubviews{
     for (UIView *subview in self.subviews) {

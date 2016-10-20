@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface UIView (MSTUtils)
+@interface UIView (MSTUtilsLayout)
 
 @property (assign, nonatomic) CGFloat top;
 @property (assign, nonatomic) CGFloat left;
@@ -24,6 +24,9 @@
 @property (assign, nonatomic) CGPoint center;
 @property (assign, nonatomic) CGPoint origin;
 
+@end
+
+@interface UIView (MSTUtils)
 /** 移除所以子视图 */
 -(void)MSTRemoveAllSubviews;
 /** 根据tag移除子视图 */

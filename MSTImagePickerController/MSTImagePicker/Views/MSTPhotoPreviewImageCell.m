@@ -7,14 +7,18 @@
 //
 
 #import "MSTPhotoPreviewImageCell.h"
+#import <PhotosUI/PhotosUI.h>
 #import "UIView+MSTUtils.h"
 #import "MSTPhotoManager.h"
 
-@interface MSTPhotoPreviewImageCell ()<UIScrollViewDelegate>
+@interface MSTPhotoPreviewImageCell ()<UIScrollViewDelegate> {
+    BOOL _isLivePhoto;
+}
 
 @property (strong, nonatomic) UIScrollView *myScrollView;
 
 @property (strong, nonatomic) UIImageView *imageView;
+@property (strong, nonatomic) PHLivePhotoView *livePhotoView;
 
 @end
 
@@ -59,24 +63,50 @@
     return _imageView;
 }
 
+- (PHLivePhotoView *)livePhotoView {
+    if (!_livePhotoView) {
+        self.livePhotoView = [PHLivePhotoView new];
+        _livePhotoView.clipsToBounds = YES;
+        
+        [self.myScrollView addSubview:_livePhotoView];
+    }
+    return _livePhotoView;
+}
+
 #pragma mark - Setter
 - (void)setAsset:(PHAsset *)asset {
     _asset = asset;
     
-    [[MSTPhotoManager sharedInstance] getPreviewImageFromPHAsset:_asset isHighQuality:NO comletionBlock:^(UIImage *result, NSDictionary *info, BOOL isDegraded) {
-        self.imageView.image = result;
-        [self mp_resizeSubviews];
-    }];
+    self.imageView.image = nil;
+    self.livePhotoView.livePhoto = nil;
+    
+    if (_asset.mediaSubtypes == PHAssetMediaSubtypePhotoLive && [UIDevice currentDevice].systemVersion.floatValue >= 9.1) {
+        _isLivePhoto = YES;
+        
+        [[MSTPhotoManager sharedInstance] getLivePhotoFromPHAsset:_asset completionBlock:^(PHLivePhoto *livePhoto) {
+            self.livePhotoView.livePhoto = livePhoto;
+            [self mp_resizeSubviews];
+        }];
+    } else {
+        _isLivePhoto = NO;
+        
+        [[MSTPhotoManager sharedInstance] getPreviewImageFromPHAsset:_asset isHighQuality:NO completionBlock:^(UIImage *result, NSDictionary *info, BOOL isDegraded) {
+            self.imageView.image = result;
+            [self mp_resizeSubviews];
+        }];
+    }
 }
 
 #pragma mark - Instance Methods
 - (void)didDisplayed {
-    [[MSTPhotoManager sharedInstance] getPreviewImageFromPHAsset:_asset isHighQuality:YES comletionBlock:^(UIImage *result, NSDictionary *info, BOOL isDegraded) {
-        if (!isDegraded) {
-            self.imageView.image = result;
-            [self mp_resizeSubviews];
-        }
-    }];
+    if (!_isLivePhoto) {
+        [[MSTPhotoManager sharedInstance] getPreviewImageFromPHAsset:_asset isHighQuality:YES completionBlock:^(UIImage *result, NSDictionary *info, BOOL isDegraded) {
+            if (!isDegraded) {
+                self.imageView.image = result;
+                [self mp_resizeSubviews];
+            }
+        }];
+    }
 }
 
 - (void)mp_setupSubview {
@@ -91,27 +121,51 @@
 }
 
 - (void)mp_resizeSubviews {
-    self.imageView.origin = CGPointZero;
-    self.imageView.width = self.myScrollView.width;
-    
-    UIImage *image = self.imageView.image;
-    if (image.size.height / image.size.width > self.height / self.myScrollView.width) {
-        _imageView.height = floor(image.size.height / (image.size.width / self.myScrollView.width));
+    if (!_isLivePhoto) {
+        self.imageView.origin = CGPointZero;
+        self.imageView.width = self.myScrollView.width;
+        
+        UIImage *image = self.imageView.image;
+        if (image.size.height / image.size.width > self.height / self.myScrollView.width) {
+            _imageView.height = floor(image.size.height / (image.size.width / self.myScrollView.width));
+        } else {
+            CGFloat height = image.size.height / image.size.width * self.myScrollView.width;
+            if (height < 1 || isnan(height)) height = self.height;
+            height = floor(height);
+            _imageView.height = height;
+            _imageView.centerY = self.height / 2;
+        }
+        
+        if (_imageView.height > self.height && _imageView.height - self.height <= 1) {
+            _imageView.height = self.height;
+        }
+        
+        _myScrollView.contentSize = CGSizeMake(_myScrollView.width, MAX(_imageView.height, self.height));
+        [_myScrollView scrollRectToVisible:self.bounds animated:NO];
+        _myScrollView.alwaysBounceVertical = _imageView.height <= self.height ? NO : YES;
     } else {
-        CGFloat height = image.size.height / image.size.width * self.myScrollView.width;
-        if (height < 1 || isnan(height)) height = self.height;
-        height = floor(height);
-        _imageView.height = height;
-        _imageView.centerY = self.height / 2;
+        self.livePhotoView.origin = CGPointZero;
+        self.livePhotoView.width = self.myScrollView.width;
+        
+        PHLivePhoto *photo = self.livePhotoView.livePhoto;
+        if (photo.size.height / photo.size.width > self.height / self.myScrollView.width) {
+            _livePhotoView.height = floor(photo.size.height / (photo.size.width / self.myScrollView.width));
+        } else {
+            CGFloat height = photo.size.height / photo.size.width * self.myScrollView.width;
+            if (height < 1 || isnan(height)) height = self.height;
+            height = floor(height);
+            _livePhotoView.height = height;
+            _livePhotoView.centerY = self.height / 2;
+        }
+        
+        if (_livePhotoView.height > self.height && _livePhotoView.height - self.height <= 1) {
+            _livePhotoView.height = self.height;
+        }
+        
+        _myScrollView.contentSize = CGSizeMake(_myScrollView.width, MAX(_livePhotoView.height, self.height));
+        [_myScrollView scrollRectToVisible:self.bounds animated:NO];
+        _myScrollView.alwaysBounceHorizontal = _livePhotoView.height <= self.height ? NO : YES;
     }
-    
-    if (_imageView.height > self.height && _imageView.height - self.height <= 1) {
-        _imageView.height = self.height;
-    }
-    
-    _myScrollView.contentSize = CGSizeMake(_myScrollView.width, MAX(_imageView.height, self.height));
-    [_myScrollView scrollRectToVisible:self.bounds animated:NO];
-    _myScrollView.alwaysBounceVertical = _imageView.height <= self.height ? NO : YES;
 }
 
 - (void)mp_singleTap:(UITapGestureRecognizer *)gesture {
@@ -140,11 +194,17 @@
     CGFloat offsetY = (scrollView.bounds.size.height > scrollView.contentSize.height)?
     (scrollView.bounds.size.height - scrollView.contentSize.height) * 0.5 : 0.0;
     
-    self.imageView.center = CGPointMake(scrollView.contentSize.width * 0.5 + offsetX,
-                            scrollView.contentSize.height * 0.5 + offsetY);
+    if (!_isLivePhoto) {
+        self.imageView.center = CGPointMake(scrollView.contentSize.width * 0.5 + offsetX, scrollView.contentSize.height * 0.5 + offsetY);
+    } else {
+        self.livePhotoView.center = CGPointMake(scrollView.contentSize.width * 0.5 + offsetX, scrollView.contentSize.height * 0.5 + offsetY);
+    }
 }
 
 - (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView {
+    if (_isLivePhoto) {
+        return self.livePhotoView;
+    }
     return self.imageView;
 }
 @end

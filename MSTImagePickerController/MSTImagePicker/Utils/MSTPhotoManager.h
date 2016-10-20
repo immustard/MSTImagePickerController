@@ -45,11 +45,16 @@
 - (NSArray<MSTMoment *> *)sortByMomentType:(MSTImageMomentGroupType)momentType assets:(PHFetchResult *)fetchResult;
 
 
-/** 读取缩略图片 */
-- (void)getThumbnailImageFromPHAsset:(PHAsset *)asset completionBlock:(void(^)(UIImage *result))completionBlock;
+/**
+ 读取预览图片，宽度默认为
 
-/** 读取预览图片 */
-- (void)getPreviewImageFromPHAsset:(PHAsset *)asset isHighQuality:(BOOL)isHighQuality comletionBlock:(void(^)(UIImage *result, NSDictionary *info, BOOL isDegraded))completionBlock;
+ @param asset           图片内容
+ @param isHighQuality   是否是高质量，为 YES 时，scale 为设备屏幕的 scale， NO 时 scale 为 0.1
+ @param completionBlock 回调
+ */
+- (void)getPreviewImageFromPHAsset:(PHAsset *)asset isHighQuality:(BOOL)isHighQuality completionBlock:(void(^)(UIImage *result, NSDictionary *info, BOOL isDegraded))completionBlock;
+
+- (void)getLivePhotoFromPHAsset:(PHAsset *)asset completionBlock:(void(^)(PHLivePhoto *livePhoto))completionBlock;
 
 /** 读取原始图片 */
 - (void)getOriginImageFromPHAsset:(PHAsset *)asset comletionBlock:(void(^)(UIImage *result))completionBlock;
