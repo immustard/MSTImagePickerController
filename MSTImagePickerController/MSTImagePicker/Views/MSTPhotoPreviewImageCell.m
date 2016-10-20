@@ -56,7 +56,6 @@
     if (!_imageView) {
         self.imageView = [UIImageView new];
         _imageView.clipsToBounds = YES;
-        _imageView.backgroundColor = [UIColor whiteColor];
         
         [self.myScrollView addSubview:_imageView];
     }

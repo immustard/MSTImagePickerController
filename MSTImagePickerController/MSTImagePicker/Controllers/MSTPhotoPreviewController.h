@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@class MSTAlbumModel;
+@class MSTAlbumModel, MSTMoment;
 @interface MSTPhotoPreviewController : UIViewController
 
 /**

@@ -20,6 +20,8 @@
 static NSString * const reuserIdentifier = @"MSTPhotoGridCell";
 
 @interface MSTPhotoGridController ()<PHPhotoLibraryChangeObserver, UICollectionViewDelegateFlowLayout> {
+    BOOL _isFirstAppear;
+    
     CGSize _cellSize;
     CGSize _thumnailSize;               //缩略图尺寸，计算时包括 scale
     CGRect _previousPreheatRect;        //缓存区域
@@ -38,6 +40,8 @@ static NSString * const reuserIdentifier = @"MSTPhotoGridCell";
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    _isFirstAppear = YES;
+    
     [self mp_initData];
     [self mp_setupViews];
 }
@@ -45,13 +49,10 @@ static NSString * const reuserIdentifier = @"MSTPhotoGridCell";
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    if (!self.config.isPhotosDesc) {
-        if (_isMoment) {
-            MSTMoment *moment = _momentsArray.lastObject;
-            [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:moment.assets.count-1 inSection:_momentsArray.count-1] atScrollPosition:UICollectionViewScrollPositionBottom animated:NO];
-        } else {
-            [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:self.album.count-1 inSection:0] atScrollPosition:UICollectionViewScrollPositionBottom animated:NO];
-        }
+#warning waiting for updating
+    if (!self.config.isPhotosDesc && _isFirstAppear) {
+        [self mp_scrollToBottom];
+        _isFirstAppear = NO;
     }
 }
 
@@ -100,6 +101,15 @@ static NSString * const reuserIdentifier = @"MSTPhotoGridCell";
 - (void)mp_refreshMoments {
     _momentsArray = nil;
     _momentsArray = [[MSTPhotoManager sharedInstance] sortByMomentType:self.config.photoMomentGroupType assets:_album.content];
+}
+
+- (void)mp_scrollToBottom {
+    if (_isMoment) {
+        MSTMoment *moment = _momentsArray.lastObject;
+        [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:moment.assets.count-1 inSection:_momentsArray.count-1] atScrollPosition:UICollectionViewScrollPositionBottom animated:NO];
+    } else {
+        [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:self.album.count-1 inSection:0] atScrollPosition:UICollectionViewScrollPositionBottom animated:NO];
+    }
 }
 
 #pragma mark - Lazy Load
@@ -191,7 +201,19 @@ static NSString * const reuserIdentifier = @"MSTPhotoGridCell";
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     MSTPhotoPreviewController *ppc = [[MSTPhotoPreviewController alloc] init];
-    [ppc didSelectedWithAlbum:_album indexPath:indexPath];
+    
+    NSIndexPath *tmpIndexPath = indexPath;
+    NSInteger row = 0;
+    if (_isMoment) {
+        for (NSInteger i = 0; i < indexPath.section; i++) {
+            MSTMoment *moment = _momentsArray[i];
+            row = moment.assets.count;
+        }
+        row += indexPath.row;
+        tmpIndexPath = [NSIndexPath indexPathForRow:row inSection:0];
+    }
+    [ppc didSelectedWithAlbum:_album indexPath:tmpIndexPath];
+    
     [self.navigationController pushViewController:ppc animated:YES];
 }
 
@@ -239,28 +261,3 @@ static NSString * const reuserIdentifier = @"MSTPhotoGridCell";
     });
 }
 @end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -8,11 +8,13 @@
 
 #import "MSTPhotoPreviewController.h"
 #import "MSTAlbumModel.h"
+#import "MSTMoment.h"
 #import "UIView+MSTUtils.h"
 #import "MSTPhotoPreviewImageCell.h"
 
 @interface MSTPhotoPreviewController ()<UICollectionViewDelegate, UICollectionViewDataSource> {
     MSTAlbumModel *_albumModel;
+    MSTMoment *_moment;
     NSIndexPath *_indexPath;
 }
 
