@@ -100,6 +100,14 @@
     [self setFrame:CGRectMake(center.x - frame.size.width/2.0, center.y - frame.size.height/2.0, frame.size.width, frame.size.height)];
 }
 
+- (CGPoint)origin {
+    return self.frame.origin;
+}
+
+- (void)setOrigin:(CGPoint)origin {
+    [self setFrame:CGRectMake(origin.x, origin.y, self.frame.size.width, self.frame.size.height)];
+}
+
 #pragma mark ----- removeSubviews
 - (void)MSTRemoveAllSubviews{
     for (UIView *subview in self.subviews) {

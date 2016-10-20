@@ -15,4 +15,9 @@
 
 @property (weak, nonatomic) id<MSTPhotoPreviewCellDelegate> delegate;
 
+/**
+ 已经显示到了那个cell
+ */
+- (void)didDisplayed;
+
 @end

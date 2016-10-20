@@ -19,9 +19,10 @@
 @property (assign, nonatomic) CGFloat height;
 @property (assign, nonatomic) CGSize  size;
 
-@property (assign, nonatomic, readonly) CGFloat centerX;
-@property (assign, nonatomic, readonly) CGFloat centerY;
-@property (assign, nonatomic, readonly) CGPoint center;
+@property (assign, nonatomic) CGFloat centerX;
+@property (assign, nonatomic) CGFloat centerY;
+@property (assign, nonatomic) CGPoint center;
+@property (assign, nonatomic) CGPoint origin;
 
 /** 移除所以子视图 */
 -(void)MSTRemoveAllSubviews;

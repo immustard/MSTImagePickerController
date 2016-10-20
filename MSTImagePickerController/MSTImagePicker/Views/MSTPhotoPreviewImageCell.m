@@ -8,6 +8,7 @@
 
 #import "MSTPhotoPreviewImageCell.h"
 #import "UIView+MSTUtils.h"
+#import "MSTPhotoManager.h"
 
 @interface MSTPhotoPreviewImageCell ()<UIScrollViewDelegate>
 
@@ -21,7 +22,7 @@
 #pragma mark - Inintialization Method
 - (instancetype)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
-        
+        [self mp_setupSubview];
     }
     return self;
 }
@@ -29,7 +30,7 @@
 #pragma mark - Lazy Load
 - (UIScrollView *)myScrollView {
     if (!_myScrollView) {
-        self.myScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(10, 0, self.width, self.height)];
+        self.myScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(10, 0, self.width - 20, self.height)];
         _myScrollView.bouncesZoom = YES;
         _myScrollView.minimumZoomScale = 1.f;
         _myScrollView.maximumZoomScale = 2.5f;
@@ -51,6 +52,7 @@
     if (!_imageView) {
         self.imageView = [UIImageView new];
         _imageView.clipsToBounds = YES;
+        _imageView.backgroundColor = [UIColor whiteColor];
         
         [self.myScrollView addSubview:_imageView];
     }
@@ -61,10 +63,22 @@
 - (void)setAsset:(PHAsset *)asset {
     _asset = asset;
     
-    
+    [[MSTPhotoManager sharedInstance] getPreviewImageFromPHAsset:_asset isHighQuality:NO comletionBlock:^(UIImage *result, NSDictionary *info, BOOL isDegraded) {
+        self.imageView.image = result;
+        [self mp_resizeSubviews];
+    }];
 }
 
 #pragma mark - Instance Methods
+- (void)didDisplayed {
+    [[MSTPhotoManager sharedInstance] getPreviewImageFromPHAsset:_asset isHighQuality:YES comletionBlock:^(UIImage *result, NSDictionary *info, BOOL isDegraded) {
+        if (!isDegraded) {
+            self.imageView.image = result;
+            [self mp_resizeSubviews];
+        }
+    }];
+}
+
 - (void)mp_setupSubview {
     UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(mp_singleTap:)];
     [self addGestureRecognizer:singleTap];
@@ -74,6 +88,30 @@
     
     [singleTap requireGestureRecognizerToFail:doubleTap];
     [self addGestureRecognizer:doubleTap];
+}
+
+- (void)mp_resizeSubviews {
+    self.imageView.origin = CGPointZero;
+    self.imageView.width = self.myScrollView.width;
+    
+    UIImage *image = self.imageView.image;
+    if (image.size.height / image.size.width > self.height / self.myScrollView.width) {
+        _imageView.height = floor(image.size.height / (image.size.width / self.myScrollView.width));
+    } else {
+        CGFloat height = image.size.height / image.size.width * self.myScrollView.width;
+        if (height < 1 || isnan(height)) height = self.height;
+        height = floor(height);
+        _imageView.height = height;
+        _imageView.centerY = self.height / 2;
+    }
+    
+    if (_imageView.height > self.height && _imageView.height - self.height <= 1) {
+        _imageView.height = self.height;
+    }
+    
+    _myScrollView.contentSize = CGSizeMake(_myScrollView.width, MAX(_imageView.height, self.height));
+    [_myScrollView scrollRectToVisible:self.bounds animated:NO];
+    _myScrollView.alwaysBounceVertical = _imageView.height <= self.height ? NO : YES;
 }
 
 - (void)mp_singleTap:(UITapGestureRecognizer *)gesture {
@@ -104,5 +142,9 @@
     
     self.imageView.center = CGPointMake(scrollView.contentSize.width * 0.5 + offsetX,
                             scrollView.contentSize.height * 0.5 + offsetY);
+}
+
+- (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView {
+    return self.imageView;
 }
 @end

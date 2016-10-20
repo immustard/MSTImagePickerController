@@ -191,6 +191,7 @@ static NSString * const reuserIdentifier = @"MSTPhotoGridCell";
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     MSTPhotoPreviewController *ppc = [[MSTPhotoPreviewController alloc] init];
+    [ppc didSelectedWithAlbum:_album indexPath:indexPath];
     [self.navigationController pushViewController:ppc animated:YES];
 }
 
@@ -208,7 +209,7 @@ static NSString * const reuserIdentifier = @"MSTPhotoGridCell";
         UICollectionView *collectionView = self.collectionView;
 
         if (_isMoment) {
-#warning 等待解决   wait for updating
+#warning 等待解决   waiting for updating
             [self mp_refreshMoments];
             [collectionView reloadData];
         } else {

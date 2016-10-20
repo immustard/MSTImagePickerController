@@ -11,6 +11,7 @@
 #import "MSTAlbumModel.h"
 
 @interface MSTPhotoManager ()
+@property (strong, nonatomic) PHImageManager *imageManager;
 @property (strong, nonatomic) PHCachingImageManager *cacheImageManager;
 @end
 
@@ -148,26 +149,26 @@
     }];
 }
 
-- (void)getPreviewImageFromPHAsset:(PHAsset *)asset photoWidth:(CGFloat)photoWidth comletionBlock:(void (^)(UIImage *, NSDictionary *))completionBlock {
-    CGFloat scale = [UIScreen mainScreen].scale;
-    CGSize screenSize = [UIScreen mainScreen].bounds.size;
+- (void)getPreviewImageFromPHAsset:(PHAsset *)asset isHighQuality:(BOOL)isHighQuality comletionBlock:(void (^)(UIImage *, NSDictionary *, BOOL isDegraded))completionBlock {
+    CGFloat scale = isHighQuality ? [UIScreen mainScreen].scale : .1f;
+    CGFloat width = [UIScreen mainScreen].bounds.size.width;
     
-    CGFloat aspectRatio = asset.pixelWidth / asset.pixelHeight;
-    CGFloat pixelWidth = photoWidth * scale;
-    CGFloat pixelHeight = photoWidth / aspectRatio;
+    CGFloat aspectRatio = asset.pixelWidth / (CGFloat)asset.pixelHeight;
+    CGFloat pixelWidth = width * scale;
+    CGFloat pixelHeight = width / aspectRatio;
     CGSize imageSize = CGSizeMake(pixelWidth, pixelHeight);
     
     PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
     options.resizeMode = PHImageRequestOptionsResizeModeFast;
     options.synchronous = NO;
     
-    [self.cacheImageManager requestImageForAsset:asset targetSize:imageSize contentMode:PHImageContentModeAspectFill options:options resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
+    [self.imageManager requestImageForAsset:asset targetSize:imageSize contentMode:PHImageContentModeAspectFill options:options resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
         BOOL finished = (![[info objectForKey:PHImageCancelledKey] boolValue] && ![info objectForKey:PHImageErrorKey]);
-        if (finished && !result) {
+        if (finished && result) {
             result = [UIImage fixOrientation:result];
-//            result = [result resizeImageWithNewSize:[UIImage retriveScaleDstSize:result.size]];
+
             //回调
-            completionBlock ? completionBlock(result, info) : nil;
+            completionBlock ? completionBlock(result, info, [info[PHImageResultIsDegradedKey] boolValue]) : nil;
         }
     }];
 }
@@ -190,6 +191,13 @@
         self.cacheImageManager = [[PHCachingImageManager alloc] init];
     }
     return _cacheImageManager;
+}
+
+- (PHImageManager *)imageManager {
+    if (!_imageManager) {
+        self.imageManager = [PHImageManager defaultManager];
+    }
+    return _imageManager;
 }
 
 @end

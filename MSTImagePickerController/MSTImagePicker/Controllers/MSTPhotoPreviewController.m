@@ -7,10 +7,14 @@
 //
 
 #import "MSTPhotoPreviewController.h"
+#import "MSTAlbumModel.h"
 #import "UIView+MSTUtils.h"
 #import "MSTPhotoPreviewImageCell.h"
 
-@interface MSTPhotoPreviewController ()<UICollectionViewDelegate, UICollectionViewDataSource>
+@interface MSTPhotoPreviewController ()<UICollectionViewDelegate, UICollectionViewDataSource> {
+    MSTAlbumModel *_albumModel;
+    NSIndexPath *_indexPath;
+}
 
 @property (strong, nonatomic) UICollectionView *myCollectionView;
 
@@ -45,6 +49,12 @@
 }
 
 #pragma mark - Instance Methods
+- (void)didSelectedWithAlbum:(MSTAlbumModel *)album indexPath:(NSIndexPath *)indexPath {
+    _albumModel = album;
+    
+    [self.myCollectionView scrollToItemAtIndexPath:indexPath atScrollPosition:UICollectionViewScrollPositionLeft animated:NO];
+}
+
 - (UICollectionViewFlowLayout *)mp_flowLayout {
     UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];
     
@@ -58,13 +68,21 @@
 
 #pragma mark - UICollectionViewDataSource & Delegate
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return 5;
+    return _albumModel.count;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     MSTPhotoPreviewImageCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"MSTPhotoPreviewImageCell" forIndexPath:indexPath];
+    cell.asset = _albumModel.content[indexPath.row];
     
     return cell;
+}
+
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+#warning waiting for updating
+    for (MSTPhotoPreviewImageCell *cell in _myCollectionView.visibleCells) {
+        [cell didDisplayed];
+    }
 }
 
 @end
