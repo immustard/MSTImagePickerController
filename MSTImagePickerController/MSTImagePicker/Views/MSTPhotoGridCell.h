@@ -15,3 +15,9 @@
 - (void)setImage:(UIImage *)image targetSize:(CGSize)targetSize;
 
 @end
+
+@interface MSTPhotoGridCameraCell : UICollectionViewCell
+
+@property (strong, nonatomic) UIImage *cameraImage;
+
+@end

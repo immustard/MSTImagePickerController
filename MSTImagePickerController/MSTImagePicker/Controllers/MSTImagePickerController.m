@@ -30,8 +30,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [self setToolbarHidden:NO animated:YES];
+    [self setToolbarHidden:NO animated:NO];
     
+    [self mp_setupNavigationBar];
     [self mp_checkAuthorizationStatus];
 }
 
@@ -52,6 +53,7 @@
     config.numsInRow = 4;
     config.allowsMasking = YES;
     config.allowsSelectedAnimation = YES;
+    config.themeStyle = MSTImagePickerStyleLight;
     config.photoMomentGroupType = MSTImageMomentGroupTypeNone;
     config.isPhotosDesc = YES;
     config.isShowAlbumThumbnail = YES;
@@ -59,7 +61,9 @@
     config.isShowEmptyAlbum = NO;
     config.isOnlyShowImages = NO;
     config.isShowLivePhotoIcon = YES;
+    config.isCallBackLivePhoto = YES;
     config.isFirstCamera = YES;
+    config.isAutoSaveFromCamera = YES;
     self.albumTitle = NSLocalizedStringFromTable(@"str_photos", @"MSTImagePicker", @"相册");
 }
 
@@ -134,6 +138,20 @@
     }
 }
 
+- (void)mp_setupNavigationBar {
+    switch (self.config.themeStyle) {
+        case MSTImagePickerStyleLight:
+            self.navigationBar.barStyle = UIBarStyleDefault;
+            self.navigationBar.translucent = YES;
+            break;
+        case MSTImagePickerStyleDark:
+            self.navigationBar.barStyle = UIBarStyleBlack;
+            self.navigationBar.translucent = YES;
+            self.navigationBar.tintColor = [UIColor whiteColor];
+            break;
+    }
+}
+
 #pragma mark - Lazy Load
 - (MSTPhotoConfiguration *)config {
     if (!_config) {
@@ -181,6 +199,10 @@
     self.config.allowsSelectedAnimation = allowsSelectedAnimation;
 }
 
+- (void)setThemeStyle:(MSTImagePickerStyle)themeStyle {
+    self.config.themeStyle = themeStyle;
+}
+
 - (void)setPhotoMomentGroupType:(MSTImageMomentGroupType)photoMomentGroupType {
     self.config.photoMomentGroupType = photoMomentGroupType;
 }
@@ -211,6 +233,10 @@
 
 - (void)setIsFirstCamera:(BOOL)isFirstCamera {
     self.config.isFirstCamera = isFirstCamera;
+}
+
+- (void)setIsAutoSaveFromCamera:(BOOL)isAutoSaveFromCamera {
+    self.config.isAutoSaveFromCamera = isAutoSaveFromCamera;
 }
 
 - (void)setAlbumTitle:(NSString *)albumTitle {

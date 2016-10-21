@@ -103,6 +103,11 @@ typedef NS_ENUM(NSUInteger, MSTImagePickerAccessType) {
 @property (assign, nonatomic) BOOL isFirstCamera;
 
 /**
+ 相机照片是否会自动保存到系统相册，默认为 YES
+ */
+@property (assign, nonatomic) BOOL isAutoSaveFromCamera;
+
+/**
  相册界面 title ，默认为 『相册』
  */
 @property (copy  , nonatomic) NSString *albumTitle;
@@ -126,6 +131,11 @@ typedef NS_ENUM(NSUInteger, MSTImagePickerAccessType) {
  照片选择时，已选择时图片
  */
 @property (strong, nonatomic) UIImage *photoSelected;
+
+/**
+ MSTPhotoGridController 中，camera cell显示图片
+ */
+@property (strong, nonatomic) UIImage *cameraImage;
 
 @end
 

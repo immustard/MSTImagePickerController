@@ -153,6 +153,7 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                 </subviews>
+                                <gestureRecognizers/>
                                 <constraints>
                                     <constraint firstItem="P4r-iy-puA" firstAttribute="centerY" secondItem="v7a-UY-Pzz" secondAttribute="centerY" id="0cC-42-tjL"/>
                                     <constraint firstItem="v7a-UY-Pzz" firstAttribute="top" secondItem="UZk-j3-h8b" secondAttribute="bottom" constant="20" id="38y-OK-OvW"/>
@@ -198,7 +199,7 @@
                                     <constraint firstItem="o7r-d7-jqZ" firstAttribute="centerY" secondItem="DPs-aw-aih" secondAttribute="centerY" id="Z5c-1k-z9K"/>
                                     <constraint firstItem="sHb-Ch-V5Y" firstAttribute="leading" secondItem="LVN-l8-xds" secondAttribute="trailing" id="agK-LM-zkf"/>
                                     <constraint firstItem="4wZ-9j-GWV" firstAttribute="top" secondItem="L6p-qf-TEY" secondAttribute="bottom" constant="20" id="bYY-fm-g7j"/>
-                                    <constraint firstItem="7Hb-Bs-vLH" firstAttribute="width" secondItem="954-Jv-xYs" secondAttribute="width" id="bys-sf-Nek"/>
+                                    <constraint firstItem="7Hb-Bs-vLH" firstAttribute="width" secondItem="954-Jv-xYs" secondAttribute="width" constant="-20" id="bys-sf-Nek"/>
                                     <constraint firstItem="o7r-d7-jqZ" firstAttribute="leading" secondItem="DPs-aw-aih" secondAttribute="trailing" id="cvc-Ys-H6H"/>
                                     <constraint firstItem="kT9-dQ-bi4" firstAttribute="leading" secondItem="UZk-j3-h8b" secondAttribute="trailing" id="ez7-Dj-HAF"/>
                                     <constraint firstItem="UZk-j3-h8b" firstAttribute="top" secondItem="Mru-Ow-crS" secondAttribute="bottom" constant="20" id="g20-2e-bJg"/>
@@ -215,6 +216,9 @@
                                     <constraint firstItem="Npk-AW-xUu" firstAttribute="leading" secondItem="4wZ-9j-GWV" secondAttribute="trailing" id="uri-hN-xGs"/>
                                     <constraint firstItem="kT9-dQ-bi4" firstAttribute="centerY" secondItem="UZk-j3-h8b" secondAttribute="centerY" id="vLr-R7-eaI"/>
                                 </constraints>
+                                <connections>
+                                    <outletCollection property="gestureRecognizers" destination="jaH-NG-Wyq" appends="YES" id="jL5-u0-iX4"/>
+                                </connections>
                             </scrollView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -242,10 +246,16 @@
                         <outlet property="maxSelectedNum" destination="X9X-pc-x2J" id="7pI-NG-lEg"/>
                         <outlet property="numberOfRow" destination="Npk-AW-xUu" id="dD3-ey-Lmh"/>
                         <outlet property="photoGroupType" destination="kT9-dQ-bi4" id="ejD-31-03W"/>
+                        <outlet property="showThemeType" destination="92t-gb-zO3" id="CDa-zk-UAw"/>
                         <outlet property="sourceTypePickerView" destination="7Hb-Bs-vLH" id="BvU-SL-Oh0"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="NP2-EE-Xjq" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer id="jaH-NG-Wyq">
+                    <connections>
+                        <action selector="endEditing:" destination="spw-vJ-j5G" id="8YR-UZ-Vdn"/>
+                    </connections>
+                </tapGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="1220" y="-63.418290854572717"/>
         </scene>

@@ -21,6 +21,8 @@
 
 @property (strong, nonatomic) UIImage *photoSelected;
 
+@property (strong, nonatomic) UIImage *cameraImage;
+
 /**
  添加 flowLayout
 

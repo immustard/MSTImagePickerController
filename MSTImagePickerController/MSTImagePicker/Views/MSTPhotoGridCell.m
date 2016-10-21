@@ -122,5 +122,46 @@
     return _liveBadgeImageView;
 }
 
+@end
+
+
+
+@interface MSTPhotoGridCameraCell ()
+
+@property (strong, nonatomic) UIImageView *imageView;
+
+@end
+
+@implementation MSTPhotoGridCameraCell
+
+- (instancetype)initWithFrame:(CGRect)frame {
+    if (self = [super initWithFrame:frame]) {
+        self.imageView.image = [UIImage imageNamed:@"icon_album_camera"];
+    }
+    return self;
+}
+
+- (UIImageView *)imageView {
+    if (!_imageView) {
+        self.imageView = [UIImageView new];
+        _imageView.contentMode = UIViewContentModeScaleAspectFill;
+        _imageView.translatesAutoresizingMaskIntoConstraints = NO;
+        
+        [self.contentView addSubview:_imageView];
+        
+        NSLayoutConstraint *top = [NSLayoutConstraint constraintWithItem:_imageView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeTop multiplier:1 constant:0];
+        NSLayoutConstraint *leading = [NSLayoutConstraint constraintWithItem:_imageView attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeLeading multiplier:1 constant:0];
+        NSLayoutConstraint *trailing = [NSLayoutConstraint constraintWithItem:_imageView attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeTrailing multiplier:1 constant:0];
+        NSLayoutConstraint *bottom = [NSLayoutConstraint constraintWithItem:_imageView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
+        [self.contentView addConstraints:@[top, leading, trailing, bottom]];
+    }
+    return _imageView;
+}
+
+- (void)setCameraImage:(UIImage *)cameraImage {
+    _cameraImage = cameraImage;
+    
+    self.imageView.image = cameraImage;
+}
 
 @end

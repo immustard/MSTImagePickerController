@@ -26,6 +26,7 @@ static NSString * const reuserIdentifier = @"MSTPhotoGridCell";
     CGSize _thumnailSize;               //缩略图尺寸，计算时包括 scale
     CGRect _previousPreheatRect;        //缓存区域
     
+    BOOL _isShowCamera;
     BOOL _isMoment;                     //是否按时间分组，is grouped by creationDate
     NSArray *_momentsArray;
 }
@@ -94,6 +95,7 @@ static NSString * const reuserIdentifier = @"MSTPhotoGridCell";
 - (void)mp_setupViews {
     [self.collectionView registerClass:[MSTPhotoGridCell class] forCellWithReuseIdentifier:reuserIdentifier];
     [self.collectionView registerClass:[MSTPhotoGridHeaderView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"MSTPhotoGridHeaderView"];
+    if (_isShowCamera) [self.collectionView registerClass:[MSTPhotoGridCameraCell class] forCellWithReuseIdentifier:@"MSTPhotoGridCameraCell"];
 
     self.collectionView.backgroundColor = [UIColor whiteColor];
 }
@@ -110,6 +112,12 @@ static NSString * const reuserIdentifier = @"MSTPhotoGridCell";
     } else {
         [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:self.album.count-1 inSection:0] atScrollPosition:UICollectionViewScrollPositionBottom animated:NO];
     }
+}
+
+- (MSTPhotoGridCameraCell *)mp_addCameraCell:(UICollectionView *)collectionView indexPath:(NSIndexPath *)indexPath {
+    MSTPhotoGridCameraCell * cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"MSTPhotoGridCameraCell" forIndexPath:indexPath];
+    if (self.cameraImage) cell.cameraImage = _cameraImage;
+    return cell;
 }
 
 #pragma mark - Lazy Load
@@ -142,6 +150,8 @@ static NSString * const reuserIdentifier = @"MSTPhotoGridCell";
     self.title = album.albumName;
     
     self.config.photoMomentGroupType == MSTImageMomentGroupTypeNone ? _isMoment = NO : (_isMoment = YES);
+#warning waiting for updating 当显示照相机并且根据moment分组的时候，把照相机放在当前时间组，没有就创建一个分组。
+    _isShowCamera = self.config.isFirstCamera && self.album.isCameraRoll;
     
     if (_isMoment) {
         [self mp_refreshMoments];
@@ -159,36 +169,87 @@ static NSString * const reuserIdentifier = @"MSTPhotoGridCell";
 
 #pragma mark - UICollectionViewDataSource & Delegate
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
-    if (_isMoment) return _momentsArray.count;
-        else return 1;
+    if (_isMoment) {
+        return _momentsArray.count;
+    } else {
+        return 1;
+    }
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     if (_isMoment) {
+        //按时间分组的情况
         MSTMoment *moment = _momentsArray[section];
-        return moment.assets.count;
+        if (_isShowCamera && ((self.config.isPhotosDesc && !section) || (!self.config.isPhotosDesc && section == _momentsArray.count-1))) {
+            //有相机, 并且正序第一段或倒序最后一段
+            return moment.assets.count + 1;
+        } else {
+            return moment.assets.count;
+        }
     } else {
-        return self.album.count;
+        //没按时间分组的情况
+        if (_isShowCamera)
+            return self.album.count + 1;
+        else
+            return self.album.count;
     }
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     PHAsset *asset;
-    
-    if (_isMoment) {
-        MSTMoment *moment = _momentsArray[indexPath.section];
-        asset = moment.assets[indexPath.row];
+    //判断显示相机, 如果显示相机，里面的代码。。。尽量理解。。不要问。。。我写完了都不太理解。。=-=
+    // Don't ask about the following codes.
+#warning waiting for updating
+    if (_isShowCamera) {
+        if (self.config.isPhotosDesc) {
+            if (_isMoment) {
+                MSTMoment *moment = _momentsArray[indexPath.section];
+            
+                if (!indexPath.row && !indexPath.section) {
+                    return [self mp_addCameraCell:collectionView indexPath:indexPath];
+                } else {
+                    if (!indexPath.section)
+                        asset = moment.assets[indexPath.row-1];
+                    else
+                        asset = moment.assets[indexPath.row];
+                }
+            } else {
+                if (!indexPath.row) {
+                    return [self mp_addCameraCell:collectionView indexPath:indexPath];
+                } else {
+                    asset = self.album.content[indexPath.row-1];
+                }
+            }
+        } else {
+            if (_isMoment) {
+                MSTMoment *moment = _momentsArray[indexPath.section];
+                
+                if (indexPath.section == _momentsArray.count - 1 && indexPath.row >= moment.assets.count)
+                    return [self mp_addCameraCell:collectionView indexPath:indexPath];
+                else
+                    asset = moment.assets[indexPath.row];
+            } else {
+                if (indexPath.row >= _album.count)
+                    return [self mp_addCameraCell:collectionView indexPath:indexPath];
+                else
+                    asset = self.album.content[indexPath.row];
+            }
+        }
     } else {
-        asset = self.album.content[indexPath.row];
+        if (_isMoment) {
+            MSTMoment *moment = _momentsArray[indexPath.section];
+            asset = moment.assets[indexPath.row];
+        } else {
+            asset = self.album.content[indexPath.row];
+        }
     }
+        MSTPhotoGridCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:reuserIdentifier forIndexPath:indexPath];
+        [self.imageManager requestImageForAsset:asset targetSize:_thumnailSize contentMode:PHImageContentModeAspectFill options:nil resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
+            [cell setImage:result targetSize:_cellSize];
+            cell.asset = asset;
+        }];
     
-    MSTPhotoGridCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:reuserIdentifier forIndexPath:indexPath];
-    [self.imageManager requestImageForAsset:asset targetSize:_thumnailSize contentMode:PHImageContentModeAspectFill options:nil resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
-        [cell setImage:result targetSize:_cellSize];
-        cell.asset = asset;
-    }];
-    
-    return cell;
+        return cell;
 }
 
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {

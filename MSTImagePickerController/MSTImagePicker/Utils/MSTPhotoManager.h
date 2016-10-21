@@ -46,7 +46,7 @@
 
 
 /**
- 读取预览图片，宽度默认为
+ 读取预览图片，宽度默认为屏幕宽度
 
  @param asset           图片内容
  @param isHighQuality   是否是高质量，为 YES 时，scale 为设备屏幕的 scale， NO 时 scale 为 0.1

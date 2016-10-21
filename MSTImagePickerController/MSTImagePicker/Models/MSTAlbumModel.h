@@ -16,6 +16,11 @@
 @property (copy  , nonatomic) NSString *albumName;
 
 /**
+ 是否是『相机胶卷』
+ */
+@property (assign, nonatomic) BOOL isCameraRoll;
+
+/**
  图片个数
  */
 @property (assign, nonatomic, readonly) NSUInteger count;

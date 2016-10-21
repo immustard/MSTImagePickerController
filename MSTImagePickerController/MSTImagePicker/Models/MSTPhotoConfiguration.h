@@ -96,6 +96,11 @@ typedef NS_ENUM(NSUInteger, MSTImagePickerStyle) {
  */
 @property (assign, nonatomic) BOOL isFirstCamera;
 
+/**
+ 相机照片是否会自动保存到系统相册，默认为 YES
+ */
+@property (assign, nonatomic) BOOL isAutoSaveFromCamera;
+
 
 /**
  单例方法

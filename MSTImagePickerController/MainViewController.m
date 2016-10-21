@@ -8,6 +8,7 @@
 
 #import "MainViewController.h"
 #import "MSTImagePickerController.h"
+#import "UIView+MSTUtils.h"
 
 @interface MainViewController ()<UIPickerViewDelegate, UIPickerViewDataSource> {
     NSInteger _sourceType;
@@ -18,6 +19,7 @@
 @property (weak, nonatomic) IBOutlet UITextField *numberOfRow;
 @property (weak, nonatomic) IBOutlet UISwitch *isShowMasking;
 @property (weak, nonatomic) IBOutlet UISwitch *isShowSelectedAnimation;
+@property (weak, nonatomic) IBOutlet UISegmentedControl *showThemeType;
 @property (weak, nonatomic) IBOutlet UISegmentedControl *photoGroupType;
 @property (weak, nonatomic) IBOutlet UISwitch *isDesc;
 @property (weak, nonatomic) IBOutlet UISwitch *isShowThumbnail;
@@ -37,6 +39,11 @@
     _sourceType = 1;
 
     [self.sourceTypePickerView selectRow:1 inComponent:0 animated:NO];
+}
+
+- (IBAction)endEditing:(UITapGestureRecognizer *)sender {
+    [_numberOfRow resignFirstResponder];
+    [_maxSelectedNum resignFirstResponder];
 }
 
 - (IBAction)runButtonDidClicked:(UIButton *)sender {
@@ -59,6 +66,7 @@
     imagePicker.numsInRow = _numberOfRow.text.intValue;
     imagePicker.allowsMasking = _isShowMasking.isOn;
     imagePicker.allowsSelectedAnimation = _isShowSelectedAnimation.isOn;
+    imagePicker.themeStyle = _showThemeType.selectedSegmentIndex;
     imagePicker.photoMomentGroupType = _photoGroupType.selectedSegmentIndex;
     imagePicker.isPhotosDesc = _isDesc.isOn;
     imagePicker.isShowAlbumThumbnail = _isShowThumbnail.isOn;
@@ -107,9 +115,4 @@
     _sourceType = row;
 }
 
-#pragma mark - UITouch
-- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
-    [_numberOfRow resignFirstResponder];
-    [_maxSelectedNum resignFirstResponder];
-}
 @end

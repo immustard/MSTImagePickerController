@@ -41,6 +41,7 @@
         PHFetchResult *result = [PHAsset fetchAssetsInAssetCollection:obj options:fetchOptions];
         
         MSTAlbumModel *model = [[MSTAlbumModel alloc] init];
+        model.isCameraRoll = YES;
         model.albumName = obj.localizedTitle;
         model.content = result;
         
@@ -71,6 +72,7 @@
         if (assetsResult.count > 0 || isShowEmpty) {
             //创建一个model封装这个相册的信息
             MSTAlbumModel *model = [[MSTAlbumModel alloc] init];
+            model.isCameraRoll = YES;
             model.albumName = obj.localizedTitle;//相册名
             model.content = assetsResult;//保存这个相册的内容
             
@@ -83,14 +85,13 @@
     
     [albumsCollection2 enumerateObjectsUsingBlock:^(PHAssetCollection *collection, NSUInteger idx, BOOL * _Nonnull stop) {
 
-        //读取相册里面的所有信息 PHFetchResult<PHAsset *>
         PHFetchResult *assetsResult = [PHAsset fetchAssetsInAssetCollection:collection options:fetchOptions];
         
         if (assetsResult.count > 0 || isShowEmpty) {
-            //创建一个model封装这个相册的信息
             MSTAlbumModel *model = [[MSTAlbumModel alloc] init];
-            model.albumName = collection.localizedTitle;//相册名
-            model.content = assetsResult;//保存这个相册的内容
+            model.isCameraRoll = NO;
+            model.albumName = collection.localizedTitle;
+            model.content = assetsResult;
             
             [albumModelsArray addObject:model];
         }
