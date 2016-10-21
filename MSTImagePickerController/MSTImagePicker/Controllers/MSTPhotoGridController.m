@@ -7,6 +7,7 @@
 //
 
 #import "MSTPhotoGridController.h"
+#import <MobileCoreServices/MobileCoreServices.h>
 #import "MSTPhotoManager.h"
 #import "MSTPhotoConfiguration.h"
 #import "UICollectionView+MSTUtils.h"
@@ -203,18 +204,23 @@ static NSString * const reuserIdentifier = @"MSTPhotoGridCell";
     if (_isShowCamera) {
         if (self.config.isPhotosDesc) {
             if (_isMoment) {
+                //根据时间分组
                 MSTMoment *moment = _momentsArray[indexPath.section];
             
                 if (!indexPath.row && !indexPath.section) {
+                    //第一段第一个
                     return [self mp_addCameraCell:collectionView indexPath:indexPath];
                 } else {
                     if (!indexPath.section)
+                        //第一段
                         asset = moment.assets[indexPath.row-1];
                     else
                         asset = moment.assets[indexPath.row];
                 }
             } else {
+                //未根据之间分组
                 if (!indexPath.row) {
+                    //第一个
                     return [self mp_addCameraCell:collectionView indexPath:indexPath];
                 } else {
                     asset = self.album.content[indexPath.row-1];
@@ -265,17 +271,83 @@ static NSString * const reuserIdentifier = @"MSTPhotoGridCell";
     
     NSIndexPath *tmpIndexPath = indexPath;
     NSInteger row = 0;
-    if (_isMoment) {
-        for (NSInteger i = 0; i < indexPath.section; i++) {
-            MSTMoment *moment = _momentsArray[i];
-            row = moment.assets.count;
-        }
-        row += indexPath.row;
-        tmpIndexPath = [NSIndexPath indexPathForRow:row inSection:0];
-    }
-    [ppc didSelectedWithAlbum:_album indexPath:tmpIndexPath];
+    BOOL pushToCamera = NO;
     
-    [self.navigationController pushViewController:ppc animated:YES];
+    if (_isShowCamera) {
+        if (self.config.isPhotosDesc) {
+            if (_isMoment) {
+                //根据时间分组
+                if (!indexPath.row && !indexPath.section) {
+                    //第一段第一个
+                    pushToCamera = YES;
+                } else {
+                    if (!indexPath.section) {
+                        //第一段
+                        row = indexPath.row-1;
+                    } else {
+                        for (NSInteger i = 0; i < indexPath.section; i++) {
+                            MSTMoment *moment = _momentsArray[i];
+                            row += moment.assets.count;
+                        }
+                        row += indexPath.row;
+                    }
+                }
+            } else {
+                //未根据之间分组
+                if (!indexPath.row) {
+                    //第一个
+                    pushToCamera = YES;
+                } else {
+                    row = indexPath.row-1;
+                }
+            }
+        } else {
+            if (_isMoment) {
+                MSTMoment *moment = _momentsArray[indexPath.section];
+                
+                if (indexPath.section == _momentsArray.count - 1 && indexPath.row >= moment.assets.count) {
+                    pushToCamera = YES;
+                } else {
+                    for (NSInteger i = 0; i < indexPath.section; i++) {
+                        MSTMoment *moment = _momentsArray[i];
+                        row += moment.assets.count;
+                    }
+                    row += indexPath.row;
+                }
+            } else {
+                if (indexPath.row >= _album.count)
+                    pushToCamera = YES;
+                else
+                    row = indexPath.row;
+            }
+        }
+    } else {
+        if (_isMoment) {
+            for (NSInteger i = 0; i < indexPath.section; i++) {
+                MSTMoment *moment = _momentsArray[i];
+                row += moment.assets.count;
+            }
+            row += indexPath.row;
+        } else {
+            row = indexPath.row;
+        }
+    }
+    if (pushToCamera) {
+        if ([UIImagePickerController availableMediaTypesForSourceType:UIImagePickerControllerSourceTypeCamera]) {
+            UIImagePickerController *pickerCtrler = [[UIImagePickerController alloc] init];
+            pickerCtrler.sourceType = UIImagePickerControllerSourceTypeCamera;
+            pickerCtrler.allowsEditing = YES;
+            pickerCtrler.mediaTypes = @[(NSString *)kUTTypeImage, (NSString *)kUTTypeMovie, (NSString *)kUTTypeLivePhoto];
+            
+            [self presentViewController:pickerCtrler animated:YES completion:nil];
+        }
+    } else {
+        tmpIndexPath = [NSIndexPath indexPathForRow:row inSection:0];
+        
+        [ppc didSelectedWithAlbum:_album indexPath:tmpIndexPath];
+        
+        [self.navigationController pushViewController:ppc animated:YES];
+    }
 }
 
 #pragma mark - PHPhotoLibraryChangeObserver
