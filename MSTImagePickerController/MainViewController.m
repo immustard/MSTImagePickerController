@@ -79,17 +79,28 @@
     return 3;
 }
 
-- (NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component {
+- (UIView *)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(nullable UIView *)view {
+    UILabel *label = [[UILabel alloc] init];
+    label.textAlignment = NSTextAlignmentCenter;
+    label.font = [UIFont systemFontOfSize:20];
+    label.adjustsFontSizeToFitWidth = YES;
+    
     switch (row) {
         case 0:
-            return @"无相册界面，但直接进入相册胶卷";
+            label.text = @"无相册界面，但直接进入相册胶卷";
+            break;
         case 1:
-            return @"有相册界面，但直接进入相册胶卷";
+            label.text = @"有相册界面，但直接进入相册胶卷";
+            break;
         case 2:
-            return @"直接进入相册界面";
+            label.text = @"直接进入相册界面";
+            break;
         default:
-            return @"";
+            label.text = @"";
+            break;
     }
+    [label sizeThatFits:CGSizeMake(self.view.frame.size.width - 20, 20)];
+    return label;
 }
 
 - (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
