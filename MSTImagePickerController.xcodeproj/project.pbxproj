@@ -90,6 +90,7 @@
 		AD482B101DB0BD82003FBB67 /* UICollectionView+MSTUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UICollectionView+MSTUtils.m"; sourceTree = "<group>"; };
 		AD482B121DB0BE9E003FBB67 /* NSIndexSet+MSTUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSIndexSet+MSTUtils.h"; sourceTree = "<group>"; };
 		AD482B131DB0BE9E003FBB67 /* NSIndexSet+MSTUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSIndexSet+MSTUtils.m"; sourceTree = "<group>"; };
+		AD4B17841DBDABD500D84C10 /* MSTImagePickerEnumeration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSTImagePickerEnumeration.h; sourceTree = "<group>"; };
 		AD7DA51F1DB4C11500141461 /* icon_grid_videoLength@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "icon_grid_videoLength@2x.png"; path = "MSTImagePickerController/MSTImagePicker/Resources/icon_grid_videoLength@2x.png"; sourceTree = SOURCE_ROOT; };
 		AD8C03A31DB5B399001F9EC9 /* MSTMoment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSTMoment.h; sourceTree = "<group>"; };
 		AD8C03A41DB5B399001F9EC9 /* MSTMoment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSTMoment.m; sourceTree = "<group>"; };
@@ -265,6 +266,7 @@
 		ADA527741DAF7AF8006C838E /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				AD4B17841DBDABD500D84C10 /* MSTImagePickerEnumeration.h */,
 				ADA527751DAF7AF8006C838E /* MSTPhotoManager.h */,
 				ADA527761DAF7AF8006C838E /* MSTPhotoManager.m */,
 				ADA527871DAF7DA0006C838E /* UIViewController+MSTUtils.h */,

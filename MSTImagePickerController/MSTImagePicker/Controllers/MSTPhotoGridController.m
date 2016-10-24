@@ -13,6 +13,7 @@
 #import "UICollectionView+MSTUtils.h"
 #import "NSIndexSet+MSTUtils.h"
 #import "MSTAlbumModel.h"
+#import "MSTMoment.h"
 #import "MSTPhotoGridCell.h"
 #import "MSTPhotoGridHeaderView.h"
 #import "NSDate+MSTUtils.h"
@@ -51,7 +52,7 @@ static NSString * const reuserIdentifier = @"MSTPhotoGridCell";
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-#warning waiting for updating
+#warning waiting for updating 滚动到最下方，找到最佳方案
     if (!self.config.isPhotosDesc && _isFirstAppear) {
         [self mp_scrollToBottom];
         _isFirstAppear = NO;
@@ -200,7 +201,7 @@ static NSString * const reuserIdentifier = @"MSTPhotoGridCell";
     PHAsset *asset;
     //判断显示相机, 如果显示相机，里面的代码。。。尽量理解。。不要问。。。我写完了都不太理解。。=-=
     // Don't ask about the following codes.
-#warning waiting for updating
+#warning waiting for updating 代码优化
     if (_isShowCamera) {
         if (self.config.isPhotosDesc) {
             if (_isMoment) {
@@ -333,6 +334,7 @@ static NSString * const reuserIdentifier = @"MSTPhotoGridCell";
         }
     }
     if (pushToCamera) {
+#warning waiting for updating 判断照相机授权。视频拍摄情况，判断语音授权。
         if ([UIImagePickerController availableMediaTypesForSourceType:UIImagePickerControllerSourceTypeCamera]) {
             UIImagePickerController *pickerCtrler = [[UIImagePickerController alloc] init];
             pickerCtrler.sourceType = UIImagePickerControllerSourceTypeCamera;
@@ -364,7 +366,7 @@ static NSString * const reuserIdentifier = @"MSTPhotoGridCell";
         UICollectionView *collectionView = self.collectionView;
 
         if (_isMoment) {
-#warning 等待解决   waiting for updating
+#warning waiting for updating 不想这么暴力 T^T
             [self mp_refreshMoments];
             [collectionView reloadData];
         } else {

@@ -35,7 +35,7 @@
 - (void)setAlbumModel:(MSTAlbumModel *)albumModel {
     _albumModel = albumModel;
     
-    //根据 model 进行设置
+    //根据 model 进行设置     config with models
     [self mp_setupInfo];
 }
 
@@ -109,7 +109,7 @@
             
             NSMutableArray *thumbnails = [NSMutableArray array];
             for (int i = 0; i < MIN(_albumModel.count, 3); i++) {
-                [[PHCachingImageManager defaultManager] requestImageForAsset:_albumModel.content[fetchImageIndex] targetSize:CGSizeMake(80, 80) contentMode:PHImageContentModeAspectFit options:nil resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
+                [[PHCachingImageManager defaultManager] requestImageForAsset:_albumModel.content[fetchImageIndex] targetSize:CGSizeMake(80*2.f, 80*2.f) contentMode:PHImageContentModeAspectFit options:nil resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
                     
                     if (result) [thumbnails addObject:result];
 

@@ -10,12 +10,28 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MSTImagePickerController/MSTImagePicker/Utils/MSTPhotoManager.m"
-            timestampString = "498639893.506643"
+            timestampString = "498971109.776268"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "151"
-            endingLineNumber = "151"
+            startingLineNumber = "177"
+            endingLineNumber = "177"
             landmarkName = "-getPreviewImageFromPHAsset:isHighQuality:completionBlock:"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "MSTImagePickerController/MSTImagePicker/Views/MSTPhotoGridCell.m"
+            timestampString = "498723455.158723"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "162"
+            endingLineNumber = "162"
+            landmarkName = "-setCameraImage:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

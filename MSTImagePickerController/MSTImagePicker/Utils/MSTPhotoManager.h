@@ -7,13 +7,21 @@
 //
 
 #import <Photos/Photos.h>
-#import "MSTMoment.h"
+#import "MSTImagePickerEnumeration.h"
 
-@class MSTAlbumModel;
+@class MSTAlbumModel, MSTMoment;
 @interface MSTPhotoManager : NSObject
 
 /** 单例 */
 + (instancetype)sharedInstance;
+
+/**
+ 检查 app 授权
+
+ @param type 授权类型
+ @param callBackBlock 回调
+ */
++ (void)checkAuthorizationStatusWithSourceType:(MSTImagePickerSourceType)type callBack:(void(^)(MSTImagePickerSourceType sourceType, MSTAuthorizationStatus status)) callBackBlock;
 
 /**
  读取『相机胶卷』的信息
@@ -54,6 +62,12 @@
  */
 - (void)getPreviewImageFromPHAsset:(PHAsset *)asset isHighQuality:(BOOL)isHighQuality completionBlock:(void(^)(UIImage *result, NSDictionary *info, BOOL isDegraded))completionBlock;
 
+/**
+ 读取 Live Photo
+
+ @param asset           内容
+ @param completionBlock 回调
+ */
 - (void)getLivePhotoFromPHAsset:(PHAsset *)asset completionBlock:(void(^)(PHLivePhoto *livePhoto))completionBlock;
 
 /** 读取原始图片 */

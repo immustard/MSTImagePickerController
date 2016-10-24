@@ -7,18 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-
-typedef NS_ENUM(NSUInteger, MSTImageMomentGroupType) {
-    MSTImageMomentGroupTypeNone,          //无分组
-    MSTImageMomentGroupTypeYear,          //年
-    MSTImageMomentGroupTypeMonth,         //月
-    MSTImageMomentGroupTypeDay            //日
-};
-
-typedef NS_ENUM(NSUInteger, MSTImagePickerStyle) {
-    MSTImagePickerStyleLight,       //浅色
-    MSTImagePickerStyleDark         //深色
-};
+#import "MSTImagePickerEnumeration.h"
 
 @interface MSTPhotoConfiguration : NSObject
 /**
@@ -97,9 +86,9 @@ typedef NS_ENUM(NSUInteger, MSTImagePickerStyle) {
 @property (assign, nonatomic) BOOL isFirstCamera;
 
 /**
- 相机照片是否会自动保存到系统相册，默认为 YES
+ 是否可以录制视频，默认为 YES
  */
-@property (assign, nonatomic) BOOL isAutoSaveFromCamera;
+@property (assign, nonatomic) BOOL allowsMakingVideo;
 
 
 /**

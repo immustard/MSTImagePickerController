@@ -11,14 +11,31 @@
 @implementation MSTPhotoConfiguration
 
 + (instancetype)defaultConfiguration {
-    static MSTPhotoConfiguration *instance = nil;
+    static MSTPhotoConfiguration *config = nil;
     
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        instance = [[MSTPhotoConfiguration alloc] init];
+        config = [[MSTPhotoConfiguration alloc] init];
+        
+        config.allowsMutiSelected = YES;
+        config.maxSelectCount = 9;
+        config.numsInRow = 4;
+        config.allowsMasking = YES;
+        config.allowsSelectedAnimation = YES;
+        config.themeStyle = MSTImagePickerStyleLight;
+        config.photoMomentGroupType = MSTImageMomentGroupTypeNone;
+        config.isPhotosDesc = YES;
+        config.isShowAlbumThumbnail = YES;
+        config.isShowAlbumNumber = YES;
+        config.isShowEmptyAlbum = NO;
+        config.isOnlyShowImages = NO;
+        config.isShowLivePhotoIcon = YES;
+        config.isCallBackLivePhoto = YES;
+        config.isFirstCamera = YES;
+        config.allowsMakingVideo = YES;
     });
     
-    return instance;
+    return config;
 }
 
 @end

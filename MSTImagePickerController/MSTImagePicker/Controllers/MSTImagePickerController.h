@@ -7,13 +7,7 @@
 //
 
 #import <Photos/Photos.h>
-#import "MSTPhotoConfiguration.h"
-
-typedef NS_ENUM(NSUInteger, MSTImagePickerAccessType) {
-    MSTImagePickerAccessTypePhotosWithoutAlbums,        //无相册界面，但直接进入相册胶卷
-    MSTImagePickerAccessTypePhotosWithAlbums,           //有相册界面，但直接进入相册胶卷
-    MSTImagePickerAccessTypeAlbums                      //直接进入相册界面
-};
+#import "MSTImagePickerEnumeration.h"
 
 @interface MSTImagePickerController : UINavigationController
 
@@ -52,7 +46,7 @@ typedef NS_ENUM(NSUInteger, MSTImagePickerAccessType) {
 @property (assign, nonatomic) BOOL allowsSelectedAnimation;
 
 /**
- 显示类型，默认为 light
+ 显示类型，默认为 Light
  */
 @property (assign, nonatomic) MSTImagePickerStyle themeStyle;
 
@@ -103,9 +97,9 @@ typedef NS_ENUM(NSUInteger, MSTImagePickerAccessType) {
 @property (assign, nonatomic) BOOL isFirstCamera;
 
 /**
- 相机照片是否会自动保存到系统相册，默认为 YES
+ 是否可以录制视频，默认为 YES
  */
-@property (assign, nonatomic) BOOL isAutoSaveFromCamera;
+@property (assign, nonatomic) BOOL allowsMakingVideo;
 
 /**
  相册界面 title ，默认为 『相册』

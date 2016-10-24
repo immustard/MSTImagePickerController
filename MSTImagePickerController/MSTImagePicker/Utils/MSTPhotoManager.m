@@ -9,6 +9,7 @@
 #import "MSTPhotoManager.h"
 #import "UIImage+MSTUtiles.h"
 #import "MSTAlbumModel.h"
+#import "MSTMoment.h"
 
 @interface MSTPhotoManager ()
 @property (strong, nonatomic) PHImageManager *imageManager;
@@ -26,6 +27,30 @@
     });
     
     return instance;
+}
+
++ (void)checkAuthorizationStatusWithSourceType:(MSTImagePickerSourceType)type callBack:(void (^)(MSTImagePickerSourceType, MSTAuthorizationStatus))callBackBlock {
+    switch (type) {
+        case MSTImagePickerSourceTypePhoto: {
+            if ([PHPhotoLibrary authorizationStatus] != PHAuthorizationStatusAuthorized) {
+                
+                [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
+                    callBackBlock ? callBackBlock(type, (MSTAuthorizationStatus)status) : nil;
+                }];
+            } else {
+                callBackBlock ? callBackBlock(type, MSTAuthorizationStatusAuthorized) : nil;
+            }
+        }
+            break;
+        case MSTImagePickerSourceTypeSound: {
+            
+        }
+            break;
+        case MSTImagePickerSourceTypeCamera: {
+            
+        }
+            break;
+    }
 }
 
 - (void)loadCameraRollInfoisDesc:(BOOL)isDesc isOnlyShowImage:(BOOL)isOnlyShowImage CompletionBlock:(void (^)(MSTAlbumModel *))completionBlock {

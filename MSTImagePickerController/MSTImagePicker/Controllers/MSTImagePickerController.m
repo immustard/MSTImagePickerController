@@ -7,6 +7,7 @@
 //
 
 #import "MSTImagePickerController.h"
+#import "MSTPhotoConfiguration.h"
 #import "MSTAlbumListController.h"
 #import "MSTPhotoGridController.h"
 #import "UIViewController+MSTUtils.h"
@@ -40,102 +41,61 @@
 - (instancetype)initWithAccessType:(MSTImagePickerAccessType)accessType{
     if (self = [super init]) {
         self.accessType = accessType;
-        [self mp_setupFirstTimeProperties];
+        self.albumTitle = NSLocalizedStringFromTable(@"str_photos", @"MSTImagePicker", @"相册");
     }
     return self;
 }
 
 #pragma mark - Instance Methods
-- (void)mp_setupFirstTimeProperties {
-    MSTPhotoConfiguration *config = [MSTPhotoConfiguration defaultConfiguration];
-    config.allowsMutiSelected = YES;
-    config.maxSelectCount = 9;
-    config.numsInRow = 4;
-    config.allowsMasking = YES;
-    config.allowsSelectedAnimation = YES;
-    config.themeStyle = MSTImagePickerStyleLight;
-    config.photoMomentGroupType = MSTImageMomentGroupTypeNone;
-    config.isPhotosDesc = YES;
-    config.isShowAlbumThumbnail = YES;
-    config.isShowAlbumNumber = YES;
-    config.isShowEmptyAlbum = NO;
-    config.isOnlyShowImages = NO;
-    config.isShowLivePhotoIcon = YES;
-    config.isCallBackLivePhoto = YES;
-    config.isFirstCamera = YES;
-    config.isAutoSaveFromCamera = YES;
-    self.albumTitle = NSLocalizedStringFromTable(@"str_photos", @"MSTImagePicker", @"相册");
-}
-
 /**
  检查授权访问状态
  */
 - (void)mp_checkAuthorizationStatus {
-    if ([PHPhotoLibrary authorizationStatus] != PHAuthorizationStatusAuthorized) {
-        
-        [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
-            
-            switch (status) {
-                case PHAuthorizationStatusNotDetermined:
-                    NSLog(@"PHAuthorizationStatusNotDetermined");
-                    break;
-                case PHAuthorizationStatusRestricted:
-                    NSLog(@"PHAuthorizationStatusRestricted");
-                    break;
-                case PHAuthorizationStatusDenied:{
-                    NSLog(@"PHAuthorizationStatusDenied");
-                    
-                    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"" message:NSLocalizedStringFromTable(@"str_allow_photoLibrary", @"MSTImagePicker", @"允许访问") preferredStyle:UIAlertControllerStyleAlert];
-                    UIAlertAction *action = [UIAlertAction actionWithTitle:NSLocalizedStringFromTable(@"str_confirm", @"MSTImagePicker", @"确认") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-                        [self dismissViewControllerAnimated:YES completion:nil];
-                    }];
-                    [alertController addAction:action];
-                    [self presentViewController:alertController animated:YES completion:nil];
-                    
-                    break;
-                }
-                case PHAuthorizationStatusAuthorized:{
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        switch (_accessType) {
-                            case MSTImagePickerAccessTypeAlbums: {
-                                [self setViewControllers:@[self.albumListController]];
-                            }
-                                break;
-                            case MSTImagePickerAccessTypePhotosWithAlbums: {
-                                [self setViewControllers:@[self.albumListController, self.photoGridController]];
-                            }
-                                break;
-                            case MSTImagePickerAccessTypePhotosWithoutAlbums: {
-                                [self.photoGridController addNavigationLeftCancelBtn];
-                                [self setViewControllers:@[self.photoGridController] animated:YES];
-                            }
-                                break;
+    [MSTPhotoManager checkAuthorizationStatusWithSourceType:MSTImagePickerSourceTypePhoto callBack:^(MSTImagePickerSourceType sourceType, MSTAuthorizationStatus status) {
+        switch (status) {
+            case MSTAuthorizationStatusNotDetermined:
+                NSLog(@"PHAuthorizationStatusNotDetermined");
+                break;
+            case MSTAuthorizationStatusRestricted:
+                NSLog(@"PHAuthorizationStatusRestricted");
+                break;
+            case MSTAuthorizationStatusDenied:{
+                NSLog(@"PHAuthorizationStatusDenied");
+                
+                UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"" message:NSLocalizedStringFromTable(@"str_allow_photoLibrary", @"MSTImagePicker", @"允许访问") preferredStyle:UIAlertControllerStyleAlert];
+                UIAlertAction *action = [UIAlertAction actionWithTitle:NSLocalizedStringFromTable(@"str_confirm", @"MSTImagePicker", @"确认") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+                    [self dismissViewControllerAnimated:YES completion:nil];
+                }];
+                [alertController addAction:action];
+                [self presentViewController:alertController animated:YES completion:nil];
+                
+                break;
+            }
+            case MSTAuthorizationStatusAuthorized:{
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    switch (_accessType) {
+                        case MSTImagePickerAccessTypeAlbums: {
+                            [self setViewControllers:@[self.albumListController]];
                         }
-                        NSLog(@"PHAuthorizationStatusAuthorized");
-                    });
-                    break;
-                }
-                default:
-                    break;
-            }
-        }];
-    } else {
-        switch (_accessType) {
-            case MSTImagePickerAccessTypeAlbums: {
-                [self setViewControllers:@[self.albumListController]];
-            }
+                            break;
+                        case MSTImagePickerAccessTypePhotosWithAlbums: {
+                            [self setViewControllers:@[self.albumListController, self.photoGridController]];
+                        }
+                            break;
+                        case MSTImagePickerAccessTypePhotosWithoutAlbums: {
+                            [self.photoGridController addNavigationLeftCancelBtn];
+                            [self setViewControllers:@[self.photoGridController] animated:YES];
+                        }
+                            break;
+                    }
+                    NSLog(@"PHAuthorizationStatusAuthorized");
+                });
                 break;
-            case MSTImagePickerAccessTypePhotosWithAlbums: {
-                [self setViewControllers:@[self.albumListController, self.photoGridController]];
             }
-                break;
-            case MSTImagePickerAccessTypePhotosWithoutAlbums: {
-                [self.photoGridController addNavigationLeftCancelBtn];
-                [self setViewControllers:@[self.photoGridController] animated:YES];
-            }
+            default:
                 break;
         }
-    }
+    }];
 }
 
 - (void)mp_setupNavigationBar {
@@ -233,10 +193,6 @@
 
 - (void)setIsFirstCamera:(BOOL)isFirstCamera {
     self.config.isFirstCamera = isFirstCamera;
-}
-
-- (void)setIsAutoSaveFromCamera:(BOOL)isAutoSaveFromCamera {
-    self.config.isAutoSaveFromCamera = isAutoSaveFromCamera;
 }
 
 - (void)setAlbumTitle:(NSString *)albumTitle {
