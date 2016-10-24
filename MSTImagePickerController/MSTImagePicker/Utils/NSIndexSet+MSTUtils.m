@@ -11,10 +11,11 @@
 
 @implementation NSIndexSet (MSTUtils)
 
-- (NSArray *)indexPathsFromIndexesWithSection:(NSUInteger)section {
+- (NSArray *)indexPathsFromIndexesWithSection:(NSUInteger)section isShowCamera:(BOOL)isShowCamera {
     NSMutableArray *indexPaths = [NSMutableArray arrayWithCapacity:self.count];
     
     [self enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+        if (isShowCamera) idx++;
         [indexPaths addObject:[NSIndexPath indexPathForItem:idx inSection:section]];
     }];
     

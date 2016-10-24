@@ -102,6 +102,11 @@
 @property (assign, nonatomic) BOOL allowsMakingVideo;
 
 /**
+ 最长视频时间，只有当 allowsMakingVideo 为 true 时可用，默认为 60
+ */
+@property (assign, nonatomic) NSTimeInterval videoMaximumDuration;
+
+/**
  相册界面 title ，默认为 『相册』
  */
 @property (copy  , nonatomic) NSString *albumTitle;

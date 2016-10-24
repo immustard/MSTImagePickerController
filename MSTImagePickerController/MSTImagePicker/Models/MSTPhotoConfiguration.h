@@ -90,6 +90,11 @@
  */
 @property (assign, nonatomic) BOOL allowsMakingVideo;
 
+/**
+ 只有当 allowsMakingVideo 为 true 时可用，默认为 60
+ */
+@property (assign, nonatomic) NSTimeInterval videoMaximumDuration;
+
 
 /**
  单例方法

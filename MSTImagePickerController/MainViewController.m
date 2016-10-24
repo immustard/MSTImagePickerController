@@ -28,6 +28,7 @@
 @property (weak, nonatomic) IBOutlet UISwitch *isOnlyShowImage;
 @property (weak, nonatomic) IBOutlet UISwitch *isShowLive;
 @property (weak, nonatomic) IBOutlet UISwitch *isFirstCamera;
+@property (weak, nonatomic) IBOutlet UISwitch *allowsMakingVideo;
 
 @end
 
@@ -75,6 +76,7 @@
     imagePicker.isOnlyShowImages = _isOnlyShowImage.isOn;
     imagePicker.isShowLivePhotoIcon = _isShowLive.isOn;
     imagePicker.isFirstCamera = _isFirstCamera.isOn;
+    imagePicker.allowsMakingVideo = _allowsMakingVideo.isOn;
     [self presentViewController:imagePicker animated:YES completion:nil];
 }
 
@@ -107,7 +109,7 @@
             label.text = @"";
             break;
     }
-    [label sizeThatFits:CGSizeMake(self.view.frame.size.width - 20, 20)];
+    [label sizeThatFits:CGSizeMake(self.view.frame.size.width - 16, 20)];
     return label;
 }
 

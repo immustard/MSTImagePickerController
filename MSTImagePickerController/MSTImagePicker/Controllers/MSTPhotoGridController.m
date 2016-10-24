@@ -21,7 +21,7 @@
 
 static NSString * const reuserIdentifier = @"MSTPhotoGridCell";
 
-@interface MSTPhotoGridController ()<PHPhotoLibraryChangeObserver, UICollectionViewDelegateFlowLayout> {
+@interface MSTPhotoGridController ()<PHPhotoLibraryChangeObserver, UICollectionViewDelegateFlowLayout, UIImagePickerControllerDelegate, UINavigationControllerDelegate> {
     BOOL _isFirstAppear;
     
     CGSize _cellSize;
@@ -333,13 +333,17 @@ static NSString * const reuserIdentifier = @"MSTPhotoGridCell";
             row = indexPath.row;
         }
     }
+    
     if (pushToCamera) {
 #warning waiting for updating 判断照相机授权。视频拍摄情况，判断语音授权。
         if ([UIImagePickerController availableMediaTypesForSourceType:UIImagePickerControllerSourceTypeCamera]) {
             UIImagePickerController *pickerCtrler = [[UIImagePickerController alloc] init];
             pickerCtrler.sourceType = UIImagePickerControllerSourceTypeCamera;
-            pickerCtrler.allowsEditing = YES;
-            pickerCtrler.mediaTypes = @[(NSString *)kUTTypeImage, (NSString *)kUTTypeMovie, (NSString *)kUTTypeLivePhoto];
+            pickerCtrler.delegate = self;
+            if (self.config.allowsMakingVideo) {
+                pickerCtrler.mediaTypes = @[(NSString *)kUTTypeImage, (NSString *)kUTTypeMovie];
+                pickerCtrler.videoMaximumDuration = self.config.videoMaximumDuration;
+            }
             
             [self presentViewController:pickerCtrler animated:YES completion:nil];
         }
@@ -359,7 +363,7 @@ static NSString * const reuserIdentifier = @"MSTPhotoGridCell";
     if (!collectionChanges) {
         return;
     }
-    
+
     // 界面更新, update interfaces
     dispatch_async(dispatch_get_main_queue(), ^{
         self.album.content = [collectionChanges fetchResultAfterChanges];
@@ -376,23 +380,64 @@ static NSString * const reuserIdentifier = @"MSTPhotoGridCell";
             } else {
                 // 如果相册有变化，collectionview动画增删改
                 [collectionView performBatchUpdates:^{
+                    BOOL isCamera = _isShowCamera && self.config.isPhotosDesc;
+                    
                     NSIndexSet *removedIndexes = [collectionChanges removedIndexes];
                     if ([removedIndexes count] > 0) {
-                        [collectionView deleteItemsAtIndexPaths:[removedIndexes indexPathsFromIndexesWithSection:0]];
+                        [collectionView deleteItemsAtIndexPaths:[removedIndexes indexPathsFromIndexesWithSection:0 isShowCamera:isCamera]];
                     }
                     
                     NSIndexSet *insertedIndexes = [collectionChanges insertedIndexes];
                     if ([insertedIndexes count] > 0) {
-                        [collectionView insertItemsAtIndexPaths:[insertedIndexes indexPathsFromIndexesWithSection:0]];
+                        [collectionView insertItemsAtIndexPaths:[insertedIndexes indexPathsFromIndexesWithSection:0 isShowCamera:isCamera]];
                     }
                     
                     NSIndexSet *changedIndexes = [collectionChanges changedIndexes];
                     if ([changedIndexes count] > 0) {
-                        [collectionView reloadItemsAtIndexPaths:[changedIndexes indexPathsFromIndexesWithSection:0]];
+                        [collectionView reloadItemsAtIndexPaths:[changedIndexes indexPathsFromIndexesWithSection:0 isShowCamera:isCamera]];
                     }
                 } completion:nil];
             }
         }
     });
 }
+
+#pragma mark - UIImagePickerControllerDelegate
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info {
+    [self dismissViewControllerAnimated:NO completion:nil];
+    
+    [[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
+        UIImage *image = info[UIImagePickerControllerOriginalImage];
+        
+        [PHAssetChangeRequest creationRequestForAssetFromImage:image];
+    } completionHandler:^(BOOL success, NSError * _Nullable error) {
+        NSLog(@"Fail to save image from camera.");
+    }];
+    
+}
 @end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

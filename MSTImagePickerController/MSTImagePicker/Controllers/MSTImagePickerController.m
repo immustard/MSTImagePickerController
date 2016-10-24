@@ -195,6 +195,13 @@
     self.config.isFirstCamera = isFirstCamera;
 }
 
+- (void)setAllowsMakingVideo:(BOOL)allowsMakingVideo {
+    self.config.allowsMakingVideo = allowsMakingVideo;
+}
+
+- (void)setVideoMaximumDuration:(NSTimeInterval)videoMaximumDuration {
+    self.config.videoMaximumDuration = videoMaximumDuration;
+}
 - (void)setAlbumTitle:(NSString *)albumTitle {
     _albumTitle = [albumTitle copy];
     

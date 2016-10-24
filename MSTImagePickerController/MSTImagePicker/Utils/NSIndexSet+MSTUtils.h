@@ -10,6 +10,6 @@
 
 @interface NSIndexSet (MSTUtils)
 
-- (NSArray *)indexPathsFromIndexesWithSection:(NSUInteger)section;
+- (NSArray *)indexPathsFromIndexesWithSection:(NSUInteger)section isShowCamera:(BOOL)isShowCamera;;
 
 @end
