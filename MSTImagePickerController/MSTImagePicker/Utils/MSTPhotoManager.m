@@ -74,7 +74,7 @@
     }];
 }
 
-- (void)loadAlbumInfoIsShowEmpty:(BOOL)isShowEmpty isDesc:(BOOL)isDesc isOnlyShowImage:(BOOL)isOnlyShowImage CompletionBlock:(void (^)(NSArray *))completionBlock {
+- (void)loadAlbumInfoIsShowEmpty:(BOOL)isShowEmpty isDesc:(BOOL)isDesc isOnlyShowImage:(BOOL)isOnlyShowImage CompletionBlock:(void (^)(PHFetchResult *, NSArray *))completionBlock {
     //用来存放每个相册的model
     NSMutableArray *albumModelsArray = [NSMutableArray array];
     
@@ -124,7 +124,7 @@
     }];
     
     //回调
-    completionBlock ? completionBlock(albumModelsArray) : nil;
+    completionBlock ? completionBlock(albumsCollection2, albumModelsArray) : nil;
 }
 
 - (void)saveImageToSystemAlbumWithImage:(UIImage *)image completionBlock:(void (^)(PHAsset *, NSString *))completionBlock {

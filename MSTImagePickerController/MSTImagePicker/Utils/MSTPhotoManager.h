@@ -40,7 +40,7 @@
  @param isOnlyShowImage 是否只显示图片
  @param completionBlock 返回数组<MSTAlbumModel>
  */
-- (void)loadAlbumInfoIsShowEmpty:(BOOL)isShowEmpty isDesc:(BOOL)isDesc isOnlyShowImage:(BOOL)isOnlyShowImage CompletionBlock:(void(^)(NSArray *albumModelArray)) completionBlock;
+- (void)loadAlbumInfoIsShowEmpty:(BOOL)isShowEmpty isDesc:(BOOL)isDesc isOnlyShowImage:(BOOL)isOnlyShowImage CompletionBlock:(void(^)(PHFetchResult *customAlbum, NSArray *albumModelArray)) completionBlock;
 
 /**
  保存图片到系统相册

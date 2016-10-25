@@ -9,7 +9,6 @@
 #import "MainViewController.h"
 #import "MSTImagePickerController.h"
 #import "UIView+MSTUtils.h"
-#import "IQKeyboardManager.h"
 
 @interface MainViewController ()<UIPickerViewDelegate, UIPickerViewDataSource> {
     NSInteger _sourceType;

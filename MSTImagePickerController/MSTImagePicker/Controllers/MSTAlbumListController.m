@@ -13,7 +13,9 @@
 #import "MSTPhotoConfiguration.h"
 #import "MSTAlbumListCell.h"
 
-@interface MSTAlbumListController ()
+@interface MSTAlbumListController ()<PHPhotoLibraryChangeObserver> {
+    PHFetchResult *_colletionResult;
+}
 @property (strong, nonatomic) NSArray *albumModelsArray;
 @end
 
@@ -25,6 +27,17 @@
     
     [self mp_initData];
     [self mp_setupViews];
+    
+    [[PHPhotoLibrary sharedPhotoLibrary] registerChangeObserver:self];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+}
+
+- (void)dealloc {
+    [[PHPhotoLibrary sharedPhotoLibrary] unregisterChangeObserver:self];
 }
 
 #pragma mark - Instance Methods
@@ -32,7 +45,8 @@
     __weak typeof(self) weakSelf = self;
     MSTPhotoConfiguration *config = [MSTPhotoConfiguration defaultConfiguration];
     //读取相册信息
-    [[MSTPhotoManager sharedInstance] loadAlbumInfoIsShowEmpty:config.isShowEmptyAlbum isDesc:config.isPhotosDesc isOnlyShowImage:config.isOnlyShowImages CompletionBlock:^(NSArray *albumModelArray) {
+    [[MSTPhotoManager sharedInstance] loadAlbumInfoIsShowEmpty:config.isShowEmptyAlbum isDesc:config.isPhotosDesc isOnlyShowImage:config.isOnlyShowImages CompletionBlock:^(PHFetchResult *customAlbum, NSArray *albumModelArray) {
+        _colletionResult = customAlbum;
         weakSelf.albumModelsArray = albumModelArray;
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.tableView reloadData];
@@ -93,5 +107,16 @@
     MSTPhotoGridController *pgc = [[MSTPhotoGridController alloc] initWithCollectionViewLayout:[MSTPhotoGridController flowLayoutWithNumInALine:config.numsInRow]];
     pgc.album = self.albumModelsArray[indexPath.row];
     [self.navigationController pushViewController:pgc animated:YES];
+}
+
+#pragma mark - PHPhotoLibraryChangeObserver
+- (void)photoLibraryDidChange:(PHChange *)changeInstance {
+    // 检测是否有资源变化
+    PHFetchResultChangeDetails *collectionChanges = [changeInstance changeDetailsForFetchResult:_colletionResult];
+    if (!collectionChanges) {
+        return;
+    }
+
+    [self mp_initData];
 }
 @end
