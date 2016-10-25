@@ -43,6 +43,23 @@
 - (void)loadAlbumInfoIsShowEmpty:(BOOL)isShowEmpty isDesc:(BOOL)isDesc isOnlyShowImage:(BOOL)isOnlyShowImage CompletionBlock:(void(^)(NSArray *albumModelArray)) completionBlock;
 
 /**
+ 保存图片到系统相册
+
+ @param image           待保存图片
+ @param completionBlock 回调
+ */
+- (void)saveImageToSystemAlbumWithImage:(UIImage *)image completionBlock:(void(^)(PHAsset *asset, NSString *error))completionBlock;
+
+/**
+ 保存图片的到自定义相册，没有则创建
+
+ @param image           待保存图片
+ @param albumName       自定义相册名称
+ @param completionBlock 回调
+ */
+- (void)saveImageToCustomAlbumWithImage:(UIImage *)image albumName:(NSString *)albumName completionBlock:(void(^)(PHAsset *asset, NSString *error))completionBlock;
+
+/**
  根据时间分组排序
 
  @param momentType  分组类型

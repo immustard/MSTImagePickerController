@@ -127,6 +127,70 @@
     completionBlock ? completionBlock(albumModelsArray) : nil;
 }
 
+- (void)saveImageToSystemAlbumWithImage:(UIImage *)image completionBlock:(void (^)(PHAsset *, NSString *))completionBlock {
+    __block NSString *createdAssetID = nil;
+    
+    // 保存图片
+    [[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
+        createdAssetID = [PHAssetChangeRequest creationRequestForAssetFromImage:image].placeholderForCreatedAsset.localIdentifier;
+
+    } completionHandler:^(BOOL success, NSError * _Nullable error) {
+        //获取保存到系统相册成功后的 asset
+        PHAsset *creatAsset = [PHAsset fetchAssetsWithLocalIdentifiers:@[createdAssetID] options:nil].firstObject;
+        
+        //回调
+        completionBlock ? completionBlock(creatAsset, error.description) : nil;
+    }];
+}
+
+- (void)saveImageToCustomAlbumWithImage:(UIImage *)image albumName:(NSString *)albumName completionBlock:(void (^)(PHAsset *, NSString *))completionBlock {
+    //先保存到系统相册中
+    __weak typeof(self) weakSelf = self;
+    [self saveImageToSystemAlbumWithImage:image completionBlock:^(PHAsset *asset, NSString *error) {
+        //非空判断
+        if (asset) {
+            PHAssetCollection *collection = [weakSelf mp_getAssetCollectionWithCustomAlbumName:albumName];
+            
+            if (!collection) return ;
+            
+            [[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
+                PHAssetCollectionChangeRequest *request = [PHAssetCollectionChangeRequest changeRequestForAssetCollection:collection];
+                [request addAssets:@[asset]];
+            } completionHandler:^(BOOL success, NSError * _Nullable error) {
+                completionBlock ? completionBlock(asset, error.description) : nil;
+            }];
+        }
+    }];
+}
+
+- (PHAssetCollection *)mp_getAssetCollectionWithCustomAlbumName:(NSString *)customName {
+    //获取所有相册
+    PHFetchResult *collections = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeAlbum subtype:PHAssetCollectionSubtypeAlbumRegular options:nil];
+    //遍历
+    for (PHAssetCollection *collection in collections) {
+        if ([collection.localizedTitle isEqualToString:customName]) {
+            return collection;
+        }
+    }
+    
+    //创建
+    NSError *error = nil;
+    __block NSString * createId = nil;
+    [[PHPhotoLibrary sharedPhotoLibrary] performChangesAndWait:^{
+        PHAssetCollectionChangeRequest *request = [PHAssetCollectionChangeRequest creationRequestForAssetCollectionWithTitle:customName];
+        createId = request.placeholderForCreatedAssetCollection.localIdentifier;
+    } error:&error];
+    
+    if (error) {
+        //创建失败
+        NSLog(@"Fail to create the custom album.");
+        return nil;
+    } else {
+        //创建成功
+        return [PHAssetCollection fetchAssetCollectionsWithLocalIdentifiers:@[createId] options:nil].firstObject;
+    }
+}
+
 - (NSArray<MSTMoment *> *)sortByMomentType:(MSTImageMomentGroupType)momentType assets:(PHFetchResult *)fetchResult {
     MSTMoment *newMoment = nil;
     

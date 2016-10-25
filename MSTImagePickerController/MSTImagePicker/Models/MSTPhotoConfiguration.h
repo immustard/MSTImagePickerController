@@ -95,6 +95,11 @@
  */
 @property (assign, nonatomic) NSTimeInterval videoMaximumDuration;
 
+/**
+ 自定义相册名称，为空时保存到系统相册。不为空时，系统中没有该相册，则创建。
+ */
+@property (copy, nonatomic) NSString *customAlbumName;
+
 
 /**
  单例方法

@@ -101,10 +101,16 @@
  */
 @property (assign, nonatomic) BOOL allowsMakingVideo;
 
+
 /**
  最长视频时间，只有当 allowsMakingVideo 为 true 时可用，默认为 60
  */
 @property (assign, nonatomic) NSTimeInterval videoMaximumDuration;
+
+/**
+ 自定义相册名称，为空时保存到系统相册。不为空时，系统中没有该相册，则创建。
+ */
+@property (copy, nonatomic) NSString *customAlbumName;
 
 /**
  相册界面 title ，默认为 『相册』

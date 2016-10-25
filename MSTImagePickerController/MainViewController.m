@@ -9,6 +9,7 @@
 #import "MainViewController.h"
 #import "MSTImagePickerController.h"
 #import "UIView+MSTUtils.h"
+#import "IQKeyboardManager.h"
 
 @interface MainViewController ()<UIPickerViewDelegate, UIPickerViewDataSource> {
     NSInteger _sourceType;
@@ -29,6 +30,8 @@
 @property (weak, nonatomic) IBOutlet UISwitch *isShowLive;
 @property (weak, nonatomic) IBOutlet UISwitch *isFirstCamera;
 @property (weak, nonatomic) IBOutlet UISwitch *allowsMakingVideo;
+@property (weak, nonatomic) IBOutlet UITextField *videoMaximumDuration;
+@property (weak, nonatomic) IBOutlet UITextField *customAlbumName;
 
 @end
 
@@ -77,6 +80,8 @@
     imagePicker.isShowLivePhotoIcon = _isShowLive.isOn;
     imagePicker.isFirstCamera = _isFirstCamera.isOn;
     imagePicker.allowsMakingVideo = _allowsMakingVideo.isOn;
+    imagePicker.videoMaximumDuration = _videoMaximumDuration.text.doubleValue;
+    imagePicker.customAlbumName = _customAlbumName.text;
     [self presentViewController:imagePicker animated:YES completion:nil];
 }
 

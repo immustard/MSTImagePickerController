@@ -409,9 +409,18 @@ static NSString * const reuserIdentifier = @"MSTPhotoGridCell";
     [[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
         UIImage *image = info[UIImagePickerControllerOriginalImage];
         
-        [PHAssetChangeRequest creationRequestForAssetFromImage:image];
+        if (self.config.customAlbumName.length) {
+            [[MSTPhotoManager sharedInstance] saveImageToCustomAlbumWithImage:image albumName:self.config.customAlbumName completionBlock:^(PHAsset *asset, NSString *error) {
+                if (error.length) NSLog(@"Save to custom album error: %@", error);
+            }];
+        } else {
+            //保存到系统相册
+            [[MSTPhotoManager sharedInstance] saveImageToSystemAlbumWithImage:image completionBlock:^(PHAsset *asset, NSString *error) {
+                if (error.length) NSLog(@"Save to system album error: %@", error);
+            }];
+        }
     } completionHandler:^(BOOL success, NSError * _Nullable error) {
-        NSLog(@"Fail to save image from camera.");
+        if (error) NSLog(@"Fail to save image from camera.");
     }];
     
 }

@@ -202,6 +202,11 @@
 - (void)setVideoMaximumDuration:(NSTimeInterval)videoMaximumDuration {
     self.config.videoMaximumDuration = videoMaximumDuration;
 }
+
+- (void)setCustomAlbumName:(NSString *)customAlbumName {
+    self.config.customAlbumName = customAlbumName;
+}
+
 - (void)setAlbumTitle:(NSString *)albumTitle {
     _albumTitle = [albumTitle copy];
     
@@ -227,6 +232,8 @@
     self.albumListController.photoSelected = photoSelected;
     self.photoGridController.photoSelected = photoSelected;
 }
+
+
 
 @end
 
