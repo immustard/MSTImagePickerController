@@ -17,12 +17,6 @@
  */
 @property (strong, nonatomic) MSTAlbumModel *album;
 
-@property (strong, nonatomic) UIImage *photoNormal;
-
-@property (strong, nonatomic) UIImage *photoSelected;
-
-@property (strong, nonatomic) UIImage *cameraImage;
-
 /**
  添加 flowLayout
 

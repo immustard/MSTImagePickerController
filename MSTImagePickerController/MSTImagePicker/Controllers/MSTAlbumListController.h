@@ -12,8 +12,4 @@
 
 @property (strong, nonatomic) UIImage *placeholderThumbnail;
 
-@property (strong, nonatomic) UIImage *photoNormal;
-
-@property (strong, nonatomic) UIImage *photoSelected;
-
 @end

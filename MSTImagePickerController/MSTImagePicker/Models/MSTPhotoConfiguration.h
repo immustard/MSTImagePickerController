@@ -6,7 +6,7 @@
 //  Copyright © 2016年 Mustard. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 #import "MSTImagePickerEnumeration.h"
 
 @interface MSTPhotoConfiguration : NSObject
@@ -99,6 +99,21 @@
  自定义相册名称，为空时保存到系统相册。不为空时，系统中没有该相册，则创建。
  */
 @property (copy, nonatomic) NSString *customAlbumName;
+
+/**
+ 照片选择时，未选择时图片
+ */
+@property (strong, nonatomic) UIImage *photoNormal;
+
+/**
+ 照片选择时，已选择时图片
+ */
+@property (strong, nonatomic) UIImage *photoSelected;
+
+/**
+ MSTPhotoGridController 中，camera cell显示图片
+ */
+@property (strong, nonatomic) UIImage *cameraImage;
 
 
 /**

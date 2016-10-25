@@ -9,6 +9,7 @@
 #import <Photos/Photos.h>
 #import "MSTImagePickerEnumeration.h"
 
+@class MSTAssetModel;
 @interface MSTImagePickerController : UINavigationController
 
 /**
@@ -141,6 +142,13 @@
  MSTPhotoGridController 中，camera cell显示图片
  */
 @property (strong, nonatomic) UIImage *cameraImage;
+
+
+
+
+
+
+@property (strong, nonatomic) NSMutableArray<MSTAssetModel *> *selectedModels;
 
 @end
 

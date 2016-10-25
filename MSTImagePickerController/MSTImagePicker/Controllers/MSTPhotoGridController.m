@@ -118,7 +118,7 @@ static NSString * const reuserIdentifier = @"MSTPhotoGridCell";
 
 - (MSTPhotoGridCameraCell *)mp_addCameraCell:(UICollectionView *)collectionView indexPath:(NSIndexPath *)indexPath {
     MSTPhotoGridCameraCell * cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"MSTPhotoGridCameraCell" forIndexPath:indexPath];
-    if (self.cameraImage) cell.cameraImage = _cameraImage;
+    if (self.config.cameraImage) cell.cameraImage = self.config.cameraImage;
     return cell;
 }
 

@@ -17,6 +17,8 @@
 @property (strong, nonatomic) UIImageView *videoLengthBgView;
 @property (strong, nonatomic) UILabel *videoLengthLabel;
 
+@property (strong, nonatomic) UIButton *selectButton;
+
 @end
 
 @implementation MSTPhotoGridCell
@@ -24,8 +26,34 @@
 - (instancetype)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
         [self imageView];
+        [self selectButton];
     }
     return self;
+}
+
+#pragma mark - Instance Methods
+- (void)mp_selectButtonDidSelected:(UIButton *)sender {
+    MSTPhotoConfiguration *config = [MSTPhotoConfiguration defaultConfiguration];
+    if (sender.isSelected) {
+        sender.selected = NO;
+    } else {
+        sender.selected = YES;
+        if (config.allowsSelectedAnimation) [self mp_addSpringAnimationWithLayer:sender.layer];
+    }
+}
+
+- (void)mp_addSpringAnimationWithLayer:(CALayer *)layer{
+    CASpringAnimation *springAnimation = [CASpringAnimation animationWithKeyPath:@"transform.scale"];
+    springAnimation.fromValue = @1;
+    springAnimation.toValue = @1.01;
+    
+    springAnimation.mass = 1;
+    springAnimation.damping = 7;
+    springAnimation.stiffness = 50;
+    springAnimation.duration = springAnimation.settlingDuration;
+    springAnimation.initialVelocity = 200;
+    
+    [layer addAnimation:springAnimation forKey:nil];
 }
 
 #pragma mark - Setter
@@ -120,6 +148,28 @@
         [self.contentView addConstraints:@[leading, top, width, height]];
     }
     return _liveBadgeImageView;
+}
+
+- (UIButton *)selectButton {
+    if (!_selectButton) {
+        self.selectButton = [UIButton new];
+        _selectButton.translatesAutoresizingMaskIntoConstraints = NO;
+        MSTPhotoConfiguration *config = [MSTPhotoConfiguration defaultConfiguration];
+        [_selectButton setImage:config.photoNormal ? config.photoNormal : [UIImage imageNamed:@"icon_picture_normal"] forState:UIControlStateNormal];
+        [_selectButton setImage:config.photoSelected ? config.photoSelected : [UIImage imageNamed:@"icon_picture_selected"] forState:UIControlStateSelected];
+        
+        [_selectButton addTarget:self action:@selector(mp_selectButtonDidSelected:) forControlEvents:UIControlEventTouchUpInside];
+        
+        [self.contentView addSubview:_selectButton];
+        
+        NSLayoutConstraint *trailing = [NSLayoutConstraint constraintWithItem:_selectButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeTrailing multiplier:1 constant:0];
+        NSLayoutConstraint *top = [NSLayoutConstraint constraintWithItem:_selectButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeTop multiplier:1 constant:0];
+        NSLayoutConstraint *width = [NSLayoutConstraint constraintWithItem:_selectButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeTrailing multiplier:1 constant:-self.frame.size.width/3.f];
+        NSLayoutConstraint *height = [NSLayoutConstraint constraintWithItem:_selectButton attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:_selectButton attribute:NSLayoutAttributeHeight multiplier:1 constant:0];
+        
+        [self.contentView addConstraints:@[trailing, top, width, height]];
+    }
+    return _selectButton;
 }
 
 @end

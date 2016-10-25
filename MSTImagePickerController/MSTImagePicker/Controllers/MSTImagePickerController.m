@@ -220,19 +220,16 @@
 }
 
 - (void)setPhotoNormal:(UIImage *)photoNormal {
-    _photoNormal = photoNormal;
-    
-    self.albumListController.photoNormal = photoNormal;
-    self.photoGridController.photoNormal = photoNormal;
+    self.config.photoNormal = photoNormal;
 }
 
 - (void)setPhotoSelected:(UIImage *)photoSelected {
-    _photoSelected = photoSelected;
-    
-    self.albumListController.photoSelected = photoSelected;
-    self.photoGridController.photoSelected = photoSelected;
+    self.config.photoSelected = photoSelected;
 }
 
+- (void)setCameraImage:(UIImage *)cameraImage {
+    self.config.cameraImage = cameraImage;
+}
 
 
 @end
