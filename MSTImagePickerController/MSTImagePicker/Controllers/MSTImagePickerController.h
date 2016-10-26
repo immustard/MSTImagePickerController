@@ -9,7 +9,7 @@
 #import <Photos/Photos.h>
 #import "MSTImagePickerEnumeration.h"
 
-@class MSTAssetModel;
+@class MSTPickAssetModel;
 @interface MSTImagePickerController : UINavigationController
 
 /**
@@ -102,6 +102,11 @@
  */
 @property (assign, nonatomic) BOOL allowsMakingVideo;
 
+/**
+ 允许选择动图，默认为 YES
+ */
+//@property (assign, nonatomic) BOOL allowsPickGIF;         等待添加的功能 wait for adding
+
 
 /**
  最长视频时间，只有当 allowsMakingVideo 为 true 时可用，默认为 60
@@ -148,7 +153,7 @@
 
 
 
-@property (strong, nonatomic) NSMutableArray<MSTAssetModel *> *selectedModels;
+@property (strong, nonatomic) NSMutableArray<MSTPickAssetModel *> *selectedModels;
 
 @end
 

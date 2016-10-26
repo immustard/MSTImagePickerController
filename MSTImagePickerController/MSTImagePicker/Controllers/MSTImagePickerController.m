@@ -83,7 +83,6 @@
                         }
                             break;
                         case MSTImagePickerAccessTypePhotosWithoutAlbums: {
-                            [self.photoGridController addNavigationLeftCancelBtn];
                             [self setViewControllers:@[self.photoGridController] animated:YES];
                         }
                             break;
@@ -123,7 +122,6 @@
 - (MSTAlbumListController *)albumListController{
     if (!_albumListController) {
         self.albumListController = [[MSTAlbumListController alloc] init];
-        [_albumListController addNavigationLeftCancelBtn];
     }
     return _albumListController;
 }
@@ -197,6 +195,10 @@
 
 - (void)setAllowsMakingVideo:(BOOL)allowsMakingVideo {
     self.config.allowsMakingVideo = allowsMakingVideo;
+}
+
+- (void)setAllowsPickGIF:(BOOL)allowsPickGIF {
+    self.config.allowsPickGIF = allowsPickGIF;
 }
 
 - (void)setVideoMaximumDuration:(NSTimeInterval)videoMaximumDuration {

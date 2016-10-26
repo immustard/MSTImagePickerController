@@ -91,6 +91,11 @@
 @property (assign, nonatomic) BOOL allowsMakingVideo;
 
 /**
+ 允许选择动图，默认为 YES
+ */
+@property (assign, nonatomic) BOOL allowsPickGIF;
+
+/**
  只有当 allowsMakingVideo 为 true 时可用，默认为 60
  */
 @property (assign, nonatomic) NSTimeInterval videoMaximumDuration;

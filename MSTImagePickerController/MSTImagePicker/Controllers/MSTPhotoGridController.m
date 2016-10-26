@@ -8,6 +8,7 @@
 
 #import "MSTPhotoGridController.h"
 #import <MobileCoreServices/MobileCoreServices.h>
+#import "UIViewController+MSTUtils.h"
 #import "MSTPhotoManager.h"
 #import "MSTPhotoConfiguration.h"
 #import "UICollectionView+MSTUtils.h"
@@ -42,6 +43,7 @@ static NSString * const reuserIdentifier = @"MSTPhotoGridCell";
 #pragma mark - Life Cycle
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [self addNavigationRightCancelButton];
     
     _isFirstAppear = YES;
     
@@ -51,6 +53,7 @@ static NSString * const reuserIdentifier = @"MSTPhotoGridCell";
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    
     
 #warning waiting for updating 滚动到最下方，找到最佳方案
     if (!self.config.isPhotosDesc && _isFirstAppear) {
@@ -208,46 +211,46 @@ static NSString * const reuserIdentifier = @"MSTPhotoGridCell";
                 //根据时间分组
                 MSTMoment *moment = _momentsArray[indexPath.section];
             
-                if (!indexPath.row && !indexPath.section) {
+                if (!indexPath.item && !indexPath.section) {
                     //第一段第一个
                     return [self mp_addCameraCell:collectionView indexPath:indexPath];
                 } else {
                     if (!indexPath.section)
                         //第一段
-                        asset = moment.assets[indexPath.row-1];
+                        asset = moment.assets[indexPath.item-1];
                     else
-                        asset = moment.assets[indexPath.row];
+                        asset = moment.assets[indexPath.item];
                 }
             } else {
                 //未根据之间分组
-                if (!indexPath.row) {
+                if (!indexPath.item) {
                     //第一个
                     return [self mp_addCameraCell:collectionView indexPath:indexPath];
                 } else {
-                    asset = self.album.content[indexPath.row-1];
+                    asset = self.album.content[indexPath.item-1];
                 }
             }
         } else {
             if (_isMoment) {
                 MSTMoment *moment = _momentsArray[indexPath.section];
                 
-                if (indexPath.section == _momentsArray.count - 1 && indexPath.row >= moment.assets.count)
+                if (indexPath.section == _momentsArray.count - 1 && indexPath.item >= moment.assets.count)
                     return [self mp_addCameraCell:collectionView indexPath:indexPath];
                 else
-                    asset = moment.assets[indexPath.row];
+                    asset = moment.assets[indexPath.item];
             } else {
-                if (indexPath.row >= _album.count)
+                if (indexPath.item >= _album.count)
                     return [self mp_addCameraCell:collectionView indexPath:indexPath];
                 else
-                    asset = self.album.content[indexPath.row];
+                    asset = self.album.content[indexPath.item];
             }
         }
     } else {
         if (_isMoment) {
             MSTMoment *moment = _momentsArray[indexPath.section];
-            asset = moment.assets[indexPath.row];
+            asset = moment.assets[indexPath.item];
         } else {
-            asset = self.album.content[indexPath.row];
+            asset = self.album.content[indexPath.item];
         }
     }
         MSTPhotoGridCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:reuserIdentifier forIndexPath:indexPath];
@@ -271,66 +274,66 @@ static NSString * const reuserIdentifier = @"MSTPhotoGridCell";
     MSTPhotoPreviewController *ppc = [[MSTPhotoPreviewController alloc] init];
     
     NSIndexPath *tmpIndexPath = indexPath;
-    NSInteger row = 0;
+    NSInteger item = 0;
     BOOL pushToCamera = NO;
     
     if (_isShowCamera) {
         if (self.config.isPhotosDesc) {
             if (_isMoment) {
                 //根据时间分组
-                if (!indexPath.row && !indexPath.section) {
+                if (!indexPath.item && !indexPath.section) {
                     //第一段第一个
                     pushToCamera = YES;
                 } else {
                     if (!indexPath.section) {
                         //第一段
-                        row = indexPath.row-1;
+                        item = indexPath.item-1;
                     } else {
                         for (NSInteger i = 0; i < indexPath.section; i++) {
                             MSTMoment *moment = _momentsArray[i];
-                            row += moment.assets.count;
+                            item += moment.assets.count;
                         }
-                        row += indexPath.row;
+                        item += indexPath.item;
                     }
                 }
             } else {
                 //未根据之间分组
-                if (!indexPath.row) {
+                if (!indexPath.item) {
                     //第一个
                     pushToCamera = YES;
                 } else {
-                    row = indexPath.row-1;
+                    item = indexPath.item-1;
                 }
             }
         } else {
             if (_isMoment) {
                 MSTMoment *moment = _momentsArray[indexPath.section];
                 
-                if (indexPath.section == _momentsArray.count - 1 && indexPath.row >= moment.assets.count) {
+                if (indexPath.section == _momentsArray.count - 1 && indexPath.item >= moment.assets.count) {
                     pushToCamera = YES;
                 } else {
                     for (NSInteger i = 0; i < indexPath.section; i++) {
                         MSTMoment *moment = _momentsArray[i];
-                        row += moment.assets.count;
+                        item += moment.assets.count;
                     }
-                    row += indexPath.row;
+                    item += indexPath.item;
                 }
             } else {
-                if (indexPath.row >= _album.count)
+                if (indexPath.item >= _album.count)
                     pushToCamera = YES;
                 else
-                    row = indexPath.row;
+                    item = indexPath.item;
             }
         }
     } else {
         if (_isMoment) {
             for (NSInteger i = 0; i < indexPath.section; i++) {
                 MSTMoment *moment = _momentsArray[i];
-                row += moment.assets.count;
+                item += moment.assets.count;
             }
-            row += indexPath.row;
+            item += indexPath.item;
         } else {
-            row = indexPath.row;
+            item = indexPath.item;
         }
     }
     
@@ -348,7 +351,7 @@ static NSString * const reuserIdentifier = @"MSTPhotoGridCell";
             [self presentViewController:pickerCtrler animated:YES completion:nil];
         }
     } else {
-        tmpIndexPath = [NSIndexPath indexPathForRow:row inSection:0];
+        tmpIndexPath = [NSIndexPath indexPathForRow:item inSection:0];
         
         [ppc didSelectedWithAlbum:_album indexPath:tmpIndexPath];
         
@@ -374,29 +377,65 @@ static NSString * const reuserIdentifier = @"MSTPhotoGridCell";
             [self mp_refreshMoments];
             [collectionView reloadData];
         } else {
-            if (![collectionChanges hasIncrementalChanges] || [collectionChanges hasMoves]) {
+            //http://stackoverflow.com/questions/29337765/crash-attempt-to-delete-and-reload-the-same-index-path
+            //本人好像是看不到哈。。=-=    不过，非常感谢！！！
+#warning waiting for updating 虽然有一种方法搞定了。但是还是感觉会有更好的办法。
+            if ([collectionChanges hasIncrementalChanges]) {
+                BOOL isCamera = _isShowCamera && self.config.isPhotosDesc;
                 
-                [collectionView reloadData];
+                NSArray <NSIndexPath *>*removedPaths = nil;
+                NSArray <NSIndexPath *>*insertedPaths = nil;
+                NSArray <NSIndexPath *>*changedPaths = nil;
+                
+                NSIndexSet *removedIndexes = collectionChanges.removedIndexes;
+                if (removedIndexes.count > 0) {
+                    removedPaths = [removedIndexes indexPathsFromIndexesWithSection:0 isShowCamera:isCamera];
+                }
+                
+                NSIndexSet *insertedIndexes = collectionChanges.insertedIndexes;
+                if (insertedIndexes.count > 0) {
+                    insertedPaths = [insertedIndexes indexPathsFromIndexesWithSection:0 isShowCamera:isCamera];
+                }
+                
+                NSIndexSet *changedIndexes = collectionChanges.changedIndexes;
+                if (changedIndexes.count > 0) {
+                    changedPaths = [changedIndexes indexPathsFromIndexesWithSection:0 isShowCamera:isCamera];
+                }
+                
+                BOOL shouldReload = NO;
+                if (changedPaths && removedPaths) {
+                    for (NSIndexPath *changedPath in changedPaths) {
+                        if ([removedPaths containsObject:changedPath]) {
+                            shouldReload = YES;
+                            break;
+                        }
+                    }
+                }
+                
+                NSInteger item = _isShowCamera ? removedPaths.lastObject.item - 1 : removedPaths.lastObject.item;
+                if (removedPaths.lastObject && item >= self.album.count) {
+                    shouldReload = YES;
+                }
+                
+                if (shouldReload) {
+                    [collectionView reloadData];
+                } else {
+                    [collectionView performBatchUpdates:^{
+                        if (removedPaths) [collectionView deleteItemsAtIndexPaths:removedPaths];
+                        if (insertedIndexes) [collectionView insertItemsAtIndexPaths:insertedPaths];
+                        if (changedPaths) [collectionView reloadItemsAtIndexPaths:changedPaths];
+                        
+                        if (collectionChanges.hasMoves) {
+                            [collectionChanges enumerateMovesWithBlock:^(NSUInteger fromIndex, NSUInteger toIndex) {
+                                NSIndexPath *fromIndexPath = [NSIndexPath indexPathForItem:fromIndex inSection:0];
+                                NSIndexPath *toIndexPath = [NSIndexPath indexPathForItem:toIndex inSection:0];
+                                [collectionView moveItemAtIndexPath:fromIndexPath toIndexPath:toIndexPath];
+                            }];
+                        }
+                    } completion:nil];
+                }
             } else {
-                // 如果相册有变化，collectionview动画增删改
-                [collectionView performBatchUpdates:^{
-                    BOOL isCamera = _isShowCamera && self.config.isPhotosDesc;
-                    
-                    NSIndexSet *removedIndexes = [collectionChanges removedIndexes];
-                    if ([removedIndexes count] > 0) {
-                        [collectionView deleteItemsAtIndexPaths:[removedIndexes indexPathsFromIndexesWithSection:0 isShowCamera:isCamera]];
-                    }
-                    
-                    NSIndexSet *insertedIndexes = [collectionChanges insertedIndexes];
-                    if ([insertedIndexes count] > 0) {
-                        [collectionView insertItemsAtIndexPaths:[insertedIndexes indexPathsFromIndexesWithSection:0 isShowCamera:isCamera]];
-                    }
-                    
-                    NSIndexSet *changedIndexes = [collectionChanges changedIndexes];
-                    if ([changedIndexes count] > 0) {
-                        [collectionView reloadItemsAtIndexPaths:[changedIndexes indexPathsFromIndexesWithSection:0 isShowCamera:isCamera]];
-                    }
-                } completion:nil];
+                [collectionView reloadData];
             }
         }
     });

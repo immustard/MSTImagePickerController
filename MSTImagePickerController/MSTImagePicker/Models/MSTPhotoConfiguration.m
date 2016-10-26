@@ -34,6 +34,7 @@
         config.isFirstCamera = YES;
         config.allowsMakingVideo = YES;
         config.videoMaximumDuration = 60.f;
+        config.allowsPickGIF = YES;
     });
     
     return config;

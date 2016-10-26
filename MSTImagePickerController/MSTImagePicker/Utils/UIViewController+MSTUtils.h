@@ -10,6 +10,6 @@
 
 @interface UIViewController (MSTUtils)
 
-- (void)addNavigationLeftCancelBtn;
+- (void)addNavigationRightCancelButton;
 
 @end

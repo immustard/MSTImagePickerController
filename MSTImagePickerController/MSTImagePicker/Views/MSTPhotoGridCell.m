@@ -26,7 +26,6 @@
 - (instancetype)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
         [self imageView];
-        [self selectButton];
     }
     return self;
 }
@@ -40,6 +39,7 @@
         sender.selected = YES;
         if (config.allowsSelectedAnimation) [self mp_addSpringAnimationWithLayer:sender.layer];
     }
+    NSLog(@"%zi", self.asset.mediaSubtypes);
 }
 
 - (void)mp_addSpringAnimationWithLayer:(CALayer *)layer{
@@ -68,6 +68,7 @@
     
     self.liveBadgeImageView.hidden = YES;
     self.videoLengthBgView.hidden = YES;
+    self.selectButton.hidden = YES;
     self.videoLengthLabel.text = @"";
     
     MSTPhotoConfiguration *config = [MSTPhotoConfiguration defaultConfiguration];
@@ -79,6 +80,9 @@
     } else if ((asset.mediaSubtypes & PHAssetMediaSubtypePhotoLive) && config.isShowLivePhotoIcon) {
         //Live 图片
         self.liveBadgeImageView.hidden = NO;
+        self.selectButton.hidden = NO;
+    } else {
+        self.selectButton.hidden = NO;
     }
 }
 

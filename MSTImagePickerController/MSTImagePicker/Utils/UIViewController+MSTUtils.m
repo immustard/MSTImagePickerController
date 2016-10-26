@@ -10,9 +10,9 @@
 
 @implementation UIViewController (MSTUtils)
 
-- (void)addNavigationLeftCancelBtn {
-    UIBarButtonItem *left = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelButtonDidClicked)];
-    self.navigationItem.leftBarButtonItem = left;
+- (void)addNavigationRightCancelButton {
+    UIBarButtonItem *right = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelButtonDidClicked)];
+    self.navigationItem.rightBarButtonItem = right;
 }
 
 - (void)cancelButtonDidClicked {

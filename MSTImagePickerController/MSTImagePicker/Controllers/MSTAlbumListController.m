@@ -7,6 +7,7 @@
 //
 
 #import "MSTAlbumListController.h"
+#import "UIViewController+MSTUtils.h"
 #import "MSTPhotoGridController.h"
 #import "MSTPhotoManager.h"
 #import "MSTAlbumModel.h"
@@ -24,6 +25,8 @@
 #pragma mark - Life Cycle
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    [self addNavigationRightCancelButton];
     
     [self mp_initData];
     [self mp_setupViews];
