@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MSTImagePickerController/MSTImagePicker/Utils/MSTPhotoManager.m"
-            timestampString = "499055107.216995"
+            timestampString = "499159763.706119"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "241"
-            endingLineNumber = "241"
+            startingLineNumber = "277"
+            endingLineNumber = "277"
             landmarkName = "-getPreviewImageFromPHAsset:isHighQuality:completionBlock:"
             landmarkType = "7">
          </BreakpointContent>

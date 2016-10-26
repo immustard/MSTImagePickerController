@@ -53,6 +53,7 @@
     }
 }
 
+#pragma mark - Load
 - (void)loadCameraRollInfoisDesc:(BOOL)isDesc isOnlyShowImage:(BOOL)isOnlyShowImage CompletionBlock:(void (^)(MSTAlbumModel *))completionBlock {
     PHFetchResult *albumCollection= [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeSmartAlbum subtype:PHAssetCollectionSubtypeSmartAlbumUserLibrary options:nil];
     
@@ -127,6 +128,7 @@
     completionBlock ? completionBlock(albumsCollection2, albumModelsArray) : nil;
 }
 
+#pragma mark - Save
 - (void)saveImageToSystemAlbumWithImage:(UIImage *)image completionBlock:(void (^)(PHAsset *, NSString *))completionBlock {
     __block NSString *createdAssetID = nil;
     
@@ -148,6 +150,40 @@
     __weak typeof(self) weakSelf = self;
     [self saveImageToSystemAlbumWithImage:image completionBlock:^(PHAsset *asset, NSString *error) {
         //非空判断
+        if (asset) {
+            PHAssetCollection *collection = [weakSelf mp_getAssetCollectionWithCustomAlbumName:albumName];
+            
+            if (!collection) return ;
+            
+            [[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
+                PHAssetCollectionChangeRequest *request = [PHAssetCollectionChangeRequest changeRequestForAssetCollection:collection];
+                [request addAssets:@[asset]];
+            } completionHandler:^(BOOL success, NSError * _Nullable error) {
+                completionBlock ? completionBlock(asset, error.description) : nil;
+            }];
+        }
+    }];
+}
+
+- (void)saveVideoToSystemAlbumWithURL:(NSURL *)url completionBlock:(void (^)(PHAsset *, NSString *))completionBlock {
+    __block NSString *createdAssetID = nil;
+    
+    // 保存图片
+    [[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
+        createdAssetID = [PHAssetChangeRequest creationRequestForAssetFromVideoAtFileURL:url].placeholderForCreatedAsset.localIdentifier;
+        
+    } completionHandler:^(BOOL success, NSError * _Nullable error) {
+        //获取保存到系统相册成功后的 asset
+        PHAsset *creatAsset = [PHAsset fetchAssetsWithLocalIdentifiers:@[createdAssetID] options:nil].firstObject;
+        
+        //回调
+        completionBlock ? completionBlock(creatAsset, error.description) : nil;
+    }];
+}
+
+- (void)saveVideoToCustomAlbumWithURL:(NSURL *)url albumName:(NSString *)albumName completionBlcok:(void (^)(PHAsset *, NSString *))completionBlock {
+    __weak typeof(self) weakSelf = self;
+    [self saveVideoToSystemAlbumWithURL:url completionBlock:^(PHAsset *asset, NSString *error) {
         if (asset) {
             PHAssetCollection *collection = [weakSelf mp_getAssetCollectionWithCustomAlbumName:albumName];
             
@@ -223,7 +259,7 @@
     return groups;
 }
 
-#pragma mark -
+#pragma mark - Get
 - (void)getPreviewImageFromPHAsset:(PHAsset *)asset isHighQuality:(BOOL)isHighQuality completionBlock:(void (^)(UIImage *, NSDictionary *, BOOL))completionBlock {
     CGFloat scale = isHighQuality ? [UIScreen mainScreen].scale : .1f;
     CGFloat width = [UIScreen mainScreen].bounds.size.width;

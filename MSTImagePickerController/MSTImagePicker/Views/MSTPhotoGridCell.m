@@ -15,6 +15,7 @@
 @property (strong, nonatomic) UIImageView *imageView;
 @property (strong, nonatomic) UIImageView *liveBadgeImageView;
 @property (strong, nonatomic) UIImageView *videoLengthBgView;
+@property (strong, nonatomic) UIImageView *videoBadgeImageView;
 @property (strong, nonatomic) UILabel *videoLengthLabel;
 
 @property (strong, nonatomic) UIButton *selectButton;
@@ -76,7 +77,7 @@
     if (asset.mediaType == PHAssetMediaTypeVideo) {
         //视频
         self.videoLengthBgView.hidden = NO;
-        self.videoLengthLabel.text = [NSString stringWithFormat:@"%02d:%d", (int)asset.duration/60, (int)asset.duration%60];
+        self.videoLengthLabel.text = [NSString stringWithFormat:@"%d:%02d", (int)asset.duration/60, (int)asset.duration%60];
     } else if ((asset.mediaSubtypes & PHAssetMediaSubtypePhotoLive) && config.isShowLivePhotoIcon) {
         //Live 图片
         self.liveBadgeImageView.hidden = NO;
@@ -124,7 +125,7 @@
 - (UILabel *)videoLengthLabel {
     if (!_videoLengthLabel) {
         self.videoLengthLabel = [UILabel new];
-        _videoLengthLabel.font = [UIFont systemFontOfSize:13];
+        _videoLengthLabel.font = [UIFont systemFontOfSize:11];
         _videoLengthLabel.textColor = [UIColor whiteColor];
         _videoLengthLabel.textAlignment = NSTextAlignmentRight;
         _videoLengthLabel.translatesAutoresizingMaskIntoConstraints = NO;
@@ -132,9 +133,29 @@
         
         NSLayoutConstraint *trailing = [NSLayoutConstraint constraintWithItem:_videoLengthLabel attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.videoLengthBgView attribute:NSLayoutAttributeTrailing multiplier:1 constant:-5];
         NSLayoutConstraint *centerY = [NSLayoutConstraint constraintWithItem:_videoLengthLabel attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.videoLengthBgView attribute:NSLayoutAttributeCenterY multiplier:1 constant:3];
-        [self.videoLengthBgView addConstraints:@[trailing, centerY]];
+        NSLayoutConstraint *leading = [NSLayoutConstraint constraintWithItem:_videoLengthLabel attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.videoBadgeImageView attribute:NSLayoutAttributeTrailing multiplier:1 constant:0];
+        [self.videoLengthBgView addConstraints:@[trailing, centerY, leading]];
     }
     return _videoLengthLabel;
+}
+
+- (UIImageView *)videoBadgeImageView {
+    if (!_videoBadgeImageView) {
+        self.videoBadgeImageView = [UIImageView new];
+        _videoBadgeImageView.contentMode = UIViewContentModeScaleAspectFit;
+        _videoBadgeImageView.clipsToBounds = YES;
+        _videoBadgeImageView.translatesAutoresizingMaskIntoConstraints = NO;
+        _videoBadgeImageView.image = [UIImage imageNamed:@"icon_grid_video_badge"];
+        
+        [self.videoLengthBgView addSubview:_videoBadgeImageView];
+        
+        NSLayoutConstraint *leading = [NSLayoutConstraint constraintWithItem:_videoBadgeImageView attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.videoLengthBgView attribute:NSLayoutAttributeLeading multiplier:1 constant:3.f];
+        NSLayoutConstraint *height = [NSLayoutConstraint constraintWithItem:_videoBadgeImageView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:15];
+        NSLayoutConstraint *width = [NSLayoutConstraint constraintWithItem:_videoBadgeImageView attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:20];
+        NSLayoutConstraint *centerY = [NSLayoutConstraint constraintWithItem:_videoBadgeImageView attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.videoLengthBgView attribute:NSLayoutAttributeCenterY multiplier:1 constant:3];
+        [self.videoLengthBgView addConstraints:@[leading, height, centerY, width]];
+    }
+    return _videoBadgeImageView;
 }
 
 - (UIImageView *)liveBadgeImageView {

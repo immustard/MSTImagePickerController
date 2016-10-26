@@ -43,6 +43,7 @@
 		AD8C03A91DB5C8F3001F9EC9 /* MSTPhotoGridHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = AD8C03A71DB5C8F3001F9EC9 /* MSTPhotoGridHeaderView.m */; };
 		AD8C03B01DB5F416001F9EC9 /* NSDate+MSTUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = AD8C03AF1DB5F416001F9EC9 /* NSDate+MSTUtils.m */; };
 		AD8CDCC81DB4715700216D2D /* MSTPhotoGridCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AD8CDCC61DB4715700216D2D /* MSTPhotoGridCell.m */; };
+		ADA1BDE41DC0948D0068123A /* icon_grid_video_badge@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = ADA1BDE31DC0948D0068123A /* icon_grid_video_badge@2x.png */; };
 		ADA5277D1DAF7AF8006C838E /* MSTAlbumListController.m in Sources */ = {isa = PBXBuildFile; fileRef = ADA5276A1DAF7AF8006C838E /* MSTAlbumListController.m */; };
 		ADA5277E1DAF7AF8006C838E /* MSTImagePickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = ADA5276C1DAF7AF8006C838E /* MSTImagePickerController.m */; };
 		ADA5277F1DAF7AF8006C838E /* MSTPhotoGridController.m in Sources */ = {isa = PBXBuildFile; fileRef = ADA5276E1DAF7AF8006C838E /* MSTPhotoGridController.m */; };
@@ -149,6 +150,7 @@
 		AD8C03AF1DB5F416001F9EC9 /* NSDate+MSTUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+MSTUtils.m"; sourceTree = "<group>"; };
 		AD8CDCC51DB4715700216D2D /* MSTPhotoGridCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSTPhotoGridCell.h; sourceTree = "<group>"; };
 		AD8CDCC61DB4715700216D2D /* MSTPhotoGridCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSTPhotoGridCell.m; sourceTree = "<group>"; };
+		ADA1BDE31DC0948D0068123A /* icon_grid_video_badge@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "icon_grid_video_badge@2x.png"; path = "MSTImagePickerController/MSTImagePicker/Resources/icon_grid_video_badge@2x.png"; sourceTree = SOURCE_ROOT; };
 		ADA527691DAF7AF8006C838E /* MSTAlbumListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSTAlbumListController.h; sourceTree = "<group>"; };
 		ADA5276A1DAF7AF8006C838E /* MSTAlbumListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSTAlbumListController.m; sourceTree = "<group>"; };
 		ADA5276B1DAF7AF8006C838E /* MSTImagePickerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSTImagePickerController.h; sourceTree = "<group>"; };
@@ -443,6 +445,7 @@
 			children = (
 				ADA527A91DAF8267006C838E /* MSTImagePicker.strings */,
 				AD7DA51F1DB4C11500141461 /* icon_grid_videoLength@2x.png */,
+				ADA1BDE31DC0948D0068123A /* icon_grid_video_badge@2x.png */,
 				ADA5279A1DAF7FA6006C838E /* icon_album_camera@2x.png */,
 				ADA5279B1DAF7FA6006C838E /* icon_album_placeholder@2x.png */,
 				ADA5279C1DAF7FA6006C838E /* icon_album_placeholder@3x.png */,
@@ -570,6 +573,7 @@
 				AD05CE781DA9CD14005AB1F0 /* Assets.xcassets in Resources */,
 				AD482B0C1DB06DA7003FBB67 /* icon_picture_normal@3x.png in Resources */,
 				AD0455541DBEFD4E0099D877 /* IQKeyboardManager.bundle in Resources */,
+				ADA1BDE41DC0948D0068123A /* icon_grid_video_badge@2x.png in Resources */,
 				AD7DA5201DB4C11500141461 /* icon_grid_videoLength@2x.png in Resources */,
 				AD482B0E1DB06DA7003FBB67 /* icon_picture_selected@3x.png in Resources */,
 				AD05CE761DA9CD14005AB1F0 /* Main.storyboard in Resources */,

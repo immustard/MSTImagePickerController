@@ -446,22 +446,40 @@ static NSString * const reuserIdentifier = @"MSTPhotoGridCell";
     [self dismissViewControllerAnimated:NO completion:nil];
     
     [[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
-        UIImage *image = info[UIImagePickerControllerOriginalImage];
+        NSString *mediaType = info[UIImagePickerControllerMediaType];
         
-        if (self.config.customAlbumName.length) {
-            [[MSTPhotoManager sharedInstance] saveImageToCustomAlbumWithImage:image albumName:self.config.customAlbumName completionBlock:^(PHAsset *asset, NSString *error) {
-                if (error.length) NSLog(@"Save to custom album error: %@", error);
-            }];
-        } else {
-            //保存到系统相册
-            [[MSTPhotoManager sharedInstance] saveImageToSystemAlbumWithImage:image completionBlock:^(PHAsset *asset, NSString *error) {
-                if (error.length) NSLog(@"Save to system album error: %@", error);
-            }];
+        if ([mediaType isEqualToString:(NSString *)kUTTypeImage]) {
+            UIImage *image = info[UIImagePickerControllerOriginalImage];
+            
+            if (self.config.customAlbumName.length) {
+                [[MSTPhotoManager sharedInstance] saveImageToCustomAlbumWithImage:image albumName:self.config.customAlbumName completionBlock:^(PHAsset *asset, NSString *error) {
+                    if (error.length) NSLog(@"Save image to custom album error: %@", error);
+                }];
+            } else {
+                //保存到系统相册
+                [[MSTPhotoManager sharedInstance] saveImageToSystemAlbumWithImage:image completionBlock:^(PHAsset *asset, NSString *error) {
+                    if (error.length) NSLog(@"Save image to system album error: %@", error);
+                }];
+            }
+        } else if ([mediaType isEqualToString:(NSString *)kUTTypeMovie]) {
+            NSURL *url = info[UIImagePickerControllerMediaURL];
+            
+            if (self.config.customAlbumName.length) {
+                //保存到自定义相册
+                [[MSTPhotoManager sharedInstance] saveVideoToCustomAlbumWithURL:url albumName:self.config.customAlbumName completionBlcok:^(PHAsset *asset, NSString *error) {
+                    if (error) NSLog(@"Save video to custom album error: %@", error);
+                }];
+            } else {
+                [[MSTPhotoManager sharedInstance] saveVideoToSystemAlbumWithURL:url completionBlock:^(PHAsset *asset, NSString *error) {
+                    if (error) NSLog(@"Save video to system album error: %@", error);
+                }];
+            }
         }
     } completionHandler:^(BOOL success, NSError * _Nullable error) {
-        if (error) NSLog(@"Fail to save image from camera.");
+        if (error) {
+            NSLog(@"Fail to save media to album error:%@", error.description);
+        }
     }];
-    
 }
 @end
 
