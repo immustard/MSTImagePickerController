@@ -9,7 +9,7 @@
 #import <Photos/Photos.h>
 #import "MSTImagePickerEnumeration.h"
 
-@class MSTAlbumModel, MSTMoment;
+@class MSTAlbumModel, MSTMoment, MSTAssetModel;
 @interface MSTPhotoManager : NSObject
 
 /** 单例 */
@@ -86,6 +86,23 @@
  */
 - (NSArray<MSTMoment *> *)sortByMomentType:(MSTImageMomentGroupType)momentType assets:(PHFetchResult *)fetchResult;
 
+
+/**
+ 根据相册封装 assetModel
+
+ @param fetchResult     相册信息
+ @param completionBlock 回调
+ */
+- (void)getMSTAssetModelWithPHFetchResult:(PHFetchResult *)fetchResult completionBlock:(void(^)(NSArray <MSTAssetModel *>*models))completionBlock;
+
+/**
+ 读取缩略图
+
+ @param asset           图片内容
+ @param width           图片宽度，宽高比为 1:1，scale 默认为 2.0
+ @param completionBlock 回调
+ */
+- (void)getThumbnailImageFromPHAsset:(PHAsset *)asset photoWidth:(CGFloat)width completionBlock:(void(^)(UIImage *result, NSDictionary *info))completionBlock;
 
 /**
  读取预览图片，宽度默认为屏幕宽度

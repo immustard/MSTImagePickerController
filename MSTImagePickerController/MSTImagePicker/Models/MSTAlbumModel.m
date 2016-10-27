@@ -7,6 +7,7 @@
 //
 
 #import "MSTAlbumModel.h"
+#import "MSTPhotoManager.h"
 
 @implementation MSTAlbumModel
 
@@ -20,6 +21,14 @@
 
 - (NSString *)debugDescription {
     return [NSString stringWithFormat:@"<%@: %p> albumName:%@ | count:%zi", [self class], self, self.albumName, self.count];
+}
+
+- (void)setContent:(PHFetchResult *)content {
+    _content = content;
+    
+    [[MSTPhotoManager sharedInstance] getMSTAssetModelWithPHFetchResult:content completionBlock:^(NSArray<MSTAssetModel *> *models) {
+        self.models = models;
+    }];
 }
 
 @end

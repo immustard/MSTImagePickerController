@@ -9,17 +9,8 @@
 #import <Photos/Photos.h>
 #import "MSTImagePickerEnumeration.h"
 
-@class MSTPickAssetModel;
+@class MSTAssetModel;
 @interface MSTImagePickerController : UINavigationController
-
-/**
- 构造器
-
- @param accessType 根据需要确定构造方法
-
- @return 实例
- */
-- (instancetype)initWithAccessType:(MSTImagePickerAccessType)accessType;
 
 /**
  是否多选，默认为 YES
@@ -149,11 +140,34 @@
 @property (strong, nonatomic) UIImage *cameraImage;
 
 
+/**
+ 构造器
+ 
+ @param accessType 根据需要确定构造方法
+ 
+ @return 实例
+ */
+- (instancetype)initWithAccessType:(MSTImagePickerAccessType)accessType;
 
 
 
+/**
+ 添加选中
 
-@property (strong, nonatomic) NSMutableArray<MSTPickAssetModel *> *selectedModels;
+ @param asset 选中的 asset
+
+ @return 是否添加成功
+ */
+- (BOOL)addSelectedAsset:(MSTAssetModel *)asset;
+
+/**
+ 移除选中
+
+ @param asset 选中的 asset
+ 
+ @return 是否移除成功
+ */
+- (BOOL)removeSelectedAsset:(MSTAssetModel *)asset;
 
 @end
 

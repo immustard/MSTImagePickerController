@@ -234,6 +234,8 @@
     
     for (NSInteger i = 0; i < fetchResult.count; i++) {
         PHAsset *asset = fetchResult[i];
+        MSTAssetModel *assetModel = [MSTAssetModel modelWithAsset:asset];
+        
         NSDateComponents *components = [[NSCalendar currentCalendar] components:NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay | NSCalendarUnitWeekday fromDate:asset.creationDate];
         
         NSUInteger year = components.year;
@@ -254,12 +256,28 @@
                 [groups addObject:newMoment];
                 break;
         }
-        [newMoment.assets addObject:asset];
+        [newMoment.assets addObject:assetModel];
     }
     return groups;
 }
 
 #pragma mark - Get
+- (void)getMSTAssetModelWithPHFetchResult:(PHFetchResult *)fetchResult completionBlock:(void (^)(NSArray<MSTAssetModel *> *))completionBlock {
+    NSMutableArray *modelsArray = [NSMutableArray arrayWithCapacity:fetchResult.count];
+    [fetchResult enumerateObjectsUsingBlock:^(PHAsset *asset, NSUInteger idx, BOOL * _Nonnull stop) {
+        MSTAssetModel *model = [MSTAssetModel modelWithAsset:asset];
+        
+        [modelsArray addObject:model];
+    }];
+    completionBlock ? completionBlock(modelsArray) : nil;
+}
+
+- (void)getThumbnailImageFromPHAsset:(PHAsset *)asset photoWidth:(CGFloat)width completionBlock:(void (^)(UIImage *, NSDictionary *))completionBlock {
+    [self mp_getImageFromPHAsset:asset imageSize:CGSizeMake(width * 2.f, width * 2.f) isSynchronous:NO isFixOrientation:NO completionBlock:^(UIImage *result, NSDictionary *info) {
+        completionBlock ? completionBlock(result, info) : nil;
+    }];
+}
+
 - (void)getPreviewImageFromPHAsset:(PHAsset *)asset isHighQuality:(BOOL)isHighQuality completionBlock:(void (^)(UIImage *, NSDictionary *, BOOL))completionBlock {
     CGFloat scale = isHighQuality ? [UIScreen mainScreen].scale : .1f;
     CGFloat width = [UIScreen mainScreen].bounds.size.width;
@@ -269,17 +287,23 @@
     CGFloat pixelHeight = width / aspectRatio;
     CGSize imageSize = CGSizeMake(pixelWidth, pixelHeight);
     
+    [self mp_getImageFromPHAsset:asset imageSize:imageSize isSynchronous:NO isFixOrientation:YES completionBlock:^(UIImage *result, NSDictionary *info) {
+        completionBlock ? completionBlock(result, info, [info[PHImageResultIsDegradedKey] boolValue]) : nil;
+    }];
+}
+
+- (void)mp_getImageFromPHAsset:(PHAsset *)asset imageSize:(CGSize)imageSize isSynchronous:(BOOL)synchronous isFixOrientation:(BOOL)fixOrientation completionBlock:(void(^)(UIImage *result, NSDictionary *info))completionBlock {
     PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
     options.resizeMode = PHImageRequestOptionsResizeModeFast;
-    options.synchronous = NO;
+    options.synchronous = synchronous;
     
     [self.imageManager requestImageForAsset:asset targetSize:imageSize contentMode:PHImageContentModeAspectFill options:options resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
         BOOL finished = (![[info objectForKey:PHImageCancelledKey] boolValue] && ![info objectForKey:PHImageErrorKey]);
         if (finished && result) {
-            result = [UIImage fixOrientation:result];
-
+            if (fixOrientation) result = [UIImage fixOrientation:result];
+            
             //回调
-            completionBlock ? completionBlock(result, info, [info[PHImageResultIsDegradedKey] boolValue]) : nil;
+            completionBlock ? completionBlock(result, info) : nil;
         }
     }];
 }

@@ -19,10 +19,11 @@
 #import "MSTPhotoGridHeaderView.h"
 #import "NSDate+MSTUtils.h"
 #import "MSTPhotoPreviewController.h"
+#import "MSTImagePickerController.h"
 
 static NSString * const reuserIdentifier = @"MSTPhotoGridCell";
 
-@interface MSTPhotoGridController ()<PHPhotoLibraryChangeObserver, UICollectionViewDelegateFlowLayout, UIImagePickerControllerDelegate, UINavigationControllerDelegate> {
+@interface MSTPhotoGridController ()<PHPhotoLibraryChangeObserver, UICollectionViewDelegateFlowLayout, UIImagePickerControllerDelegate, UINavigationControllerDelegate, MSTPhotoGridCellDelegate> {
     BOOL _isFirstAppear;
     
     CGSize _cellSize;
@@ -101,7 +102,7 @@ static NSString * const reuserIdentifier = @"MSTPhotoGridCell";
     [self.collectionView registerClass:[MSTPhotoGridCell class] forCellWithReuseIdentifier:reuserIdentifier];
     [self.collectionView registerClass:[MSTPhotoGridHeaderView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"MSTPhotoGridHeaderView"];
     if (_isShowCamera) [self.collectionView registerClass:[MSTPhotoGridCameraCell class] forCellWithReuseIdentifier:@"MSTPhotoGridCameraCell"];
-
+    
     self.collectionView.backgroundColor = [UIColor whiteColor];
 }
 
@@ -201,25 +202,25 @@ static NSString * const reuserIdentifier = @"MSTPhotoGridCell";
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    PHAsset *asset;
+    MSTAssetModel *model;
     //判断显示相机, 如果显示相机，里面的代码。。。尽量理解。。不要问。。。我写完了都不太理解。。=-=
     // Don't ask about the following codes.
-#warning waiting for updating 代码优化
+#warning !!!Waiting for updating 代码优化
     if (_isShowCamera) {
         if (self.config.isPhotosDesc) {
             if (_isMoment) {
                 //根据时间分组
                 MSTMoment *moment = _momentsArray[indexPath.section];
-            
+                
                 if (!indexPath.item && !indexPath.section) {
                     //第一段第一个
                     return [self mp_addCameraCell:collectionView indexPath:indexPath];
                 } else {
                     if (!indexPath.section)
                         //第一段
-                        asset = moment.assets[indexPath.item-1];
+                        model = moment.assets[indexPath.item-1];
                     else
-                        asset = moment.assets[indexPath.item];
+                        model = moment.assets[indexPath.item];
                 }
             } else {
                 //未根据之间分组
@@ -227,7 +228,7 @@ static NSString * const reuserIdentifier = @"MSTPhotoGridCell";
                     //第一个
                     return [self mp_addCameraCell:collectionView indexPath:indexPath];
                 } else {
-                    asset = self.album.content[indexPath.item-1];
+                    model = self.album.models[indexPath.item-1];
                 }
             }
         } else {
@@ -237,29 +238,27 @@ static NSString * const reuserIdentifier = @"MSTPhotoGridCell";
                 if (indexPath.section == _momentsArray.count - 1 && indexPath.item >= moment.assets.count)
                     return [self mp_addCameraCell:collectionView indexPath:indexPath];
                 else
-                    asset = moment.assets[indexPath.item];
+                    model = moment.assets[indexPath.item];
             } else {
                 if (indexPath.item >= _album.count)
                     return [self mp_addCameraCell:collectionView indexPath:indexPath];
                 else
-                    asset = self.album.content[indexPath.item];
+                    model = self.album.models[indexPath.item];
             }
         }
     } else {
         if (_isMoment) {
             MSTMoment *moment = _momentsArray[indexPath.section];
-            asset = moment.assets[indexPath.item];
+            model = moment.assets[indexPath.item];
         } else {
-            asset = self.album.content[indexPath.item];
+            model = self.album.models[indexPath.item];
         }
     }
-        MSTPhotoGridCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:reuserIdentifier forIndexPath:indexPath];
-        [self.imageManager requestImageForAsset:asset targetSize:_thumnailSize contentMode:PHImageContentModeAspectFill options:nil resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
-            [cell setImage:result targetSize:_cellSize];
-            cell.asset = asset;
-        }];
+    MSTPhotoGridCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:reuserIdentifier forIndexPath:indexPath];
+    cell.delegate = self;
+    cell.asset = model;
     
-        return cell;
+    return cell;
 }
 
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
@@ -366,12 +365,12 @@ static NSString * const reuserIdentifier = @"MSTPhotoGridCell";
     if (!collectionChanges) {
         return;
     }
-
+    
     // 界面更新, update interfaces
     dispatch_async(dispatch_get_main_queue(), ^{
         self.album.content = [collectionChanges fetchResultAfterChanges];
         UICollectionView *collectionView = self.collectionView;
-
+        
         if (_isMoment) {
 #warning waiting for updating 不想这么暴力 T^T
             [self mp_refreshMoments];
@@ -481,29 +480,17 @@ static NSString * const reuserIdentifier = @"MSTPhotoGridCell";
         }
     }];
 }
+
+#pragma mark - MSTPhotoGridCellDelegate
+- (BOOL)gridCellSelectedButtonDidClicked:(BOOL)isSelected selectedAsset:(MSTAssetModel *)asset {
+    MSTImagePickerController *pickerCtrler = (MSTImagePickerController *)self.navigationController;
+    if (isSelected) {
+        //选中
+        return [pickerCtrler addSelectedAsset:asset];
+    } else {
+        //取消选中
+        [pickerCtrler removeSelectedAsset:asset];
+        return NO;
+    }
+}
 @end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

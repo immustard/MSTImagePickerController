@@ -8,8 +8,10 @@
 
 #import "MSTPhotoPreviewImageCell.h"
 #import <PhotosUI/PhotosUI.h>
+#import "MSTPhotoConfiguration.h"
 #import "UIView+MSTUtils.h"
 #import "MSTPhotoManager.h"
+#import "MSTAssetModel.h"
 
 @interface MSTPhotoPreviewImageCell ()<UIScrollViewDelegate> {
     BOOL _isLivePhoto;
@@ -44,7 +46,7 @@
         _myScrollView.showsVerticalScrollIndicator = NO;
         _myScrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         _myScrollView.delaysContentTouches = NO;
-        
+
         _myScrollView.delegate = self;
         
         [self addSubview:_myScrollView];
@@ -73,23 +75,23 @@
 }
 
 #pragma mark - Setter
-- (void)setAsset:(PHAsset *)asset {
-    _asset = asset;
+- (void)setModel:(MSTAssetModel *)model {
+    _model = model;
     
     self.imageView.image = nil;
     self.livePhotoView.livePhoto = nil;
     
-    if (_asset.mediaSubtypes == PHAssetMediaSubtypePhotoLive && [UIDevice currentDevice].systemVersion.floatValue >= 9.1) {
+    if (model.type == MSTAssetModelMediaTypeLivePhoto && [UIDevice currentDevice].systemVersion.floatValue >= 9.1) {
         _isLivePhoto = YES;
         
-        [[MSTPhotoManager sharedInstance] getLivePhotoFromPHAsset:_asset completionBlock:^(PHLivePhoto *livePhoto) {
+        [[MSTPhotoManager sharedInstance] getLivePhotoFromPHAsset:model.asset completionBlock:^(PHLivePhoto *livePhoto) {
             self.livePhotoView.livePhoto = livePhoto;
             [self mp_resizeSubviews];
         }];
     } else {
         _isLivePhoto = NO;
         
-        [[MSTPhotoManager sharedInstance] getPreviewImageFromPHAsset:_asset isHighQuality:NO completionBlock:^(UIImage *result, NSDictionary *info, BOOL isDegraded) {
+        [[MSTPhotoManager sharedInstance] getPreviewImageFromPHAsset:model.asset isHighQuality:NO completionBlock:^(UIImage *result, NSDictionary *info, BOOL isDegraded) {
             self.imageView.image = result;
             [self mp_resizeSubviews];
         }];
@@ -99,7 +101,7 @@
 #pragma mark - Instance Methods
 - (void)didDisplayed {
     if (!_isLivePhoto) {
-        [[MSTPhotoManager sharedInstance] getPreviewImageFromPHAsset:_asset isHighQuality:YES completionBlock:^(UIImage *result, NSDictionary *info, BOOL isDegraded) {
+        [[MSTPhotoManager sharedInstance] getPreviewImageFromPHAsset:_model.asset isHighQuality:YES completionBlock:^(UIImage *result, NSDictionary *info, BOOL isDegraded) {
             if (!isDegraded) {
                 self.imageView.image = result;
                 [self mp_resizeSubviews];
@@ -109,6 +111,20 @@
 }
 
 - (void)mp_setupSubview {
+//    MSTPhotoConfiguration *config = [MSTPhotoConfiguration defaultConfiguration];
+//    switch (config.themeStyle) {
+//        case MSTImagePickerStyleDark:
+//            self.myScrollView.backgroundColor = [UIColor blackColor];
+//            self.contentView.backgroundColor = [UIColor blackColor];
+//            break;
+//        case MSTImagePickerStyleLight:
+//            self.myScrollView.backgroundColor = [UIColor whiteColor];
+//            self.backgroundColor = [UIColor whiteColor];
+//            break;
+//        default:
+//            break;
+//    }
+    
     UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(mp_singleTap:)];
     [self addGestureRecognizer:singleTap];
     

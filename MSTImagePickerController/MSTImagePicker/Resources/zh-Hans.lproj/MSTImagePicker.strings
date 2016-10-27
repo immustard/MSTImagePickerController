@@ -9,3 +9,5 @@
 "str_confirm" = "确认";
 "str_allow_photoLibrary" = "请在设备的\"设置-隐私-相机\"中允许访问相册。";
 "str_photos" = "相册";
+"str_get_to_maximum_selected" = "最多只能选择%zd张照片";
+"str_i_see" = "我知道了";

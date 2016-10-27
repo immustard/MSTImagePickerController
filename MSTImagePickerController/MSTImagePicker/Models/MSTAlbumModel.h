@@ -7,6 +7,7 @@
 //
 
 #import <Photos/Photos.h>
+#import "MSTAssetModel.h"
 
 @interface MSTAlbumModel : NSObject
 
@@ -29,5 +30,7 @@
  相册内容
  */
 @property (strong, nonatomic) PHFetchResult *content;
+
+@property (strong, nonatomic) NSArray <MSTAssetModel *>*models;
 
 @end

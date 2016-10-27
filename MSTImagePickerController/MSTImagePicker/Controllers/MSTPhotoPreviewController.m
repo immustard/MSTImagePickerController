@@ -37,7 +37,6 @@
         self.myCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(-10, 0, self.view.width + 20, self.view.height) collectionViewLayout:[self mp_flowLayout]];
         _myCollectionView.pagingEnabled = YES;
         _myCollectionView.showsHorizontalScrollIndicator = NO;
-        _myCollectionView.backgroundColor = [UIColor blackColor];
         _myCollectionView.scrollsToTop = NO;
         
         _myCollectionView.dataSource = self;
@@ -75,7 +74,7 @@
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     MSTPhotoPreviewImageCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"MSTPhotoPreviewImageCell" forIndexPath:indexPath];
-    cell.asset = _albumModel.content[indexPath.row];
+    cell.model = _albumModel.models[indexPath.row];
     
     return cell;
 }

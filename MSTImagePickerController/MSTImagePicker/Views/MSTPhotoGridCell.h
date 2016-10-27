@@ -8,18 +8,18 @@
 
 #import <Photos/Photos.h>
 
+@class MSTAssetModel;
+
 @protocol MSTPhotoGridCellDelegate <NSObject>
 
-- (void)selectedButtonDidClicked:(BOOL)isSelected;
+- (BOOL)gridCellSelectedButtonDidClicked:(BOOL)isSelected selectedAsset:(MSTAssetModel *)asset;
 
 @end
 
 @interface MSTPhotoGridCell : UICollectionViewCell
 
-@property (strong, nonatomic) PHAsset *asset;
+@property (strong, nonatomic) MSTAssetModel *asset;
 @property (weak, nonatomic) id<MSTPhotoGridCellDelegate> delegate;
-
-- (void)setImage:(UIImage *)image targetSize:(CGSize)targetSize;
 
 @end
 

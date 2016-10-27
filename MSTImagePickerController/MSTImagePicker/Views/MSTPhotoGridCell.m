@@ -9,6 +9,9 @@
 #import "MSTPhotoGridCell.h"
 #import <PhotosUI/PHLivePhotoView.h>
 #import "MSTPhotoConfiguration.h"
+#import "MSTPhotoManager.h"
+#import "UIView+MSTUtils.h"
+#import "MSTAssetModel.h"
 
 @interface MSTPhotoGridCell ()
 
@@ -34,13 +37,13 @@
 #pragma mark - Instance Methods
 - (void)mp_selectButtonDidSelected:(UIButton *)sender {
     MSTPhotoConfiguration *config = [MSTPhotoConfiguration defaultConfiguration];
-    if (sender.isSelected) {
-        sender.selected = NO;
-    } else {
-        sender.selected = YES;
-        if (config.allowsSelectedAnimation) [self mp_addSpringAnimationWithLayer:sender.layer];
-    }
-    NSLog(@"%zi", self.asset.mediaSubtypes);
+    BOOL selected = NO;
+    
+    if ([self.delegate respondsToSelector:@selector(gridCellSelectedButtonDidClicked:selectedAsset:)])
+        selected = [self.delegate gridCellSelectedButtonDidClicked:!sender.isSelected selectedAsset:_asset];
+    
+    sender.selected = selected;
+    if (selected && config.allowsSelectedAnimation) [self mp_addSpringAnimationWithLayer:sender.layer];
 }
 
 - (void)mp_addSpringAnimationWithLayer:(CALayer *)layer{
@@ -58,14 +61,12 @@
 }
 
 #pragma mark - Setter
-- (void)setImage:(UIImage *)image targetSize:(CGSize)targetSize {
-    self.imageView.image = image;
-
-    self.imageView.frame = CGRectMake(0, 0, targetSize.width, targetSize.height);
-}
-
-- (void)setAsset:(PHAsset *)asset {
+- (void)setAsset:(MSTAssetModel *)asset {
     _asset = asset;
+    
+    [[MSTPhotoManager sharedInstance] getThumbnailImageFromPHAsset:asset.asset photoWidth:self.contentView.width completionBlock:^(UIImage *result, NSDictionary *info) {
+        self.imageView.image = result;
+    }];
     
     self.liveBadgeImageView.hidden = YES;
     self.videoLengthBgView.hidden = YES;
@@ -74,17 +75,18 @@
     
     MSTPhotoConfiguration *config = [MSTPhotoConfiguration defaultConfiguration];
     
-    if (asset.mediaType == PHAssetMediaTypeVideo) {
+    if (asset.asset.mediaType == PHAssetMediaTypeVideo) {
         //视频
         self.videoLengthBgView.hidden = NO;
-        self.videoLengthLabel.text = [NSString stringWithFormat:@"%d:%02d", (int)asset.duration/60, (int)asset.duration%60];
-    } else if ((asset.mediaSubtypes & PHAssetMediaSubtypePhotoLive) && config.isShowLivePhotoIcon) {
+        self.videoLengthLabel.text = [NSString stringWithFormat:@"%d:%02d", (int)asset.videoDuration/60, (int)asset.videoDuration%60];
+    } else if (asset.type == MSTAssetModelMediaTypeLivePhoto && config.isShowLivePhotoIcon) {
         //Live 图片
         self.liveBadgeImageView.hidden = NO;
         self.selectButton.hidden = NO;
     } else {
         self.selectButton.hidden = NO;
     }
+    self.selectButton.selected = asset.isSelected;
 }
 
 #pragma mark - Lazy Load

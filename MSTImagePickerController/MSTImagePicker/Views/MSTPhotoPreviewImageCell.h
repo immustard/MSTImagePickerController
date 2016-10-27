@@ -6,12 +6,13 @@
 //  Copyright © 2016年 Mustard. All rights reserved.
 //
 
-#import <Photos/Photos.h>
+#import <UIKit/UIKit.h>
 #import "MSTPhotoPreviewCellDelegate.h"
 
+@class MSTAssetModel;
 @interface MSTPhotoPreviewImageCell : UICollectionViewCell
 
-@property (strong, nonatomic) PHAsset *asset;
+@property (strong, nonatomic) MSTAssetModel *model;
 
 @property (weak, nonatomic) id<MSTPhotoPreviewCellDelegate> delegate;
 

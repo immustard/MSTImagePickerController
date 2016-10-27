@@ -23,6 +23,9 @@
 @property (strong, nonatomic) MSTAlbumListController *albumListController;
 @property (strong, nonatomic) MSTPhotoGridController *photoGridController;
 
+@property (strong, nonatomic) UIAlertController *maxSelectedAlertController;
+
+@property (strong, nonatomic) NSMutableArray <MSTAssetModel *>*pickedModels;
 @end
 
 @implementation MSTImagePickerController
@@ -47,6 +50,34 @@
 }
 
 #pragma mark - Instance Methods
+- (BOOL)addSelectedAsset:(MSTAssetModel *)asset {
+    if (self.pickedModels.count == self.config.maxSelectCount) {
+        
+        [self presentViewController:self.maxSelectedAlertController animated:YES completion:nil];
+        
+        return NO;
+    }
+    
+    //已经保存过
+    if ([self.pickedModels containsObject:asset]) return YES;
+    
+    asset.selected = YES;
+    [self.pickedModels addObject:asset];
+    
+    return YES;
+}
+
+- (BOOL)removeSelectedAsset:(MSTAssetModel *)asset {
+    if ([self.pickedModels containsObject:asset]) {
+        asset.selected = NO;
+        
+        [self.pickedModels removeObject:asset];
+        
+        return YES;
+    }
+    return NO;
+}
+
 /**
  检查授权访问状态
  */
@@ -111,6 +142,10 @@
     }
 }
 
+- (void)mp_setupToolBar {
+    
+}
+
 #pragma mark - Lazy Load
 - (MSTPhotoConfiguration *)config {
     if (!_config) {
@@ -134,6 +169,23 @@
         }];
     }
     return _photoGridController;
+}
+
+- (UIAlertController *)maxSelectedAlertController {
+    if (!_maxSelectedAlertController) {
+        self.maxSelectedAlertController = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:NSLocalizedStringFromTable(@"str_get_to_maximum_selected", @"MSTImagePicker", @"最大选择数量提示"), self.config.maxSelectCount] message:nil preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction *okAction = [UIAlertAction actionWithTitle:NSLocalizedStringFromTable(@"str_i_see", @"MSTImagePicker", @"我知道了") style:UIAlertActionStyleDefault handler:nil];
+        [_maxSelectedAlertController addAction:okAction];
+    }
+    return _maxSelectedAlertController;
+}
+
+- (NSMutableArray *)pickedModels {
+    if (!_pickedModels) {
+        self.pickedModels = [NSMutableArray array];
+    }
+    return _pickedModels;
 }
 
 #pragma mark - Setter
@@ -210,14 +262,10 @@
 }
 
 - (void)setAlbumTitle:(NSString *)albumTitle {
-    _albumTitle = [albumTitle copy];
-    
     self.albumListController.title = _albumTitle;
 }
 
 - (void)setAlbumPlaceholderThumbnail:(UIImage *)albumPlaceholderThumbnail {
-    _albumPlaceholderThumbnail = albumPlaceholderThumbnail;
-    
     self.albumListController.placeholderThumbnail = albumPlaceholderThumbnail;
 }
 

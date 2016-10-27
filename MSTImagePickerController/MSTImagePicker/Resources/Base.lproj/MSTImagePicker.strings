@@ -9,3 +9,5 @@
 "str_confirm" = "Confirm";
 "str_allow_photoLibrary" = "Please enter \"Setting-Privacy-Photos\" and allow to access Photos.";
 "str_photos" = "Photos";
+"str_get_to_maximum_selected" = "Select a maximum of %zd photos";
+"str_i_see" = "OK";

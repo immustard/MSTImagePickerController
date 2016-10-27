@@ -21,7 +21,7 @@
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="d9p-Je-Glj">
                                 <color key="backgroundColor" red="0.49803921579999999" green="0.49803921579999999" blue="0.49803921579999999" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="64" id="6mA-Nl-YQA"/>
+                                    <constraint firstAttribute="height" constant="56" id="6mA-Nl-YQA"/>
                                 </constraints>
                                 <state key="normal" title="打开">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
