@@ -9,6 +9,8 @@
 #import "MSTPhotoGridController.h"
 #import <MobileCoreServices/MobileCoreServices.h>
 #import "UIViewController+MSTUtils.h"
+#import "UIView+MSTUtils.h"
+#import "NSDate+MSTUtils.h"
 #import "MSTPhotoManager.h"
 #import "MSTPhotoConfiguration.h"
 #import "UICollectionView+MSTUtils.h"
@@ -17,7 +19,6 @@
 #import "MSTMoment.h"
 #import "MSTPhotoGridCell.h"
 #import "MSTPhotoGridHeaderView.h"
-#import "NSDate+MSTUtils.h"
 #import "MSTPhotoPreviewController.h"
 #import "MSTImagePickerController.h"
 
@@ -26,18 +27,12 @@ static NSString * const reuserIdentifier = @"MSTPhotoGridCell";
 @interface MSTPhotoGridController ()<PHPhotoLibraryChangeObserver, UICollectionViewDelegateFlowLayout, UIImagePickerControllerDelegate, UINavigationControllerDelegate, MSTPhotoGridCellDelegate> {
     BOOL _isFirstAppear;
     
-    CGSize _cellSize;
-    CGSize _thumnailSize;               //缩略图尺寸，计算时包括 scale
-    CGRect _previousPreheatRect;        //缓存区域
-    
     BOOL _isShowCamera;
     BOOL _isMoment;                     //是否按时间分组，is grouped by creationDate
     NSArray *_momentsArray;
 }
 @property (strong, nonatomic) MSTPhotoConfiguration *config;
 
-@property (strong, nonatomic) PHCachingImageManager *imageManager;
-@property (strong, nonatomic) PHImageRequestOptions *imageRequestOptions;
 @end
 
 @implementation MSTPhotoGridController
@@ -82,23 +77,34 @@ static NSString * const reuserIdentifier = @"MSTPhotoGridCell";
 
 #pragma mark - Instance Methods
 - (void)mp_initData {
-    CGSize screenSize = [UIScreen mainScreen].bounds.size;
-    CGFloat scale = [UIScreen mainScreen].scale;
-    CGFloat num = (CGFloat)self.config.numsInRow;
-    _cellSize = CGSizeMake((screenSize.width-4) / num - 4, (screenSize.width-4) / num - 4);
-    _thumnailSize = CGSizeMake(_cellSize.width * scale, _cellSize.height * scale);
-    
-    [self mp_stopCacheImages];
-    
     [[PHPhotoLibrary sharedPhotoLibrary] registerChangeObserver:self];
+#warning waiting for testing 在图片特别多的情况下，测试选中状态是否正常
+    dispatch_async(dispatch_queue_create(nil, DISPATCH_QUEUE_CONCURRENT), ^{
+        [self mp_checkSelectedStatus];
+        
+        if (_isMoment) {
+            [self mp_refreshMoments];
+        }
+    });
 }
 
-- (void)mp_stopCacheImages {
-    [self.imageManager stopCachingImagesForAllAssets];
-    _previousPreheatRect = CGRectZero;
+/**
+ 判断是否选中
+ */
+- (void)mp_checkSelectedStatus {
+    MSTImagePickerController *pickerCtrler = (MSTImagePickerController *)self.navigationController;
+    for (MSTAssetModel *model in _album.models) {
+        model.selected = [pickerCtrler containAssetModel:model];
+    }
+#warning waiting for testing 这里不知道在图片特别多的情况下是不是需要刷新界面
 }
 
 - (void)mp_setupViews {
+    self.view.backgroundColor = [UIColor whiteColor];
+    self.automaticallyAdjustsScrollViewInsets = NO;
+    self.collectionView.top = 64;
+    self.collectionView.height = self.view.height - 64 - 44;
+    
     [self.collectionView registerClass:[MSTPhotoGridCell class] forCellWithReuseIdentifier:reuserIdentifier];
     [self.collectionView registerClass:[MSTPhotoGridHeaderView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"MSTPhotoGridHeaderView"];
     if (_isShowCamera) [self.collectionView registerClass:[MSTPhotoGridCameraCell class] forCellWithReuseIdentifier:@"MSTPhotoGridCameraCell"];
@@ -108,16 +114,25 @@ static NSString * const reuserIdentifier = @"MSTPhotoGridCell";
 
 - (void)mp_refreshMoments {
     _momentsArray = nil;
-    _momentsArray = [[MSTPhotoManager sharedInstance] sortByMomentType:self.config.photoMomentGroupType assets:_album.content];
+    _momentsArray = [[MSTPhotoManager sharedInstance] sortByMomentType:self.config.photoMomentGroupType assets:_album.models];
 }
 
 - (void)mp_scrollToBottom {
+    NSInteger item;
+    NSInteger section;
+    
     if (_isMoment) {
         MSTMoment *moment = _momentsArray.lastObject;
-        [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:moment.assets.count-1 inSection:_momentsArray.count-1] atScrollPosition:UICollectionViewScrollPositionBottom animated:NO];
+        item = moment.assets.count-1;
+        section = _momentsArray.count-1;
     } else {
-        [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:self.album.count-1 inSection:0] atScrollPosition:UICollectionViewScrollPositionBottom animated:NO];
+        item = self.album.count - 1;
+        section = 0;
     }
+    
+    _isShowCamera ? item++ : item;
+    
+    [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:item inSection:section] atScrollPosition:UICollectionViewScrollPositionBottom animated:NO];
 }
 
 - (MSTPhotoGridCameraCell *)mp_addCameraCell:(UICollectionView *)collectionView indexPath:(NSIndexPath *)indexPath {
@@ -127,21 +142,6 @@ static NSString * const reuserIdentifier = @"MSTPhotoGridCell";
 }
 
 #pragma mark - Lazy Load
-- (PHCachingImageManager *)imageManager {
-    if (!_imageManager) {
-        self.imageManager = [[PHCachingImageManager alloc] init];
-    }
-    return _imageManager;
-}
-
-- (PHImageRequestOptions *)imageRequestOptions {
-    if (!_imageRequestOptions) {
-        self.imageRequestOptions = [[PHImageRequestOptions alloc] init];
-        _imageRequestOptions.resizeMode = PHImageRequestOptionsResizeModeFast;
-    }
-    return _imageRequestOptions;
-}
-
 - (MSTPhotoConfiguration *)config {
     if (!_config) {
         self.config = [MSTPhotoConfiguration defaultConfiguration];
@@ -152,16 +152,12 @@ static NSString * const reuserIdentifier = @"MSTPhotoGridCell";
 #pragma mark - Setter
 - (void)setAlbum:(MSTAlbumModel *)album {
     _album = album;
-    
+
     self.title = album.albumName;
     
     self.config.photoMomentGroupType == MSTImageMomentGroupTypeNone ? _isMoment = NO : (_isMoment = YES);
 #warning waiting for updating 当显示照相机并且根据moment分组的时候，把照相机放在当前时间组，没有就创建一个分组。
     _isShowCamera = self.config.isFirstCamera && self.album.isCameraRoll;
-    
-    if (_isMoment) {
-        [self mp_refreshMoments];
-    }
 }
 
 #pragma mark - UICollectionViewDelegateFlowLayout
@@ -270,8 +266,6 @@ static NSString * const reuserIdentifier = @"MSTPhotoGridCell";
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    MSTPhotoPreviewController *ppc = [[MSTPhotoPreviewController alloc] init];
-    
     NSIndexPath *tmpIndexPath = indexPath;
     NSInteger item = 0;
     BOOL pushToCamera = NO;
@@ -350,7 +344,10 @@ static NSString * const reuserIdentifier = @"MSTPhotoGridCell";
             [self presentViewController:pickerCtrler animated:YES completion:nil];
         }
     } else {
-        tmpIndexPath = [NSIndexPath indexPathForRow:item inSection:0];
+        MSTPhotoPreviewController *ppc = [[MSTPhotoPreviewController alloc] init];
+        ppc.hidesBottomBarWhenPushed = YES;
+        
+        tmpIndexPath = [NSIndexPath indexPathForItem:item inSection:0];
         
         [ppc didSelectedWithAlbum:_album indexPath:tmpIndexPath];
         
@@ -476,7 +473,7 @@ static NSString * const reuserIdentifier = @"MSTPhotoGridCell";
         }
     } completionHandler:^(BOOL success, NSError * _Nullable error) {
         if (error) {
-            NSLog(@"Fail to save media to album error:%@", error.description);
+            NSLog(@"Fail to save media to album error: %@", error.description);
         }
     }];
 }

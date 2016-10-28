@@ -54,7 +54,7 @@
 }
 
 #pragma mark - Load
-- (void)loadCameraRollInfoisDesc:(BOOL)isDesc isOnlyShowImage:(BOOL)isOnlyShowImage CompletionBlock:(void (^)(MSTAlbumModel *))completionBlock {
+- (void)loadCameraRollInfoisDesc:(BOOL)isDesc isShowEmpty:(BOOL)isShowEmpty isOnlyShowImage:(BOOL)isOnlyShowImage CompletionBlock:(void (^)(MSTAlbumModel *))completionBlock {
     PHFetchResult *albumCollection= [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeSmartAlbum subtype:PHAssetCollectionSubtypeSmartAlbumUserLibrary options:nil];
     
     [albumCollection enumerateObjectsUsingBlock:^(PHAssetCollection * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -65,11 +65,15 @@
         }
         
         PHFetchResult *result = [PHAsset fetchAssetsInAssetCollection:obj options:fetchOptions];
+
+        MSTAlbumModel *model = nil;
         
-        MSTAlbumModel *model = [[MSTAlbumModel alloc] init];
-        model.isCameraRoll = YES;
-        model.albumName = obj.localizedTitle;
-        model.content = result;
+        if (result.count > 0 || isShowEmpty) {
+            model = [MSTAlbumModel new];
+            model.isCameraRoll = YES;
+            model.albumName = obj.localizedTitle;//相册名
+            model.content = result;//保存这个相册的内容
+        }
         
         completionBlock ? completionBlock(model) : nil;
     }];
@@ -79,9 +83,6 @@
     //用来存放每个相册的model
     NSMutableArray *albumModelsArray = [NSMutableArray array];
     
-    //1.获取所有相册的信息PHFetchResult<PHAssetCollection *>
-    PHFetchResult *albumsCollection1 = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeSmartAlbum subtype:PHAssetCollectionSubtypeSmartAlbumUserLibrary options:nil];
-    
     //创建读取相册信息的options
     PHFetchOptions *fetchOptions = [[PHFetchOptions alloc] init];
     fetchOptions.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:!isDesc]];
@@ -89,22 +90,8 @@
         fetchOptions.predicate = [NSPredicate predicateWithFormat:@"mediaType == %d",PHAssetMediaTypeImage];
     }
     
-    //2.遍历albumsCollection获取每一个相册的具体信息
-    [albumsCollection1 enumerateObjectsUsingBlock:^(PHAssetCollection * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        
-        //读取相册里面的所有信息 PHFetchResult<PHAsset *>
-        PHFetchResult *assetsResult = [PHAsset fetchAssetsInAssetCollection:obj options:fetchOptions];
-        
-        if (assetsResult.count > 0 || isShowEmpty) {
-            //创建一个model封装这个相册的信息
-            MSTAlbumModel *model = [[MSTAlbumModel alloc] init];
-            model.isCameraRoll = YES;
-            model.albumName = obj.localizedTitle;//相册名
-            model.content = assetsResult;//保存这个相册的内容
-            
-            [albumModelsArray addObject:model];
-        }
-        
+    [self loadCameraRollInfoisDesc:isDesc isShowEmpty:isShowEmpty isOnlyShowImage:isOnlyShowImage CompletionBlock:^(MSTAlbumModel *result) {
+        [albumModelsArray addObject:result];
     }];
     
     PHFetchResult *albumsCollection2 = [PHAssetCollection fetchTopLevelUserCollectionsWithOptions:nil];
@@ -114,7 +101,7 @@
         PHFetchResult *assetsResult = [PHAsset fetchAssetsInAssetCollection:collection options:fetchOptions];
         
         if (assetsResult.count > 0 || isShowEmpty) {
-            MSTAlbumModel *model = [[MSTAlbumModel alloc] init];
+            MSTAlbumModel *model = [MSTAlbumModel new];
             model.isCameraRoll = NO;
             model.albumName = collection.localizedTitle;
             model.content = assetsResult;
@@ -227,16 +214,15 @@
     }
 }
 
-- (NSArray<MSTMoment *> *)sortByMomentType:(MSTImageMomentGroupType)momentType assets:(PHFetchResult *)fetchResult {
+- (NSArray<MSTMoment *> *)sortByMomentType:(MSTImageMomentGroupType)momentType assets:(NSArray *)models {
     MSTMoment *newMoment = nil;
     
     NSMutableArray *groups = [NSMutableArray array];
     
-    for (NSInteger i = 0; i < fetchResult.count; i++) {
-        PHAsset *asset = fetchResult[i];
-        MSTAssetModel *assetModel = [MSTAssetModel modelWithAsset:asset];
+    for (NSInteger i = 0; i < models.count; i++) {
+        MSTAssetModel *asset = models[i];
         
-        NSDateComponents *components = [[NSCalendar currentCalendar] components:NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay | NSCalendarUnitWeekday fromDate:asset.creationDate];
+        NSDateComponents *components = [[NSCalendar currentCalendar] components:NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay | NSCalendarUnitWeekday fromDate:asset.asset.creationDate];
         
         NSUInteger year = components.year;
         NSUInteger month = components.month;
@@ -252,11 +238,11 @@
             default:
                 newMoment = [MSTMoment new];
                 newMoment.dateComponents = components;
-                newMoment.date = asset.creationDate;
+                newMoment.date = asset.asset.creationDate;
                 [groups addObject:newMoment];
                 break;
         }
-        [newMoment.assets addObject:assetModel];
+        [newMoment.assets addObject:asset];
     }
     return groups;
 }

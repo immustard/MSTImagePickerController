@@ -27,10 +27,11 @@
  读取『相机胶卷』的信息
  
  @param isDesc          是否为倒序
+ @param isShowEmpty     是否显示为空的情况
  @param isOnlyShowImage 是否只显示图片
  @param completionBlock 返回数组<MSTAlbumModel>
  */
-- (void)loadCameraRollInfoisDesc:(BOOL)isDesc isOnlyShowImage:(BOOL)isOnlyShowImage CompletionBlock:(void(^)(MSTAlbumModel *result)) completionBlock;
+- (void)loadCameraRollInfoisDesc:(BOOL)isDesc isShowEmpty:(BOOL)isShowEmpty isOnlyShowImage:(BOOL)isOnlyShowImage CompletionBlock:(void (^)(MSTAlbumModel *result))completionBlock;
 
 /**
  读取所有相册的信息
@@ -84,7 +85,7 @@
 
  @return 分组结果
  */
-- (NSArray<MSTMoment *> *)sortByMomentType:(MSTImageMomentGroupType)momentType assets:(PHFetchResult *)fetchResult;
+- (NSArray<MSTMoment *> *)sortByMomentType:(MSTImageMomentGroupType)momentType assets:(NSArray *)models;
 
 
 /**

@@ -11,3 +11,6 @@
 "str_photos" = "Photos";
 "str_get_to_maximum_selected" = "Select a maximum of %zd photos";
 "str_i_see" = "OK";
+"str_preview" = "Preview";
+"str_done" = "Done";
+"str_original" = "Full Image";

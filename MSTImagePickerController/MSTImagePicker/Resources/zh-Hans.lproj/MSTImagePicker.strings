@@ -11,3 +11,6 @@
 "str_photos" = "相册";
 "str_get_to_maximum_selected" = "最多只能选择%zd张照片";
 "str_i_see" = "我知道了";
+"str_preview" = "预览";
+"str_done" = "完成";
+"str_original" = "原图";

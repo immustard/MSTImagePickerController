@@ -75,7 +75,7 @@
     
     MSTPhotoConfiguration *config = [MSTPhotoConfiguration defaultConfiguration];
     
-    if (asset.asset.mediaType == PHAssetMediaTypeVideo) {
+    if (asset.type == MSTAssetModelMediaTypeVideo) {
         //视频
         self.videoLengthBgView.hidden = NO;
         self.videoLengthLabel.text = [NSString stringWithFormat:@"%d:%02d", (int)asset.videoDuration/60, (int)asset.videoDuration%60];

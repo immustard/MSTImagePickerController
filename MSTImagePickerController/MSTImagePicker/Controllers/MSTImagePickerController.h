@@ -169,6 +169,14 @@
  */
 - (BOOL)removeSelectedAsset:(MSTAssetModel *)asset;
 
+/**
+ 选中图片中是否包含该 model
+
+ @param asset 需判断的 asset
+ @return 是否选中
+ */
+- (BOOL)containAssetModel:(MSTAssetModel *)asset;
+
 @end
 
 
