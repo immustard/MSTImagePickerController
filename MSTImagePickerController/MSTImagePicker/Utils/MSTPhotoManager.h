@@ -81,11 +81,11 @@
  根据时间分组排序
 
  @param momentType  分组类型
- @param fetchResult 传入数据
+ @param models 传入数据
 
  @return 分组结果
  */
-- (NSArray<MSTMoment *> *)sortByMomentType:(MSTImageMomentGroupType)momentType assets:(NSArray *)models;
+- (NSArray<MSTMoment *> *)sortByMomentType:(MSTImageMomentGroupType)momentType assets:(NSArray <MSTAssetModel *>*)models;
 
 
 /**
@@ -117,12 +117,20 @@
 /**
  读取 Live Photo
 
- @param asset           内容
+ @param asset           live photo 内容
  @param completionBlock 回调
  */
 - (void)getLivePhotoFromPHAsset:(PHAsset *)asset completionBlock:(void(^)(PHLivePhoto *livePhoto))completionBlock;
 
 /** 读取原始图片 */
-- (void)getOriginImageFromPHAsset:(PHAsset *)asset comletionBlock:(void(^)(UIImage *result))completionBlock;
+- (void)getOriginImageFromPHAsset:(PHAsset *)asset completionBlock:(void(^)(UIImage *result))completionBlock;
 
+
+/**
+ 获取图片的大小
+
+ @param models 图片内容
+ @param completionBlock 回调
+ */
+- (void)getImageBytesWithArray:(NSArray <MSTAssetModel *>*)models completionBlock:(void(^)(NSString *result))completionBlock;
 @end

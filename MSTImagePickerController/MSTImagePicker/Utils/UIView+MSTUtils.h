@@ -43,4 +43,7 @@
 
 /** 添加圆角 */
 - (void)MSTAddCornorRadius:(CGFloat)radius;
+
+/** 添加点击弹簧动画 */
+- (void)addSpringAnimation;
 @end

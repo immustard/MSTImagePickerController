@@ -118,7 +118,7 @@
     }
 }
 
-- (void)MSTRemoveViewWithTag:(NSInteger)tag{
+- (void)MSTRemoveViewWithTag:(NSInteger)tag {
     if (!tag) {
         return;
     }
@@ -126,7 +126,7 @@
     [subview removeFromSuperview];
 }
 
-- (void)MSTRemoveViewWithTags:(NSArray *)tagArray{
+- (void)MSTRemoveViewWithTags:(NSArray *)tagArray {
     for (NSNumber *num in tagArray) {
         [self MSTRemoveViewWithTag:[num integerValue]];
     }
@@ -140,12 +140,26 @@
     }
 }
 
-- (void)MSTRemoveViewWithTagGreaterThan:(NSInteger)tag{
+- (void)MSTRemoveViewWithTagGreaterThan:(NSInteger)tag {
     for (UIView *subview in self.subviews) {
         if (subview.tag > 0 && subview.tag > tag) {
             [subview removeFromSuperview];
         }
     }
+}
+
+- (void)addSpringAnimation {
+    CASpringAnimation *springAnimation = [CASpringAnimation animationWithKeyPath:@"transform.scale"];
+    springAnimation.fromValue = @1;
+    springAnimation.toValue = @1.01;
+    
+    springAnimation.mass = 1;
+    springAnimation.damping = 7;
+    springAnimation.stiffness = 50;
+    springAnimation.duration = springAnimation.settlingDuration;
+    springAnimation.initialVelocity = 200;
+    
+    [self.layer addAnimation:springAnimation forKey:nil];
 }
 
 #pragma mark ----- addGestures
@@ -157,5 +171,6 @@
 #pragma mark ----- addCornor
 - (void)MSTAddCornorRadius:(CGFloat)radius{
     self.layer.cornerRadius = radius;
+    self.layer.masksToBounds = YES;
 }
 @end

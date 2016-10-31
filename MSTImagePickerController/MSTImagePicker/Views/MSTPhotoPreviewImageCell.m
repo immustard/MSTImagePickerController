@@ -15,6 +15,7 @@
 
 @interface MSTPhotoPreviewImageCell ()<UIScrollViewDelegate> {
     BOOL _isLivePhoto;
+    MSTImagePickerStyle _pickerStyle;
 }
 
 @property (strong, nonatomic) UIScrollView *myScrollView;
@@ -111,19 +112,20 @@
 }
 
 - (void)mp_setupSubview {
-//    MSTPhotoConfiguration *config = [MSTPhotoConfiguration defaultConfiguration];
-//    switch (config.themeStyle) {
-//        case MSTImagePickerStyleDark:
-//            self.myScrollView.backgroundColor = [UIColor blackColor];
-//            self.contentView.backgroundColor = [UIColor blackColor];
-//            break;
-//        case MSTImagePickerStyleLight:
-//            self.myScrollView.backgroundColor = [UIColor whiteColor];
-//            self.backgroundColor = [UIColor whiteColor];
-//            break;
-//        default:
-//            break;
-//    }
+    MSTPhotoConfiguration *config = [MSTPhotoConfiguration defaultConfiguration];
+    _pickerStyle = config.themeStyle;
+    switch (_pickerStyle) {
+        case MSTImagePickerStyleDark:
+            self.myScrollView.backgroundColor = [UIColor blackColor];
+            self.contentView.backgroundColor = [UIColor blackColor];
+            break;
+        case MSTImagePickerStyleLight:
+            self.myScrollView.backgroundColor = [UIColor whiteColor];
+            self.contentView.backgroundColor = [UIColor whiteColor];
+            break;
+        default:
+            break;
+    }
     
     UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(mp_singleTap:)];
     [self addGestureRecognizer:singleTap];

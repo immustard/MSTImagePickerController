@@ -311,7 +311,7 @@
     }];
 }
 
-- (void)getOriginImageFromPHAsset:(PHAsset *)asset comletionBlock:(void (^)(UIImage *))completionBlock{
+- (void)getOriginImageFromPHAsset:(PHAsset *)asset completionBlock:(void (^)(UIImage *))completionBlock{
     PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
     options.resizeMode = PHImageRequestOptionsResizeModeExact;
     options.synchronous = NO;
@@ -321,6 +321,32 @@
 
         completionBlock ? completionBlock(result) : nil;
     }];
+}
+
+- (void)getImageBytesWithArray:(NSArray<MSTAssetModel *> *)models completionBlock:(void (^)(NSString *))completionBlock {
+    __block NSUInteger dataLength = 0;
+    __block NSUInteger count = models.count;
+    for (MSTAssetModel *model in models) {
+        [self.imageManager requestImageDataForAsset:model.asset options:nil resultHandler:^(NSData * _Nullable imageData, NSString * _Nullable dataUTI, UIImageOrientation orientation, NSDictionary * _Nullable info) {
+            count--;
+            dataLength += imageData.length;
+            if (count <= 0) {
+                completionBlock ? completionBlock([self mp_getBytesStringWithDataLength:dataLength]) : nil;
+            }
+        }];
+    }
+}
+
+- (NSString *)mp_getBytesStringWithDataLength:(NSUInteger)dataLength {
+    NSString *bytes;
+    if (dataLength >= 0.1 * (1024 * 1024)) {
+        bytes = [NSString stringWithFormat:@"%.02fM",dataLength/1024/1024.0];
+    } else if (dataLength >= 1024) {
+        bytes = [NSString stringWithFormat:@"%.02fK",dataLength/1024.0];
+    } else {
+        bytes = [NSString stringWithFormat:@"%ziB",dataLength];
+    }
+    return bytes;
 }
 
 #pragma mark - Lazy Load

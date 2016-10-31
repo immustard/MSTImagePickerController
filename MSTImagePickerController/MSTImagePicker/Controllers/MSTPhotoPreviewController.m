@@ -12,6 +12,9 @@
 #import "UIView+MSTUtils.h"
 #import "MSTPhotoPreviewImageCell.h"
 
+#define screenWidth  [UIScreen mainScreen].bounds.size.width
+#define screenHeight [UIScreen mainScreen].bounds.size.height
+
 @interface MSTPhotoPreviewController ()<UICollectionViewDelegate, UICollectionViewDataSource> {
     MSTAlbumModel *_albumModel;
     MSTMoment *_moment;
@@ -19,6 +22,9 @@
 }
 
 @property (strong, nonatomic) UICollectionView *myCollectionView;
+
+@property (strong, nonatomic) UIView *customNavigationBar;
+@property (strong, nonatomic) UIView *customToolBar;
 
 @end
 
@@ -69,6 +75,29 @@
     
     MSTPhotoPreviewImageCell *cell = (MSTPhotoPreviewImageCell *)[_myCollectionView cellForItemAtIndexPath:_indexPath];
     [cell didDisplayed];
+    
+    MSTPhotoConfiguration *config = [MSTPhotoConfiguration defaultConfiguration];
+    switch (config.themeStyle) {
+        case MSTImagePickerStyleDark:
+            self.myCollectionView.backgroundColor = [UIColor blackColor];
+            break;
+        case MSTImagePickerStyleLight:
+            self.myCollectionView.backgroundColor = [UIColor whiteColor];
+            break;
+        default:
+            break;
+    }
+}
+
+- (void)mp_setupCustomNavigationBar {
+    self.customNavigationBar = [[UIView alloc] initWithFrame:CGRectMake(0, 0, screenWidth, 64)];
+    
+    UIButton *backButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    backButton.frame = CGRectMake(10, 0, 64, 64);
+}
+
+- (void)mp_setupCustomToolBar {
+    self.customToolBar = [[UIView alloc] initWithFrame:CGRectMake(0, screenHeight - 44, screenWidth, 44)];
 }
 
 - (UICollectionViewFlowLayout *)mp_flowLayout {

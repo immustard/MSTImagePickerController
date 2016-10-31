@@ -12,7 +12,7 @@
 @implementation MSTAlbumModel
 
 - (NSUInteger)count {
-    return self.content.count;
+    return self.models.count;
 }
 
 - (NSString *)description {

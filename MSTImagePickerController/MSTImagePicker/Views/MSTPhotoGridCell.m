@@ -43,21 +43,7 @@
         selected = [self.delegate gridCellSelectedButtonDidClicked:!sender.isSelected selectedAsset:_asset];
     
     sender.selected = selected;
-    if (selected && config.allowsSelectedAnimation) [self mp_addSpringAnimationWithLayer:sender.layer];
-}
-
-- (void)mp_addSpringAnimationWithLayer:(CALayer *)layer{
-    CASpringAnimation *springAnimation = [CASpringAnimation animationWithKeyPath:@"transform.scale"];
-    springAnimation.fromValue = @1;
-    springAnimation.toValue = @1.01;
-    
-    springAnimation.mass = 1;
-    springAnimation.damping = 7;
-    springAnimation.stiffness = 50;
-    springAnimation.duration = springAnimation.settlingDuration;
-    springAnimation.initialVelocity = 200;
-    
-    [layer addAnimation:springAnimation forKey:nil];
+    if (selected && config.allowsSelectedAnimation) [sender addSpringAnimation];
 }
 
 #pragma mark - Setter
@@ -184,6 +170,7 @@
         MSTPhotoConfiguration *config = [MSTPhotoConfiguration defaultConfiguration];
         [_selectButton setImage:config.photoNormal ? config.photoNormal : [UIImage imageNamed:@"icon_picture_normal"] forState:UIControlStateNormal];
         [_selectButton setImage:config.photoSelected ? config.photoSelected : [UIImage imageNamed:@"icon_picture_selected"] forState:UIControlStateSelected];
+        [_selectButton setImageEdgeInsets:UIEdgeInsetsMake(2, 2, 2, 2)];
         
         [_selectButton addTarget:self action:@selector(mp_selectButtonDidSelected:) forControlEvents:UIControlEventTouchUpInside];
         
