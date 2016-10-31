@@ -82,7 +82,7 @@
             self.myCollectionView.backgroundColor = [UIColor blackColor];
             break;
         case MSTImagePickerStyleLight:
-            self.myCollectionView.backgroundColor = [UIColor whiteColor];
+            self.myCollectionView.backgroundColor = kLightStyleBGColor;
             break;
         default:
             break;

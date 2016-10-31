@@ -38,7 +38,7 @@
 @property (assign, nonatomic) BOOL allowsSelectedAnimation;
 
 /**
- 显示类型，默认为 Light
+ 显示类型，默认为 Dark
  */
 @property (assign, nonatomic) MSTImagePickerStyle themeStyle;
 

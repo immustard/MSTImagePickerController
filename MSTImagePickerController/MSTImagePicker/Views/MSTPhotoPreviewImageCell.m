@@ -120,8 +120,8 @@
             self.contentView.backgroundColor = [UIColor blackColor];
             break;
         case MSTImagePickerStyleLight:
-            self.myScrollView.backgroundColor = [UIColor whiteColor];
-            self.contentView.backgroundColor = [UIColor whiteColor];
+            self.myScrollView.backgroundColor = kLightStyleBGColor;
+            self.contentView.backgroundColor = kLightStyleBGColor;
             break;
         default:
             break;

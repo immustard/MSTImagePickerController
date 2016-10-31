@@ -22,7 +22,7 @@
         config.numsInRow = 4;
         config.allowsMasking = YES;
         config.allowsSelectedAnimation = YES;
-        config.themeStyle = MSTImagePickerStyleLight;
+        config.themeStyle = MSTImagePickerStyleDark;
         config.photoMomentGroupType = MSTImageMomentGroupTypeNone;
         config.isPhotosDesc = YES;
         config.isShowAlbumThumbnail = YES;
