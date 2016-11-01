@@ -23,4 +23,6 @@
  */
 - (void)didDisplayed;
 
+- (void)recoverSubviews;
+
 @end

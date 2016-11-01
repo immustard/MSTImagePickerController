@@ -170,7 +170,7 @@
         MSTPhotoConfiguration *config = [MSTPhotoConfiguration defaultConfiguration];
         [_selectButton setImage:config.photoNormal ? config.photoNormal : [UIImage imageNamed:@"icon_picture_normal"] forState:UIControlStateNormal];
         [_selectButton setImage:config.photoSelected ? config.photoSelected : [UIImage imageNamed:@"icon_picture_selected"] forState:UIControlStateSelected];
-        [_selectButton setImageEdgeInsets:UIEdgeInsetsMake(2, 2, 2, 2)];
+        [_selectButton setImageEdgeInsets:UIEdgeInsetsMake(1, 1, 1, 1)];
         
         [_selectButton addTarget:self action:@selector(mp_selectButtonDidSelected:) forControlEvents:UIControlEventTouchUpInside];
         

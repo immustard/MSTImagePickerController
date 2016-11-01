@@ -24,7 +24,7 @@
 
 static NSString * const reuserIdentifier = @"MSTPhotoGridCell";
 
-@interface MSTPhotoGridController ()<PHPhotoLibraryChangeObserver, UICollectionViewDelegateFlowLayout, UIImagePickerControllerDelegate, UINavigationControllerDelegate, MSTPhotoGridCellDelegate> {
+@interface MSTPhotoGridController ()<PHPhotoLibraryChangeObserver, UICollectionViewDelegateFlowLayout, UIImagePickerControllerDelegate, UINavigationControllerDelegate, MSTPhotoGridCellDelegate, MSTPhotoPreviewControllerDelegate> {
     BOOL _isFirstAppear;
     
     BOOL _isShowCamera;
@@ -346,10 +346,9 @@ static NSString * const reuserIdentifier = @"MSTPhotoGridCell";
     } else {
         MSTPhotoPreviewController *ppc = [[MSTPhotoPreviewController alloc] init];
         ppc.hidesBottomBarWhenPushed = YES;
+        ppc.delegate = self;
         
-        tmpIndexPath = [NSIndexPath indexPathForItem:item inSection:0];
-        
-        [ppc didSelectedWithAlbum:_album indexPath:tmpIndexPath];
+        [ppc didSelectedWithAlbum:_album item:item];
         
         [self.navigationController pushViewController:ppc animated:YES];
     }
@@ -489,5 +488,10 @@ static NSString * const reuserIdentifier = @"MSTPhotoGridCell";
         [pickerCtrler removeSelectedAsset:asset];
         return NO;
     }
+}
+
+#pragma mark - MSTPhotoPreviewControllerDelegate
+- (void)photoPreviewDisappear {
+    [self.collectionView reloadItemsAtIndexPaths:[self.collectionView indexPathsForVisibleItems]];
 }
 @end

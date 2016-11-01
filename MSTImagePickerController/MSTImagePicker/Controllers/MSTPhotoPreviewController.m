@@ -11,20 +11,25 @@
 #import "MSTMoment.h"
 #import "UIView+MSTUtils.h"
 #import "MSTPhotoPreviewImageCell.h"
-
-#define screenWidth  [UIScreen mainScreen].bounds.size.width
-#define screenHeight [UIScreen mainScreen].bounds.size.height
+#import "MSTImagePickerController.h"
 
 @interface MSTPhotoPreviewController ()<UICollectionViewDelegate, UICollectionViewDataSource> {
     MSTAlbumModel *_albumModel;
     MSTMoment *_moment;
-    NSIndexPath *_indexPath;
+    NSInteger _currentItem;
+    
+    MSTImagePickerStyle _pickerStyle;
+    BOOL _isShowAnimation;
 }
 
 @property (strong, nonatomic) UICollectionView *myCollectionView;
 
 @property (strong, nonatomic) UIView *customNavigationBar;
 @property (strong, nonatomic) UIView *customToolBar;
+
+@property (strong, nonatomic) UIButton *selectedButton;
+@property (strong, nonatomic) UIButton *originalImageButton;
+@property (strong, nonatomic) UIButton *originalTextButton;
 
 @end
 
@@ -46,6 +51,8 @@
     [super viewWillDisappear:animated];
     
     [self.navigationController setNavigationBarHidden:NO animated:NO];
+    
+    if ([self.delegate respondsToSelector:@selector(photoPreviewDisappear)]) [self.delegate photoPreviewDisappear];
 }
 
 #pragma mark - Instance Methods
@@ -53,9 +60,9 @@
     return YES;
 }
 
-- (void)didSelectedWithAlbum:(MSTAlbumModel *)album indexPath:(NSIndexPath *)indexPath {
+- (void)didSelectedWithAlbum:(MSTAlbumModel *)album item:(NSInteger)item {
     _albumModel = album;
-    _indexPath = indexPath;
+    _currentItem = item;
 }
 
 - (void)mp_setupSubviews {
@@ -64,20 +71,17 @@
     self.myCollectionView.contentOffset = CGPointMake(0, 0);
     [self.myCollectionView setContentSize:CGSizeMake((self.view.width + 20)*5, self.view.height)];
 
-    UIButton *backBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    backBtn.backgroundColor = [UIColor orangeColor];
-    backBtn.frame = CGRectMake(20, 20, 50, 50);
+    [self.myCollectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:_currentItem inSection:0] atScrollPosition:UICollectionViewScrollPositionLeft animated:NO];
     
-    [backBtn addTarget:self action:@selector(mp_backButtonDidClicked) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:backBtn];
-    
-    [self.myCollectionView scrollToItemAtIndexPath:_indexPath atScrollPosition:UICollectionViewScrollPositionLeft animated:NO];
-    
-    MSTPhotoPreviewImageCell *cell = (MSTPhotoPreviewImageCell *)[_myCollectionView cellForItemAtIndexPath:_indexPath];
+#warning waiting for fixing 这里的 cell 为 nil
+    //清晰显示，但是失败了。。。=-=
+    MSTPhotoPreviewImageCell *cell = (MSTPhotoPreviewImageCell *)[_myCollectionView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:_currentItem inSection:0]];
     [cell didDisplayed];
     
     MSTPhotoConfiguration *config = [MSTPhotoConfiguration defaultConfiguration];
-    switch (config.themeStyle) {
+    _pickerStyle = config.themeStyle;
+    _isShowAnimation = config.allowsSelectedAnimation;
+    switch (_pickerStyle) {
         case MSTImagePickerStyleDark:
             self.myCollectionView.backgroundColor = [UIColor blackColor];
             break;
@@ -87,17 +91,53 @@
         default:
             break;
     }
+    
+    [self mp_setupCustomNavigationBar];
+    [self mp_setupCustomToolBar];
+    
+    [self mp_refreshCustomBars];
 }
 
 - (void)mp_setupCustomNavigationBar {
-    self.customNavigationBar = [[UIView alloc] initWithFrame:CGRectMake(0, 0, screenWidth, 64)];
+    self.customNavigationBar = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kScreenWidth, 64)];
     
     UIButton *backButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    backButton.frame = CGRectMake(10, 0, 64, 64);
+    backButton.frame = CGRectMake(0, 0, 64, 64);
+    [backButton setImageEdgeInsets:UIEdgeInsetsMake(22, 22, 22, 22)];
+    [backButton addTarget:self action:@selector(mp_backButtonDidClicked) forControlEvents:UIControlEventTouchUpInside];
+    
+    switch (_pickerStyle) {
+        case MSTImagePickerStyleLight:
+            _customNavigationBar.backgroundColor = [UIColor colorWithWhite:1 alpha:0.7];
+            [backButton setImage:[UIImage imageNamed:@"icon_preview_back_light"] forState:UIControlStateNormal];
+            [self.selectedButton setImage:[UIImage imageNamed:@"icon_preview_selected_light"] forState:UIControlStateNormal];
+            [self.selectedButton setImage:[UIImage imageNamed:@"icon_picture_selected"] forState:UIControlStateSelected];
+            break;
+        case MSTImagePickerStyleDark:
+            _customNavigationBar.backgroundColor = [UIColor colorWithWhite:0 alpha:0.7];
+            [backButton setImage:[UIImage imageNamed:@"icon_preview_back_dark"] forState:UIControlStateNormal];
+            [self.selectedButton setImage:[UIImage imageNamed:@"icon_picture_normal"] forState:UIControlStateNormal];
+            [self.selectedButton setImage:[UIImage imageNamed:@"icon_picture_selected"] forState:UIControlStateSelected];
+            break;
+    }
+    
+    [self.view addSubview:_customNavigationBar];
+    [_customNavigationBar addSubview:backButton];
+    [_customNavigationBar addSubview:_selectedButton];
 }
 
 - (void)mp_setupCustomToolBar {
-    self.customToolBar = [[UIView alloc] initWithFrame:CGRectMake(0, screenHeight - 44, screenWidth, 44)];
+    self.customToolBar = [[UIView alloc] initWithFrame:CGRectMake(0, kScreenHeight - 44, kScreenWidth, 44)];
+    
+    
+}
+
+- (void)mp_refreshCustomBars {
+    MSTImagePickerController *pickerCtrler = (MSTImagePickerController *)self.navigationController;
+    
+    MSTAssetModel *currentModel = _albumModel.models[_currentItem];
+    //检查是否为选中照片
+    self.selectedButton.selected = [pickerCtrler containAssetModel:currentModel];
 }
 
 - (UICollectionViewFlowLayout *)mp_flowLayout {
@@ -113,6 +153,21 @@
 
 - (void)mp_backButtonDidClicked {
     [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void)mp_selectedButtonDidClicked:(UIButton *)sender {
+    MSTImagePickerController *pickerCtrler = (MSTImagePickerController *)self.navigationController;
+    MSTAssetModel *model = _albumModel.models[_currentItem];
+    
+    if (sender.isSelected) {
+        //选中情况
+        sender.selected = NO;
+        [pickerCtrler removeSelectedAsset:model];
+    } else {
+        sender.selected = [pickerCtrler addSelectedAsset:model];
+        
+        if (sender.isSelected && _isShowAnimation) [sender addSpringAnimation];
+    }
 }
 
 #pragma mark - Lazy Load
@@ -134,6 +189,16 @@
     return _myCollectionView;
 }
 
+- (UIButton *)selectedButton {
+    if (!_selectedButton) {
+        self.selectedButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        _selectedButton.frame = CGRectMake(kScreenWidth-64, 0, 64, 64);
+        [_selectedButton setImageEdgeInsets:UIEdgeInsetsMake(16, 16, 16, 16)];
+        [_selectedButton addTarget:self action:@selector(mp_selectedButtonDidClicked:) forControlEvents:UIControlEventTouchUpInside];
+    }
+    return _selectedButton;
+}
+
 #pragma mark - UICollectionViewDataSource & Delegate
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     return _albumModel.count;
@@ -144,6 +209,26 @@
     cell.model = _albumModel.models[indexPath.item];
     
     return cell;
+}
+
+- (void)collectionView:(UICollectionView *)collectionView willDisplayCell:(MSTPhotoPreviewImageCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
+    [cell recoverSubviews];
+}
+
+- (void)collectionView:(UICollectionView *)collectionView didEndDisplayingCell:(MSTPhotoPreviewImageCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
+    [cell recoverSubviews];
+}
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    CGFloat offSetWidth = scrollView.contentOffset.x;
+    offSetWidth = offSetWidth +  ((self.view.width + 20) * 0.5);
+    
+    NSInteger currentItem = offSetWidth / (self.view.width + 20);
+    
+    if (_currentItem != currentItem) {
+        _currentItem = currentItem;
+        [self mp_refreshCustomBars];
+    }
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {

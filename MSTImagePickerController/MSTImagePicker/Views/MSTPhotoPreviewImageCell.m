@@ -15,7 +15,6 @@
 
 @interface MSTPhotoPreviewImageCell ()<UIScrollViewDelegate> {
     BOOL _isLivePhoto;
-    MSTImagePickerStyle _pickerStyle;
 }
 
 @property (strong, nonatomic) UIScrollView *myScrollView;
@@ -111,10 +110,14 @@
     }
 }
 
+- (void)recoverSubviews {
+    [self.myScrollView setZoomScale:1.0 animated:NO];
+    [self mp_resizeSubviews];
+}
+
 - (void)mp_setupSubview {
     MSTPhotoConfiguration *config = [MSTPhotoConfiguration defaultConfiguration];
-    _pickerStyle = config.themeStyle;
-    switch (_pickerStyle) {
+    switch (config.themeStyle) {
         case MSTImagePickerStyleDark:
             self.myScrollView.backgroundColor = [UIColor blackColor];
             self.contentView.backgroundColor = [UIColor blackColor];

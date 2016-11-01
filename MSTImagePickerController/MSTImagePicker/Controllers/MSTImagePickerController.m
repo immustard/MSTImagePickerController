@@ -202,8 +202,8 @@
     [self mp_refreshOriginalImageSize];
 }
 
-- (CGFloat)mp_calculateWidthWithString:(NSString *)string {
-    return [string boundingRectWithSize:CGSizeMake(300, 44) options:NSStringDrawingUsesFontLeading attributes:@{NSFontAttributeName: [UIFont systemFontOfSize:17]} context:nil].size.width;
+- (CGFloat)mp_calculateWidthWithString:(NSString *)string textSize:(CGFloat)textSize {
+    return [string boundingRectWithSize:CGSizeMake(300, 44) options:NSStringDrawingUsesFontLeading attributes:@{NSFontAttributeName: [UIFont systemFontOfSize:textSize]} context:nil].size.width;
 }
 
 - (void)mp_previewButtonDidClicked:(UIButton *)sender {
@@ -286,7 +286,7 @@
         NSString *string = NSLocalizedStringFromTable(@"str_preview", @"MSTImagePicker", @"预览");
 
         self.previewButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _previewButton.frame = CGRectMake(0, 0, [self mp_calculateWidthWithString:string] + 20, 44);
+        _previewButton.frame = CGRectMake(0, 0, [self mp_calculateWidthWithString:string textSize:17] + 20, 44);
         [_previewButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
         [_previewButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
 
@@ -320,9 +320,9 @@
         NSString *string = NSLocalizedStringFromTable(@"str_original", @"MSTImagePicker", @"原图");
         
         self.originalTextButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _originalTextButton.frame = CGRectMake(self.originalImageButton.right, 0, [self mp_calculateWidthWithString:string], 44);
+        _originalTextButton.frame = CGRectMake(self.originalImageButton.right, 0, [self mp_calculateWidthWithString:string textSize:15], 44);
         [_originalTextButton setTitle:string forState:UIControlStateNormal];
-        _originalTextButton.titleLabel.font = [UIFont systemFontOfSize:17];
+        _originalTextButton.titleLabel.font = [UIFont systemFontOfSize:15];
         [_originalTextButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
         [_originalTextButton setTitleColor:[UIColor blackColor] forState:UIControlStateSelected];
         
@@ -338,7 +338,7 @@
         NSString *string = NSLocalizedStringFromTable(@"str_done", @"MSTImagePicker", @"完成");
         
         self.doneButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _doneButton.frame = CGRectMake(self.toolbar.width-[self mp_calculateWidthWithString:string]-20, 0, [self mp_calculateWidthWithString:string] + 20, 44);
+        _doneButton.frame = CGRectMake(self.toolbar.width-[self mp_calculateWidthWithString:string textSize:17]-20, 0, [self mp_calculateWidthWithString:string textSize:17] + 20, 44);
         [_doneButton setTitle:string forState:UIControlStateNormal];
         [_doneButton setTitleColor:[UIColor colorWithRed:0.65 green:0.82 blue:0.88 alpha:1.00] forState:UIControlStateDisabled];
         [_doneButton setTitleColor:[UIColor colorWithRed:0.36 green:0.79 blue:0.96 alpha:1.00] forState:UIControlStateNormal];
@@ -368,7 +368,7 @@
 - (UILabel *)originalSizeLabel {
     if (!_originalSizeLabel) {
         self.originalSizeLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.originalTextButton.right, 0, 80, 44)];
-        _originalSizeLabel.font = [UIFont systemFontOfSize:15];
+        _originalSizeLabel.font = [UIFont systemFontOfSize:13];
         _originalSizeLabel.textColor = [UIColor blackColor];
         
         [self.toolbar addSubview:_originalSizeLabel];
