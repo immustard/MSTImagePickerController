@@ -10,7 +10,7 @@
 
 @protocol MSTPhotoPreviewControllerDelegate <NSObject>
 
-- (void)photoPreviewDisappear;
+- (void)photoPreviewDisappearIsFullImage:(BOOL)isFullImage;
 
 @end
 

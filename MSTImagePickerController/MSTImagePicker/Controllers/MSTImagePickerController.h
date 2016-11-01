@@ -177,6 +177,23 @@
  */
 - (BOOL)containAssetModel:(MSTAssetModel *)asset;
 
+/**
+ 已经选中了几张图片
+
+ @return 选中数量
+ */
+- (NSInteger)hasSelected;
+
+/**
+ 是否选中的是原图
+ */
+- (BOOL)isFullImage;
+
+/**
+ 设置是否是原图
+ */
+- (void)setFullImageOption:(BOOL)isFullImage;
+
 @end
 
 

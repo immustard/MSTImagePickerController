@@ -103,6 +103,21 @@
     return [self.pickedModelIdentifiers containsObject:asset.identifier];
 }
 
+- (NSInteger)hasSelected {
+    return self.pickedModelIdentifiers.count;
+}
+
+- (BOOL)isFullImage {
+    return self.originalImageButton.isSelected;
+}
+
+- (void)setFullImageOption:(BOOL)isFullImage {
+    self.originalTextButton.selected = isFullImage;
+    self.originalImageButton.selected = isFullImage;
+    
+    [self mp_refreshOriginalImageSize];
+}
+
 /**
  检查授权访问状态
  */

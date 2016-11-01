@@ -358,9 +358,7 @@ static NSString * const reuserIdentifier = @"MSTPhotoGridCell";
 - (void)photoLibraryDidChange:(PHChange *)changeInstance {
     // 检测是否有资源变化
     PHFetchResultChangeDetails *collectionChanges = [changeInstance changeDetailsForFetchResult:_album.content];
-    if (!collectionChanges) {
-        return;
-    }
+    if (!collectionChanges) return;
     
     // 界面更新, update interfaces
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -383,19 +381,17 @@ static NSString * const reuserIdentifier = @"MSTPhotoGridCell";
                 NSArray <NSIndexPath *>*changedPaths = nil;
                 
                 NSIndexSet *removedIndexes = collectionChanges.removedIndexes;
-                if (removedIndexes.count > 0) {
+                if (removedIndexes.count > 0)
                     removedPaths = [removedIndexes indexPathsFromIndexesWithSection:0 isShowCamera:isCamera];
-                }
                 
                 NSIndexSet *insertedIndexes = collectionChanges.insertedIndexes;
-                if (insertedIndexes.count > 0) {
+                if (insertedIndexes.count > 0)
                     insertedPaths = [insertedIndexes indexPathsFromIndexesWithSection:0 isShowCamera:isCamera];
-                }
                 
                 NSIndexSet *changedIndexes = collectionChanges.changedIndexes;
-                if (changedIndexes.count > 0) {
+                if (changedIndexes.count > 0)
                     changedPaths = [changedIndexes indexPathsFromIndexesWithSection:0 isShowCamera:isCamera];
-                }
+
                 
                 BOOL shouldReload = NO;
                 if (changedPaths && removedPaths) {
@@ -408,9 +404,7 @@ static NSString * const reuserIdentifier = @"MSTPhotoGridCell";
                 }
                 
                 NSInteger item = _isShowCamera ? removedPaths.lastObject.item - 1 : removedPaths.lastObject.item;
-                if (removedPaths.lastObject && item >= self.album.count) {
-                    shouldReload = YES;
-                }
+                if (removedPaths.lastObject && item >= self.album.count) shouldReload = YES;
                 
                 if (shouldReload) {
                     [collectionView reloadData];
@@ -491,7 +485,10 @@ static NSString * const reuserIdentifier = @"MSTPhotoGridCell";
 }
 
 #pragma mark - MSTPhotoPreviewControllerDelegate
-- (void)photoPreviewDisappear {
+- (void)photoPreviewDisappearIsFullImage:(BOOL)isFullImage {
     [self.collectionView reloadItemsAtIndexPaths:[self.collectionView indexPathsForVisibleItems]];
+    
+    MSTImagePickerController *pickerCtrler = (MSTImagePickerController *)self.navigationController;
+    [pickerCtrler setFullImageOption:isFullImage];
 }
 @end
