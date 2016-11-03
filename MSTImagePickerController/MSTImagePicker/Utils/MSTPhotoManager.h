@@ -125,6 +125,14 @@
 /** 读取原始图片 */
 - (void)getOriginImageFromPHAsset:(PHAsset *)asset completionBlock:(void(^)(UIImage *result))completionBlock;
 
+/**
+ 读取视频
+
+ @param asset 视频内容
+ @param completionBlock 回调
+ */
+- (void)getAVPlayerItemFromPHAsset:(PHAsset *)asset completionBlock:(void(^)(AVPlayerItem *item))completionBlock;
+
 
 /**
  获取图片的大小

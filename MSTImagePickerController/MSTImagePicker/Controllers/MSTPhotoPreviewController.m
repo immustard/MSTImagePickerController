@@ -14,13 +14,15 @@
 #import "MSTImagePickerController.h"
 #import "MSTPhotoManager.h"
 
-@interface MSTPhotoPreviewController ()<UICollectionViewDelegate, UICollectionViewDataSource> {
+@interface MSTPhotoPreviewController ()<UICollectionViewDelegate, UICollectionViewDataSource, MSTPhotoPreviewCellDelegate> {
     MSTAlbumModel *_albumModel;
     MSTMoment *_moment;
     NSInteger _currentItem;
     
     MSTImagePickerStyle _pickerStyle;
     BOOL _isShowAnimation;
+    
+    BOOL _isShowBars;
 }
 
 @property (strong, nonatomic) UICollectionView *myCollectionView;
@@ -70,6 +72,8 @@
 }
 
 - (void)mp_setupSubviews {
+    _isShowBars = YES;
+    
     self.automaticallyAdjustsScrollViewInsets = NO;
     
     self.myCollectionView.contentOffset = CGPointMake(0, 0);
@@ -164,23 +168,37 @@
 }
 
 - (void)mp_refreshCustomBars {
-    MSTImagePickerController *pickerCtrler = (MSTImagePickerController *)self.navigationController;
-    
-    if ([pickerCtrler hasSelected]) {
-        //有选中照片
+    if (_isShowBars) {
+        self.customToolBar.hidden = NO;
+        self.customNavigationBar.hidden = NO;
         
+        MSTImagePickerController *pickerCtrler = (MSTImagePickerController *)self.navigationController;
         MSTAssetModel *currentModel = _albumModel.models[_currentItem];
-        //检查是否为选中照片
-        self.selectedButton.selected = [pickerCtrler containAssetModel:currentModel];
         
-        self.pickedCountLabel.text = [NSString stringWithFormat:@"%zi", [pickerCtrler hasSelected]];
+        if ([pickerCtrler hasSelected]) {
+            //有选中照片
+            
+            //检查是否为选中照片
+            self.selectedButton.selected = [pickerCtrler containAssetModel:currentModel];
+            
+            self.pickedCountLabel.text = [NSString stringWithFormat:@"%zi", [pickerCtrler hasSelected]];
+        }
+        [self.doneButton setEnabled:[pickerCtrler hasSelected]];
+        self.pickedCountLabel.hidden = ![pickerCtrler hasSelected];
+        
+        if (currentModel.type == MSTAssetModelMediaTypeVideo) {
+            //隐藏 『原图』
+            self.originalTextButton.hidden = YES;
+            self.originalImageButton.hidden = YES;
+        } else {
+            self.originalImageButton.hidden = NO;
+            self.originalTextButton.hidden = NO;
+            [self mp_refreshOriginalImageSize];
+        }
+    } else {
+        self.customNavigationBar.hidden = YES;
+        self.customToolBar.hidden = YES;
     }
-    [self.doneButton setEnabled:[pickerCtrler hasSelected]];
-    self.pickedCountLabel.hidden = ![pickerCtrler hasSelected];
-    
-    [self mp_refreshOriginalImageSize];
-    
-    
 }
 
 - (UICollectionViewFlowLayout *)mp_flowLayout {
@@ -204,6 +222,10 @@
     self.originalImageButton.selected = selected;
     
     [self mp_refreshOriginalImageSize];
+    
+    if (!self.selectedButton.isSelected && selected) {
+        [self mp_selectedButtonDidClicked:self.selectedButton];
+    }
 }
 
 - (void)mp_refreshOriginalImageSize {
@@ -340,6 +362,7 @@
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     MSTPhotoPreviewImageCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"MSTPhotoPreviewImageCell" forIndexPath:indexPath];
     cell.model = _albumModel.models[indexPath.item];
+    cell.delegate = self;
     
     return cell;
 }
@@ -369,6 +392,13 @@
     for (MSTPhotoPreviewImageCell *cell in _myCollectionView.visibleCells) {
         [cell didDisplayed];
     }
+}
+
+#pragma mark - MSTPhotoPreviewCellDelegate
+- (void)photoHasBeenTapped {
+    _isShowBars = !_isShowBars;
+    
+    [self mp_refreshCustomBars];
 }
 
 @end

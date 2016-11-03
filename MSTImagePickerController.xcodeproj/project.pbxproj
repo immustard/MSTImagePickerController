@@ -22,6 +22,9 @@
 		AD0455521DBEFD4E0099D877 /* IQToolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = AD0455411DBEFD4E0099D877 /* IQToolbar.m */; };
 		AD0455531DBEFD4E0099D877 /* IQUIView+IQKeyboardToolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = AD0455431DBEFD4E0099D877 /* IQUIView+IQKeyboardToolbar.m */; };
 		AD0455541DBEFD4E0099D877 /* IQKeyboardManager.bundle in Resources */ = {isa = PBXBuildFile; fileRef = AD0455451DBEFD4E0099D877 /* IQKeyboardManager.bundle */; };
+		AD05BF861DC96DB0000CCA59 /* MSTVideoPreviewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD05BF851DC96DB0000CCA59 /* MSTVideoPreviewController.m */; };
+		AD05BF8C1DC9B87C000CCA59 /* icon_preview_video_play_highlighted@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = AD05BF8A1DC9B87C000CCA59 /* icon_preview_video_play_highlighted@2x.png */; };
+		AD05BF8D1DC9B87C000CCA59 /* icon_preview_video_play@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = AD05BF8B1DC9B87C000CCA59 /* icon_preview_video_play@2x.png */; };
 		AD05CE6D1DA9CD14005AB1F0 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = AD05CE6C1DA9CD14005AB1F0 /* main.m */; };
 		AD05CE701DA9CD14005AB1F0 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = AD05CE6F1DA9CD14005AB1F0 /* AppDelegate.m */; };
 		AD05CE731DA9CD14005AB1F0 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD05CE721DA9CD14005AB1F0 /* MainViewController.m */; };
@@ -119,6 +122,10 @@
 		AD0455421DBEFD4E0099D877 /* IQUIView+IQKeyboardToolbar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "IQUIView+IQKeyboardToolbar.h"; sourceTree = "<group>"; };
 		AD0455431DBEFD4E0099D877 /* IQUIView+IQKeyboardToolbar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "IQUIView+IQKeyboardToolbar.m"; sourceTree = "<group>"; };
 		AD0455451DBEFD4E0099D877 /* IQKeyboardManager.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = IQKeyboardManager.bundle; sourceTree = "<group>"; };
+		AD05BF841DC96DB0000CCA59 /* MSTVideoPreviewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSTVideoPreviewController.h; sourceTree = "<group>"; };
+		AD05BF851DC96DB0000CCA59 /* MSTVideoPreviewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSTVideoPreviewController.m; sourceTree = "<group>"; };
+		AD05BF8A1DC9B87C000CCA59 /* icon_preview_video_play_highlighted@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "icon_preview_video_play_highlighted@2x.png"; path = "MSTImagePickerController/MSTImagePicker/Resources/icon_preview_video_play_highlighted@2x.png"; sourceTree = SOURCE_ROOT; };
+		AD05BF8B1DC9B87C000CCA59 /* icon_preview_video_play@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "icon_preview_video_play@2x.png"; path = "MSTImagePickerController/MSTImagePicker/Resources/icon_preview_video_play@2x.png"; sourceTree = SOURCE_ROOT; };
 		AD05CE681DA9CD14005AB1F0 /* MSTImagePickerController.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MSTImagePickerController.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AD05CE6C1DA9CD14005AB1F0 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		AD05CE6E1DA9CD14005AB1F0 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -400,6 +407,8 @@
 				ADA5276E1DAF7AF8006C838E /* MSTPhotoGridController.m */,
 				ADD1FC6D1DB710C7002642CC /* MSTPhotoPreviewController.h */,
 				ADD1FC6E1DB710C7002642CC /* MSTPhotoPreviewController.m */,
+				AD05BF841DC96DB0000CCA59 /* MSTVideoPreviewController.h */,
+				AD05BF851DC96DB0000CCA59 /* MSTVideoPreviewController.m */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -460,6 +469,8 @@
 			isa = PBXGroup;
 			children = (
 				ADA527A91DAF8267006C838E /* MSTImagePicker.strings */,
+				AD05BF8A1DC9B87C000CCA59 /* icon_preview_video_play_highlighted@2x.png */,
+				AD05BF8B1DC9B87C000CCA59 /* icon_preview_video_play@2x.png */,
 				AD7BD0121DC72FB200C1D00C /* icon_preview_normal_light@2x.png */,
 				AD7BD0131DC72FB200C1D00C /* icon_preview_normal_light@3x.png */,
 				AD7BD0101DC72EF000C1D00C /* icon_preview_back_light@2x.png */,
@@ -601,7 +612,9 @@
 				AD0455541DBEFD4E0099D877 /* IQKeyboardManager.bundle in Resources */,
 				AD7BD0141DC72FB200C1D00C /* icon_preview_normal_light@2x.png in Resources */,
 				ADA1BDE41DC0948D0068123A /* icon_grid_video_badge@2x.png in Resources */,
+				AD05BF8C1DC9B87C000CCA59 /* icon_preview_video_play_highlighted@2x.png in Resources */,
 				AD7BD0111DC72EF000C1D00C /* icon_preview_back_light@2x.png in Resources */,
+				AD05BF8D1DC9B87C000CCA59 /* icon_preview_video_play@2x.png in Resources */,
 				AD7DA5201DB4C11500141461 /* icon_grid_videoLength@2x.png in Resources */,
 				AD482B0E1DB06DA7003FBB67 /* icon_picture_selected@3x.png in Resources */,
 				AD7BD00C1DC6D46000C1D00C /* icon_full_image_selected@2x.png in Resources */,
@@ -671,6 +684,7 @@
 				ADA527841DAF7AF8006C838E /* MSTAlbumListCell.m in Sources */,
 				AD0455521DBEFD4E0099D877 /* IQToolbar.m in Sources */,
 				ADD1FC6F1DB710C7002642CC /* MSTPhotoPreviewController.m in Sources */,
+				AD05BF861DC96DB0000CCA59 /* MSTVideoPreviewController.m in Sources */,
 				AD0455531DBEFD4E0099D877 /* IQUIView+IQKeyboardToolbar.m in Sources */,
 				AD482B141DB0BE9E003FBB67 /* NSIndexSet+MSTUtils.m in Sources */,
 				AD0455511DBEFD4E0099D877 /* IQTitleBarButtonItem.m in Sources */,

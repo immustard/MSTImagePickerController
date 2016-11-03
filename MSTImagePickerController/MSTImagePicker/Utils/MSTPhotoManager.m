@@ -323,6 +323,16 @@
     }];
 }
 
+- (void)getAVPlayerItemFromPHAsset:(PHAsset *)asset completionBlock:(void (^)(AVPlayerItem *))completionBlock {
+    PHVideoRequestOptions *options = [[PHVideoRequestOptions alloc] init];
+    options.networkAccessAllowed = NO;
+    options.version = PHVideoRequestOptionsVersionOriginal;
+    
+    [self.imageManager requestPlayerItemForVideo:asset options:options resultHandler:^(AVPlayerItem * _Nullable playerItem, NSDictionary * _Nullable info) {
+        completionBlock ? completionBlock(playerItem) : nil;
+    }];
+}
+
 - (void)getImageBytesWithArray:(NSArray<MSTAssetModel *> *)models completionBlock:(void (^)(NSString *))completionBlock {
     __block NSUInteger dataLength = 0;
     __block NSUInteger count = models.count;

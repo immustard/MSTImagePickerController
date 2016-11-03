@@ -20,6 +20,7 @@
 #import "MSTPhotoGridCell.h"
 #import "MSTPhotoGridHeaderView.h"
 #import "MSTPhotoPreviewController.h"
+#import "MSTVideoPreviewController.h"
 #import "MSTImagePickerController.h"
 
 static NSString * const reuserIdentifier = @"MSTPhotoGridCell";
@@ -266,7 +267,6 @@ static NSString * const reuserIdentifier = @"MSTPhotoGridCell";
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    NSIndexPath *tmpIndexPath = indexPath;
     NSInteger item = 0;
     BOOL pushToCamera = NO;
     
@@ -344,13 +344,21 @@ static NSString * const reuserIdentifier = @"MSTPhotoGridCell";
             [self presentViewController:pickerCtrler animated:YES completion:nil];
         }
     } else {
-        MSTPhotoPreviewController *ppc = [[MSTPhotoPreviewController alloc] init];
-        ppc.hidesBottomBarWhenPushed = YES;
-        ppc.delegate = self;
-        
-        [ppc didSelectedWithAlbum:_album item:item];
-        
-        [self.navigationController pushViewController:ppc animated:YES];
+        MSTAssetModel *model = _album.models[item];
+        if (model.type == MSTAssetModelMediaTypeVideo) {
+            MSTVideoPreviewController *vpc = [[MSTVideoPreviewController alloc] initWithAsset:model.asset];
+            vpc.hidesBottomBarWhenPushed = YES;
+            
+            [self.navigationController pushViewController:vpc animated:YES];
+        } else {
+            MSTPhotoPreviewController *ppc = [[MSTPhotoPreviewController alloc] init];
+            ppc.hidesBottomBarWhenPushed = YES;
+            ppc.delegate = self;
+            
+            [ppc didSelectedWithAlbum:_album item:item];
+            
+            [self.navigationController pushViewController:ppc animated:YES];
+        }
     }
 }
 
