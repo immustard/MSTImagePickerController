@@ -51,7 +51,6 @@ static NSString * const reuserIdentifier = @"MSTPhotoGridCell";
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    
 #warning waiting for updating 滚动到最下方，找到最佳方案
     if (!self.config.isPhotosDesc && _isFirstAppear) {
         [self mp_scrollToBottom];
@@ -140,6 +139,15 @@ static NSString * const reuserIdentifier = @"MSTPhotoGridCell";
     MSTPhotoGridCameraCell * cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"MSTPhotoGridCameraCell" forIndexPath:indexPath];
     if (self.config.cameraImage) cell.cameraImage = self.config.cameraImage;
     return cell;
+}
+
+- (void)mp_cancelButtonDidClicked {
+    [self dismissViewControllerAnimated:YES completion:nil];
+    
+    MSTImagePickerController *pickerCtrler = (MSTImagePickerController *)self.navigationController;
+    if ([pickerCtrler.MSTDelegate respondsToSelector:@selector(MSTImagePickerControllerDidCancel:)]) {
+        [pickerCtrler.MSTDelegate MSTImagePickerControllerDidCancel:pickerCtrler];
+    }
 }
 
 #pragma mark - Lazy Load
@@ -346,10 +354,15 @@ static NSString * const reuserIdentifier = @"MSTPhotoGridCell";
     } else {
         MSTAssetModel *model = _album.models[item];
         if (model.type == MSTAssetModelMediaTypeVideo) {
-            MSTVideoPreviewController *vpc = [[MSTVideoPreviewController alloc] initWithAsset:model.asset];
-            vpc.hidesBottomBarWhenPushed = YES;
-            
-            [self.navigationController pushViewController:vpc animated:YES];
+            MSTImagePickerController *pickerCtrler = (MSTImagePickerController *)self.navigationController;
+            if ([pickerCtrler hasSelected]) {
+                [self presentViewController:[self addAlertControllerWithTitle:NSLocalizedStringFromTable(@"str_both_video_photo", @"MSTImagePicker", @"不能同时选择视频和照片") actionTitle:NSLocalizedStringFromTable(@"str_i_see", @"MSTImagePicker", @"我知道了")] animated:YES completion:nil];
+            } else {
+                MSTVideoPreviewController *vpc = [[MSTVideoPreviewController alloc] initWithAsset:model.asset];
+                vpc.hidesBottomBarWhenPushed = YES;
+                
+                [self.navigationController pushViewController:vpc animated:YES];
+            }
         } else {
             MSTPhotoPreviewController *ppc = [[MSTPhotoPreviewController alloc] init];
             ppc.hidesBottomBarWhenPushed = YES;

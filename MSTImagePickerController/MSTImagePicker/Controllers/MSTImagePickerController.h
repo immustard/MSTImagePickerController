@@ -10,6 +10,8 @@
 #import "MSTImagePickerEnumeration.h"
 
 @class MSTAssetModel;
+@protocol MSTImagePickerControllerDelegate;
+
 @interface MSTImagePickerController : UINavigationController
 
 /**
@@ -140,6 +142,9 @@
 @property (strong, nonatomic) UIImage *cameraImage;
 
 
+@property (weak, nonatomic) id<MSTImagePickerControllerDelegate> MSTDelegate;
+
+
 /**
  构造器
  
@@ -196,7 +201,14 @@
 
 @end
 
+@protocol MSTImagePickerControllerDelegate <NSObject>
+@optional
 
+- (void)MSTImagePickerControllerDidCancel:(MSTImagePickerController *)picker;
+
+- (void)MSTImagePickerController:(MSTImagePickerController *)picker authorizeWithSourceType:(MSTImagePickerSourceType)sourceType authorizationStatus:(MSTAuthorizationStatus)status;
+
+@end
 
 
 

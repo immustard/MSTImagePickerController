@@ -10,7 +10,7 @@
 #import "MSTImagePickerController.h"
 #import "UIView+MSTUtils.h"
 
-@interface MainViewController ()<UIPickerViewDelegate, UIPickerViewDataSource> {
+@interface MainViewController ()<UIPickerViewDelegate, UIPickerViewDataSource, MSTImagePickerControllerDelegate> {
     NSInteger _sourceType;
 }
 @property (weak, nonatomic) IBOutlet UIPickerView *sourceTypePickerView;
@@ -64,6 +64,8 @@
         default:
             break;
     }
+    imagePicker.MSTDelegate = self;
+    
     imagePicker.allowsMutiSelected = _isMultiSelected.isOn;
     imagePicker.maxSelectCount = _maxSelectedNum.text.intValue;
     imagePicker.numsInRow = _numberOfRow.text.intValue;
@@ -119,6 +121,11 @@
 
 - (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
     _sourceType = row;
+}
+
+#pragma mark - MSTImagePickerControllerDelegate
+- (void)MSTImagePickerControllerDidCancel:(MSTImagePickerController *)picker {
+    NSLog(@"mstImagePickerControllerDidCancel");
 }
 
 @end

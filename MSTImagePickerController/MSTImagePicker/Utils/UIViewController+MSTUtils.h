@@ -12,4 +12,5 @@
 
 - (void)addNavigationRightCancelButton;
 
+- (UIAlertController *)addAlertControllerWithTitle:(NSString *)title actionTitle:(NSString *)actionTitle;
 @end

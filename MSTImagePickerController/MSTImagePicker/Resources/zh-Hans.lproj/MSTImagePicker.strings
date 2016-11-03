@@ -13,4 +13,7 @@
 "str_i_see" = "我知道了";
 "str_preview" = "预览";
 "str_done" = "完成";
+"str_setting" = "设置";
 "str_original" = "原图";
+"str_both_video_photo" = "选择照片时不能选择视频";
+"str_access_photo" = "请在iPhone的\"设置-隐私-照片\"选项中，\r允许%@访问你的手机相册";

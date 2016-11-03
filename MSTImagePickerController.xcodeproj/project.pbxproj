@@ -204,7 +204,7 @@
 		ADD1FC711DB715A7002642CC /* UIView+MSTUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+MSTUtils.m"; sourceTree = "<group>"; };
 		ADD1FC731DB71B40002642CC /* MSTPhotoPreviewImageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSTPhotoPreviewImageCell.h; sourceTree = "<group>"; };
 		ADD1FC741DB71B40002642CC /* MSTPhotoPreviewImageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSTPhotoPreviewImageCell.m; sourceTree = "<group>"; };
-		ADD1FC761DB740F8002642CC /* MSTPhotoPreviewCellDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MSTPhotoPreviewCellDelegate.h; path = Views/MSTPhotoPreviewCellDelegate.h; sourceTree = "<group>"; };
+		ADD1FC761DB740F8002642CC /* MSTPhotoPreviewCellDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSTPhotoPreviewCellDelegate.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -386,7 +386,6 @@
 		ADA527671DAF7AF8006C838E /* MSTImagePicker */ = {
 			isa = PBXGroup;
 			children = (
-				ADD1FC761DB740F8002642CC /* MSTPhotoPreviewCellDelegate.h */,
 				ADA527741DAF7AF8006C838E /* Utils */,
 				ADA5276F1DAF7AF8006C838E /* Models */,
 				ADA527791DAF7AF8006C838E /* Views */,
@@ -461,6 +460,7 @@
 				AD8C03A71DB5C8F3001F9EC9 /* MSTPhotoGridHeaderView.m */,
 				ADD1FC731DB71B40002642CC /* MSTPhotoPreviewImageCell.h */,
 				ADD1FC741DB71B40002642CC /* MSTPhotoPreviewImageCell.m */,
+				ADD1FC761DB740F8002642CC /* MSTPhotoPreviewCellDelegate.h */,
 			);
 			path = Views;
 			sourceTree = "<group>";

@@ -26,8 +26,6 @@
 @property (strong, nonatomic) MSTAlbumListController *albumListController;
 @property (strong, nonatomic) MSTPhotoGridController *photoGridController;
 
-@property (strong, nonatomic) UIAlertController *maxSelectedAlertController;
-
 @property (strong, nonatomic) NSMutableArray <MSTAssetModel *>*pickedModels;
 @property (strong, nonatomic) NSMutableArray <NSString *>*pickedModelIdentifiers;
 
@@ -46,11 +44,13 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [self setToolbarHidden:NO animated:NO];
+    self.view.backgroundColor = [UIColor whiteColor];
     
     [self mp_setupNavigationBar];
     [self mp_setupToolBar];
-    [self mp_checkAuthorizationStatus];
+    
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"cancel" style:UIBarButtonItemStylePlain target:self action:@selector(cancel)];
+
 }
 
 #pragma mark - Initialization Methods
@@ -58,6 +58,7 @@
     if (self = [super init]) {
         self.accessType = accessType;
         self.albumTitle = NSLocalizedStringFromTable(@"str_photos", @"MSTImagePicker", @"相册");
+        [self mp_checkAuthorizationStatus];
     }
     return self;
 }
@@ -66,7 +67,7 @@
 - (BOOL)addSelectedAsset:(MSTAssetModel *)asset {
     if (self.pickedModels.count == self.config.maxSelectCount) {
         
-        [self presentViewController:self.maxSelectedAlertController animated:YES completion:nil];
+        [self presentViewController:[self addAlertControllerWithTitle:[NSString stringWithFormat:NSLocalizedStringFromTable(@"str_get_to_maximum_selected", @"MSTImagePicker", @"最大选择数量提示"), self.config.maxSelectCount] actionTitle:NSLocalizedStringFromTable(@"str_i_see", @"MSTImagePicker", @"我知道了")] animated:YES completion:nil];
         
         return NO;
     }
@@ -123,47 +124,33 @@
  */
 - (void)mp_checkAuthorizationStatus {
     [MSTPhotoManager checkAuthorizationStatusWithSourceType:MSTImagePickerSourceTypePhoto callBack:^(MSTImagePickerSourceType sourceType, MSTAuthorizationStatus status) {
-        switch (status) {
-            case MSTAuthorizationStatusNotDetermined:
-                NSLog(@"PHAuthorizationStatusNotDetermined");
-                break;
-            case MSTAuthorizationStatusRestricted:
-                NSLog(@"PHAuthorizationStatusRestricted");
-                break;
-            case MSTAuthorizationStatusDenied:{
-                NSLog(@"PHAuthorizationStatusDenied");
+        if ([self.MSTDelegate respondsToSelector:@selector(MSTImagePickerController:authorizeWithSourceType:authorizationStatus:)]) {
+            [self.MSTDelegate MSTImagePickerController:self authorizeWithSourceType:MSTImagePickerSourceTypePhoto authorizationStatus:status];
+        }
+        
+        if (status == MSTAuthorizationStatusAuthorized) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self setToolbarHidden:NO animated:NO];
                 
-                UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"" message:NSLocalizedStringFromTable(@"str_allow_photoLibrary", @"MSTImagePicker", @"允许访问") preferredStyle:UIAlertControllerStyleAlert];
-                UIAlertAction *action = [UIAlertAction actionWithTitle:NSLocalizedStringFromTable(@"str_confirm", @"MSTImagePicker", @"确认") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-                    [self dismissViewControllerAnimated:YES completion:nil];
-                }];
-                [alertController addAction:action];
-                [self presentViewController:alertController animated:YES completion:nil];
-                
-                break;
-            }
-            case MSTAuthorizationStatusAuthorized:{
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    switch (_accessType) {
-                        case MSTImagePickerAccessTypeAlbums: {
-                            [self setViewControllers:@[self.albumListController]];
-                        }
-                            break;
-                        case MSTImagePickerAccessTypePhotosWithAlbums: {
-                            [self setViewControllers:@[self.albumListController, self.photoGridController]];
-                        }
-                            break;
-                        case MSTImagePickerAccessTypePhotosWithoutAlbums: {
-                            [self setViewControllers:@[self.photoGridController] animated:YES];
-                        }
-                            break;
+                switch (_accessType) {
+                    case MSTImagePickerAccessTypeAlbums: {
+                        [self setViewControllers:@[self.albumListController]];
                     }
-                    NSLog(@"PHAuthorizationStatusAuthorized");
-                });
-                break;
-            }
-            default:
-                break;
+                        break;
+                    case MSTImagePickerAccessTypePhotosWithAlbums: {
+                        [self setViewControllers:@[self.albumListController, self.photoGridController]];
+                    }
+                        break;
+                    case MSTImagePickerAccessTypePhotosWithoutAlbums: {
+                        [self setViewControllers:@[self.photoGridController] animated:YES];
+                    }
+                        break;
+                }
+            });
+        } else {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self setViewControllers:@[self.albumListController]];
+            });
         }
     }];
 }
@@ -270,16 +257,6 @@
         }];
     }
     return _photoGridController;
-}
-
-- (UIAlertController *)maxSelectedAlertController {
-    if (!_maxSelectedAlertController) {
-        self.maxSelectedAlertController = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:NSLocalizedStringFromTable(@"str_get_to_maximum_selected", @"MSTImagePicker", @"最大选择数量提示"), self.config.maxSelectCount] message:nil preferredStyle:UIAlertControllerStyleAlert];
-        
-        UIAlertAction *okAction = [UIAlertAction actionWithTitle:NSLocalizedStringFromTable(@"str_i_see", @"MSTImagePicker", @"我知道了") style:UIAlertActionStyleDefault handler:nil];
-        [_maxSelectedAlertController addAction:okAction];
-    }
-    return _maxSelectedAlertController;
 }
 
 - (NSMutableArray *)pickedModels {
@@ -465,7 +442,7 @@
 }
 
 - (void)setAlbumTitle:(NSString *)albumTitle {
-    self.albumListController.title = _albumTitle;
+    self.albumListController.title = albumTitle;
 }
 
 - (void)setAlbumPlaceholderThumbnail:(UIImage *)albumPlaceholderThumbnail {
