@@ -22,7 +22,7 @@
 @property (strong, nonatomic) UILabel *videoLengthLabel;
 
 @property (strong, nonatomic) UIButton *selectButton;
-
+@property (strong, nonatomic) UIImageView *maskingImageView;
 @end
 
 @implementation MSTPhotoGridCell
@@ -43,7 +43,15 @@
         selected = [self.delegate gridCellSelectedButtonDidClicked:!sender.isSelected selectedAsset:_asset];
     
     sender.selected = selected;
-    if (selected && config.allowsSelectedAnimation) [sender addSpringAnimation];
+    if (selected) {
+        if (config.allowsSelectedAnimation)
+            [sender addSpringAnimation];
+        if (config.allowsMasking)
+            self.maskingImageView.hidden = NO;
+    } else {
+        if (config.allowsMasking)
+            self.maskingImageView.hidden = YES;
+    }
 }
 
 #pragma mark - Setter
@@ -53,13 +61,13 @@
     [[MSTPhotoManager sharedInstance] getThumbnailImageFromPHAsset:asset.asset photoWidth:self.contentView.width completionBlock:^(UIImage *result, NSDictionary *info) {
         self.imageView.image = result;
     }];
-    
-    self.liveBadgeImageView.hidden = YES;
-    self.videoLengthBgView.hidden = YES;
-    self.selectButton.hidden = YES;
-    self.videoLengthLabel.text = @"";
-    
     MSTPhotoConfiguration *config = [MSTPhotoConfiguration defaultConfiguration];
+    
+    self.videoLengthBgView.hidden = YES;
+    if (config.allowsMasking) self.maskingImageView.hidden = YES;
+    self.selectButton.hidden = YES;
+    self.liveBadgeImageView.hidden = YES;
+    self.videoLengthLabel.text = @"";
     
     if (asset.type == MSTAssetModelMediaTypeVideo) {
         //视频
@@ -73,6 +81,8 @@
         self.selectButton.hidden = NO;
     }
     self.selectButton.selected = asset.isSelected;
+    if (asset.isSelected && config.allowsMasking)
+        self.maskingImageView.hidden = NO;
 }
 
 #pragma mark - Lazy Load
@@ -186,6 +196,30 @@
     return _selectButton;
 }
 
+- (UIImageView *)maskingImageView {
+    if (!_maskingImageView) {
+        self.maskingImageView = [UIImageView new];
+        _maskingImageView.translatesAutoresizingMaskIntoConstraints = NO;
+        [self.contentView addSubview:_maskingImageView];
+        
+        NSLayoutConstraint *top = [NSLayoutConstraint constraintWithItem:_maskingImageView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeTop multiplier:1 constant:0];
+        NSLayoutConstraint *leading = [NSLayoutConstraint constraintWithItem:_maskingImageView attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeLeading multiplier:1 constant:0];
+        NSLayoutConstraint *trailing = [NSLayoutConstraint constraintWithItem:_maskingImageView attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeTrailing multiplier:1 constant:0];
+        NSLayoutConstraint *bottom = [NSLayoutConstraint constraintWithItem:_maskingImageView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
+        [self.contentView addConstraints:@[top, leading, trailing, bottom]];
+        
+        MSTPhotoConfiguration *config = [MSTPhotoConfiguration defaultConfiguration];
+        switch (config.themeStyle) {
+            case MSTImagePickerStyleDark:
+                _maskingImageView.backgroundColor = [UIColor colorWithWhite:0 alpha:.3];
+                break;
+            case MSTImagePickerStyleLight:
+                _maskingImageView.backgroundColor = [UIColor colorWithWhite:1 alpha:.3];
+                break;
+        }
+    }
+    return _maskingImageView;
+}
 @end
 
 

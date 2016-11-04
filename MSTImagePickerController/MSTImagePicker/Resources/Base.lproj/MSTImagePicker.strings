@@ -14,6 +14,6 @@
 "str_preview" = "Preview";
 "str_done" = "Done";
 "str_original" = "Full Image";
-"str_both_video_photo" = "Can not choose both video and photo";
+"str_both_video_photo" = "Can not choose both videos and photos";
 "str_access_photo" = "Allow %@ to access your Photos in \"Settings -> Privacy -> Photos\"";
 "str_setting" = "Setting";

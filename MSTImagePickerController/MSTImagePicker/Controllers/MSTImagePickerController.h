@@ -8,8 +8,10 @@
 
 #import <Photos/Photos.h>
 #import "MSTImagePickerEnumeration.h"
+#import "MSTPhotoManager.h"
+#import "MSTAlbumModel.h"
+#import "MSTPickingModel.h"
 
-@class MSTAssetModel;
 @protocol MSTImagePickerControllerDelegate;
 
 @interface MSTImagePickerController : UINavigationController
@@ -204,26 +206,10 @@
 @protocol MSTImagePickerControllerDelegate <NSObject>
 @optional
 
+- (void)MSTImagePickerController:(MSTImagePickerController *)picker didFinishPickingMediaWithArray:(NSArray <MSTPickingModel *>*)array1;
+
 - (void)MSTImagePickerControllerDidCancel:(MSTImagePickerController *)picker;
 
 - (void)MSTImagePickerController:(MSTImagePickerController *)picker authorizeWithSourceType:(MSTImagePickerSourceType)sourceType authorizationStatus:(MSTAuthorizationStatus)status;
 
 @end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

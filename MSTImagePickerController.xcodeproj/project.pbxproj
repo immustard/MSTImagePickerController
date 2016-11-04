@@ -71,6 +71,8 @@
 		ADD1FC6F1DB710C7002642CC /* MSTPhotoPreviewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ADD1FC6E1DB710C7002642CC /* MSTPhotoPreviewController.m */; };
 		ADD1FC721DB715A7002642CC /* UIView+MSTUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = ADD1FC711DB715A7002642CC /* UIView+MSTUtils.m */; };
 		ADD1FC751DB71B40002642CC /* MSTPhotoPreviewImageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = ADD1FC741DB71B40002642CC /* MSTPhotoPreviewImageCell.m */; };
+		ADEE8AAB1DCC706000179B3E /* MSTPickingModel.m in Sources */ = {isa = PBXBuildFile; fileRef = ADEE8AAA1DCC706000179B3E /* MSTPickingModel.m */; };
+		ADEE8AAE1DCC707D00179B3E /* MSTAssetBaseModel.m in Sources */ = {isa = PBXBuildFile; fileRef = ADEE8AAD1DCC707D00179B3E /* MSTAssetBaseModel.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -205,6 +207,10 @@
 		ADD1FC731DB71B40002642CC /* MSTPhotoPreviewImageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSTPhotoPreviewImageCell.h; sourceTree = "<group>"; };
 		ADD1FC741DB71B40002642CC /* MSTPhotoPreviewImageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSTPhotoPreviewImageCell.m; sourceTree = "<group>"; };
 		ADD1FC761DB740F8002642CC /* MSTPhotoPreviewCellDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSTPhotoPreviewCellDelegate.h; sourceTree = "<group>"; };
+		ADEE8AA91DCC706000179B3E /* MSTPickingModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSTPickingModel.h; sourceTree = "<group>"; };
+		ADEE8AAA1DCC706000179B3E /* MSTPickingModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSTPickingModel.m; sourceTree = "<group>"; };
+		ADEE8AAC1DCC707D00179B3E /* MSTAssetBaseModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSTAssetBaseModel.h; sourceTree = "<group>"; };
+		ADEE8AAD1DCC707D00179B3E /* MSTAssetBaseModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSTAssetBaseModel.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -417,8 +423,12 @@
 			children = (
 				ADA527701DAF7AF8006C838E /* MSTAlbumModel.h */,
 				ADA527711DAF7AF8006C838E /* MSTAlbumModel.m */,
+				ADEE8AAC1DCC707D00179B3E /* MSTAssetBaseModel.h */,
+				ADEE8AAD1DCC707D00179B3E /* MSTAssetBaseModel.m */,
 				AD67CBE41DBF32B800C38F72 /* MSTAssetModel.h */,
 				AD67CBE51DBF32B800C38F72 /* MSTAssetModel.m */,
+				ADEE8AA91DCC706000179B3E /* MSTPickingModel.h */,
+				ADEE8AAA1DCC706000179B3E /* MSTPickingModel.m */,
 				ADA527721DAF7AF8006C838E /* MSTPhotoConfiguration.h */,
 				ADA527731DAF7AF8006C838E /* MSTPhotoConfiguration.m */,
 				AD8C03A31DB5B399001F9EC9 /* MSTMoment.h */,
@@ -666,11 +676,13 @@
 				ADA527891DAF7DA0006C838E /* UIViewController+MSTUtils.m in Sources */,
 				AD0455491DBEFD4E0099D877 /* IQUIView+Hierarchy.m in Sources */,
 				ADA527801DAF7AF8006C838E /* MSTAlbumModel.m in Sources */,
+				ADEE8AAB1DCC706000179B3E /* MSTPickingModel.m in Sources */,
 				AD04554E1DBEFD4E0099D877 /* IQTextView.m in Sources */,
 				ADD1FC751DB71B40002642CC /* MSTPhotoPreviewImageCell.m in Sources */,
 				AD8C03B01DB5F416001F9EC9 /* NSDate+MSTUtils.m in Sources */,
 				AD0455461DBEFD4E0099D877 /* IQNSArray+Sort.m in Sources */,
 				AD04554A1DBEFD4E0099D877 /* IQUIViewController+Additions.m in Sources */,
+				ADEE8AAE1DCC707D00179B3E /* MSTAssetBaseModel.m in Sources */,
 				ADD1FC721DB715A7002642CC /* UIView+MSTUtils.m in Sources */,
 				AD04554F1DBEFD4E0099D877 /* IQBarButtonItem.m in Sources */,
 				AD05CE731DA9CD14005AB1F0 /* MainViewController.m in Sources */,

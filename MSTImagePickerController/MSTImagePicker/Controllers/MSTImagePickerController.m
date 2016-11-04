@@ -12,8 +12,6 @@
 #import "MSTPhotoGridController.h"
 #import "UIViewController+MSTUtils.h"
 #import "UIView+MSTUtils.h"
-#import "MSTPhotoManager.h"
-#import "MSTAlbumModel.h"
 
 @interface MSTImagePickerController () {
     BOOL _toolBarEnbled;

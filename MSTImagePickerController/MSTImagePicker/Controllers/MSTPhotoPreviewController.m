@@ -116,7 +116,7 @@
     
     switch (_pickerStyle) {
         case MSTImagePickerStyleLight:
-            _customNavigationBar.backgroundColor = [UIColor colorWithWhite:1 alpha:.7];
+            _customNavigationBar.backgroundColor = [UIColor colorWithWhite:1 alpha:.85];
             [backButton setImage:[UIImage imageNamed:@"icon_preview_back_light"] forState:UIControlStateNormal];
             [self.selectedButton setImage:[UIImage imageNamed:@"icon_preview_normal_light"] forState:UIControlStateNormal];
             [self.selectedButton setImage:[UIImage imageNamed:@"icon_picture_selected"] forState:UIControlStateSelected];
@@ -190,9 +190,11 @@
             //隐藏 『原图』
             self.originalTextButton.hidden = YES;
             self.originalImageButton.hidden = YES;
+            self.originalSizeLabel.hidden = YES;
         } else {
             self.originalImageButton.hidden = NO;
             self.originalTextButton.hidden = NO;
+            self.originalSizeLabel.hidden = NO;
             [self mp_refreshOriginalImageSize];
         }
     } else {
@@ -210,6 +212,10 @@
     flowLayout.itemSize = CGSizeMake(self.view.width + 20, self.view.height);
     
     return flowLayout;
+}
+
+- (CGFloat)mp_calculateWidthWithString:(NSString *)string textSize:(CGFloat)textSize {
+    return [string boundingRectWithSize:CGSizeMake(300, 44) options:NSStringDrawingUsesFontLeading attributes:@{NSFontAttributeName: [UIFont systemFontOfSize:textSize]} context:nil].size.width;
 }
 
 - (void)mp_doneButtonDidClicked:(UIButton *)sender {
@@ -309,7 +315,7 @@
         NSString *string = NSLocalizedStringFromTable(@"str_original", @"MSTImagePicker", @"原图");
         
         self.originalTextButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _originalTextButton.frame = CGRectMake(self.originalImageButton.right, 0, 40, 44);
+        _originalTextButton.frame = CGRectMake(self.originalImageButton.right, 0, [self mp_calculateWidthWithString:string textSize:15], 44);
         [_originalTextButton setTitle:string forState:UIControlStateNormal];
         _originalTextButton.titleLabel.font = [UIFont systemFontOfSize:15];
         
