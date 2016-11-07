@@ -29,6 +29,7 @@
 @property (weak, nonatomic) IBOutlet UISwitch *isShowLive;
 @property (weak, nonatomic) IBOutlet UISwitch *isFirstCamera;
 @property (weak, nonatomic) IBOutlet UISwitch *allowsMakingVideo;
+@property (weak, nonatomic) IBOutlet UISwitch *isVideoAutoSave;
 @property (weak, nonatomic) IBOutlet UITextField *videoMaximumDuration;
 @property (weak, nonatomic) IBOutlet UITextField *customAlbumName;
 
@@ -81,6 +82,7 @@
     imagePicker.isShowLivePhotoIcon = _isShowLive.isOn;
     imagePicker.isFirstCamera = _isFirstCamera.isOn;
     imagePicker.allowsMakingVideo = _allowsMakingVideo.isOn;
+    imagePicker.isVideoAutoSave = _isVideoAutoSave.isOn;
     imagePicker.videoMaximumDuration = _videoMaximumDuration.text.doubleValue;
     imagePicker.customAlbumName = _customAlbumName.text;
     [self presentViewController:imagePicker animated:YES completion:nil];
@@ -126,6 +128,14 @@
 #pragma mark - MSTImagePickerControllerDelegate
 - (void)MSTImagePickerControllerDidCancel:(MSTImagePickerController *)picker {
     NSLog(@"mstImagePickerControllerDidCancel");
+}
+
+- (void)MSTImagePickerController:(MSTImagePickerController *)picker didFinishPickingMediaWithArray:(NSArray<MSTPickingModel *> *)array {
+    NSLog(@"difFinishArray:__%@", array);
+}
+
+-(void)MSTImagePickerController:(MSTImagePickerController *)picker didFinishPickingVideoWithURL:(NSURL *)videoURL identifier:(NSString *)localIdentifier {
+    NSLog(@"didfinishVideo:_url__%@___localIdentifier:%@", videoURL, localIdentifier);
 }
 
 @end

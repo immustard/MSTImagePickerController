@@ -311,7 +311,7 @@
     }];
 }
 
-- (void)getOriginImageFromPHAsset:(PHAsset *)asset completionBlock:(void (^)(UIImage *))completionBlock{
+- (void)getPickingImageFromPHAsset:(PHAsset *)asset isFullImage:(BOOL)isFullImage completionBlock:(void (^)(UIImage *))completionBlock {
     PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
     options.resizeMode = PHImageRequestOptionsResizeModeExact;
     options.synchronous = NO;

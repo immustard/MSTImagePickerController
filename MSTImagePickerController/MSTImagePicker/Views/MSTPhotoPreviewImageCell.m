@@ -81,7 +81,7 @@
     self.imageView.image = nil;
     self.livePhotoView.livePhoto = nil;
     
-    if (model.type == MSTAssetModelMediaTypeLivePhoto && [UIDevice currentDevice].systemVersion.floatValue >= 9.1) {
+    if (model.type == MSTAssetModelMediaTypeLivePhoto && [UIDevice currentDevice].systemVersion.floatValue >= 9.1 && [MSTPhotoConfiguration defaultConfiguration].isCallBackLivePhoto) {
         _isLivePhoto = YES;
         
         [[MSTPhotoManager sharedInstance] getLivePhotoFromPHAsset:model.asset completionBlock:^(PHLivePhoto *livePhoto) {

@@ -98,6 +98,13 @@
 @property (assign, nonatomic) BOOL allowsMakingVideo;
 
 /**
+ 视频录制后，是否自动保存到系统相册，默认为 YES。
+ 当有自定义相册名称 "customAlbumName" 时，保存到该相册。
+ 仅当 "allowsMakingVideo" 为 YES 时生效。
+ */
+@property (assign, nonatomic) BOOL isVideoAutoSave;
+
+/**
  允许选择动图，默认为 YES
  */
 //@property (assign, nonatomic) BOOL allowsPickGIF;         等待添加的功能 wait for adding
@@ -201,15 +208,23 @@
  */
 - (void)setFullImageOption:(BOOL)isFullImage;
 
+/**
+ 选完图片
+ */
+- (void)didFinishPicking:(BOOL)isFullImage;
+
 @end
 
 @protocol MSTImagePickerControllerDelegate <NSObject>
 @optional
 
-- (void)MSTImagePickerController:(MSTImagePickerController *)picker didFinishPickingMediaWithArray:(NSArray <MSTPickingModel *>*)array1;
+- (void)MSTImagePickerController:(nonnull MSTImagePickerController *)picker didFinishPickingMediaWithArray:(nonnull NSArray <MSTPickingModel *>*)array;
+- (void)MSTImagePickerController:(nonnull MSTImagePickerController *)picker didFinishPickingVideoWithURL:(nonnull NSURL *)videoURL identifier:(nullable NSString *)localIdentifier;
 
-- (void)MSTImagePickerControllerDidCancel:(MSTImagePickerController *)picker;
+- (void)MSTImagePickerControllerDidCancel:(nonnull MSTImagePickerController *)picker;
 
-- (void)MSTImagePickerController:(MSTImagePickerController *)picker authorizeWithSourceType:(MSTImagePickerSourceType)sourceType authorizationStatus:(MSTAuthorizationStatus)status;
+- (void)MSTImagePickerController:(nonnull MSTImagePickerController *)picker authorizeWithSourceType:(MSTImagePickerSourceType)sourceType authorizationStatus:(MSTAuthorizationStatus)status;
 
 @end
+
+

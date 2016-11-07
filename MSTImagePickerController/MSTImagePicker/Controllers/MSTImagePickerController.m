@@ -117,6 +117,54 @@
     [self mp_refreshOriginalImageSize];
 }
 
+- (void)didFinishPicking:(BOOL)isFullImage {
+    __block NSInteger photoCount = self.pickedModels.count;
+    NSMutableArray *images = [NSMutableArray array];
+    if (!isFullImage) {
+        //不是原图
+        for (MSTAssetModel *model in self.pickedModels) {
+            MSTPickingModel *pickingModel = [[MSTPickingModel alloc] init];
+            pickingModel.type = model.type;
+            pickingModel.identifier = model.identifier;
+            if (model.type == MSTAssetModelMediaTypeLivePhoto && self.config.isCallBackLivePhoto) {
+                [[MSTPhotoManager sharedInstance] getLivePhotoFromPHAsset:model.asset completionBlock:^(PHLivePhoto *livePhoto) {
+                    pickingModel.livePhoto = livePhoto;
+                    
+                    [[MSTPhotoManager sharedInstance] getPreviewImageFromPHAsset:model.asset isHighQuality:YES completionBlock:^(UIImage *result, NSDictionary *info, BOOL isDegraded) {
+                        photoCount--;
+                        
+                        pickingModel.image = result;
+                        [images addObject:pickingModel];
+                        
+                        if (!photoCount) {
+                            //回调
+                            if ([self.MSTDelegate respondsToSelector:@selector(MSTImagePickerController:didFinishPickingMediaWithArray:)]) {
+                                [self.MSTDelegate MSTImagePickerController:self didFinishPickingMediaWithArray:images];
+                            }
+                        }
+                    }];
+                }];
+            } else {
+                [[MSTPhotoManager sharedInstance] getPreviewImageFromPHAsset:model.asset isHighQuality:YES completionBlock:^(UIImage *result, NSDictionary *info, BOOL isDegraded) {
+                    photoCount--;
+                    
+                    pickingModel.image = result;
+                    [images addObject:pickingModel];
+                    
+                    if (!photoCount) {
+                        //回调
+                        if ([self.MSTDelegate respondsToSelector:@selector(MSTImagePickerController:didFinishPickingMediaWithArray:)]) {
+                            [self.MSTDelegate MSTImagePickerController:self didFinishPickingMediaWithArray:images];
+                        }
+                    }
+                }];
+            }
+        }
+    } else {
+        //原图
+    }
+}
+
 /**
  检查授权访问状态
  */
@@ -211,7 +259,7 @@
 }
 
 - (void)mp_doneButtonDidClicked:(UIButton *)sender {
-    
+    [self didFinishPicking:_originalImageButton.isSelected];
 }
 
 - (void)mp_originalImageButtonDidClicked:(UIButton *)sender {
@@ -425,6 +473,10 @@
 
 - (void)setAllowsMakingVideo:(BOOL)allowsMakingVideo {
     self.config.allowsMakingVideo = allowsMakingVideo;
+}
+
+- (void)setIsVideoAutoSave:(BOOL)isVideoAutoSave {
+    self.config.isVideoAutoSave = isVideoAutoSave;
 }
 
 - (void)setAllowsPickGIF:(BOOL)allowsPickGIF {

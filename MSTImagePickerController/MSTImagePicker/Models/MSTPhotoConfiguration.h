@@ -91,6 +91,13 @@
 @property (assign, nonatomic) BOOL allowsMakingVideo;
 
 /**
+ 视频录制后，是否自动保存到系统相册，默认为 YES。
+ 当有自定义相册名称 "customAlbumName" 时，保存到该相册。
+ 仅当 "allowsMakingVideo" 为 YES 时生效。
+ */
+@property (assign, nonatomic) BOOL isVideoAutoSave;
+
+/**
  允许选择动图，默认为 YES
  */
 @property (assign, nonatomic) BOOL allowsPickGIF;

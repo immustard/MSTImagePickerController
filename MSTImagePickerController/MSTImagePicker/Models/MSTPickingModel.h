@@ -8,7 +8,13 @@
 
 #import "MSTAssetBaseModel.h"
 #import <UIKit/UIKit.h>
+#import <Photos/PHLivePhoto.h>
 
 @interface MSTPickingModel : MSTAssetBaseModel
 
+@property (strong, nonatomic) UIImage *image;
+
+@property (strong, nonatomic) PHLivePhoto *livePhoto;
+
+@property (strong, nonatomic) NSURL *videoURL;
 @end

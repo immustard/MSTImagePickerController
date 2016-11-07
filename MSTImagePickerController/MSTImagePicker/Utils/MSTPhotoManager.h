@@ -122,8 +122,14 @@
  */
 - (void)getLivePhotoFromPHAsset:(PHAsset *)asset completionBlock:(void(^)(PHLivePhoto *livePhoto))completionBlock;
 
-/** 读取原始图片 */
-- (void)getOriginImageFromPHAsset:(PHAsset *)asset completionBlock:(void(^)(UIImage *result))completionBlock;
+/**
+ 读取选定照片
+
+ @param asset           图片内容
+ @param isFullImage     是否为原图
+ @param completionBlock 回调
+ */
+- (void)getPickingImageFromPHAsset:(PHAsset *)asset isFullImage:(BOOL)isFullImage completionBlock:(void(^)(UIImage *result))completionBlock;
 
 /**
  读取视频

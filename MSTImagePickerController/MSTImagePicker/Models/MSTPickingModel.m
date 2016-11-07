@@ -10,4 +10,31 @@
 
 @implementation MSTPickingModel
 
+- (NSString *)description {
+    id obj;
+    if (self.image)
+        obj = self.image;
+
+    if (self.livePhoto)
+        obj = self.livePhoto;
+
+    if (self.videoURL)
+        obj = self.videoURL;
+    
+    return [NSString stringWithFormat:@"<%@: %p> id: %@ | type: %zi | content: (%@: %@)", [self class], self, self.identifier, self.type, [obj class], obj];
+}
+
+- (NSString *)debugDescription {
+    id obj;
+    if (self.image)
+        obj = self.image;
+    
+    if (self.livePhoto)
+        obj = self.livePhoto;
+    
+    if (self.videoURL)
+        obj = self.videoURL;
+    
+    return [NSString stringWithFormat:@"<%@: %p> id: %@ | type: %zi | content: (%@: %@)", [self class], self, self.identifier, self.type, [obj class], obj];
+}
 @end

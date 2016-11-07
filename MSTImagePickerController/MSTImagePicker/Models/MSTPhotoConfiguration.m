@@ -33,6 +33,7 @@
         config.isCallBackLivePhoto = YES;
         config.isFirstCamera = YES;
         config.allowsMakingVideo = YES;
+        config.isVideoAutoSave = YES;
         config.videoMaximumDuration = 60.f;
         config.allowsPickGIF = YES;
     });

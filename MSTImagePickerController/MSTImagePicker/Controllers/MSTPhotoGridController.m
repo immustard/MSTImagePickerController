@@ -17,6 +17,7 @@
 #import "NSIndexSet+MSTUtils.h"
 #import "MSTAlbumModel.h"
 #import "MSTMoment.h"
+#import "MSTPickingModel.h"
 #import "MSTPhotoGridCell.h"
 #import "MSTPhotoGridHeaderView.h"
 #import "MSTPhotoPreviewController.h"
@@ -147,6 +148,33 @@ static NSString * const reuserIdentifier = @"MSTPhotoGridCell";
     MSTImagePickerController *pickerCtrler = (MSTImagePickerController *)self.navigationController;
     if ([pickerCtrler.MSTDelegate respondsToSelector:@selector(MSTImagePickerControllerDidCancel:)]) {
         [pickerCtrler.MSTDelegate MSTImagePickerControllerDidCancel:pickerCtrler];
+    }
+}
+
+- (void)mp_jumpToUIImagePickerController {
+#warning waiting for updating 判断照相机授权。视频拍摄情况，判断语音授权。
+    if ([UIImagePickerController availableMediaTypesForSourceType:UIImagePickerControllerSourceTypeCamera]) {
+        UIImagePickerController *pickerCtrler = [[UIImagePickerController alloc] init];
+        pickerCtrler.sourceType = UIImagePickerControllerSourceTypeCamera;
+        pickerCtrler.delegate = self;
+        
+        MSTImagePickerController *mstPickerCtrler = (MSTImagePickerController *)self.navigationController;
+        if (self.config.allowsMakingVideo && ![mstPickerCtrler hasSelected]) {
+            pickerCtrler.mediaTypes = @[(NSString *)kUTTypeImage, (NSString *)kUTTypeMovie];
+            pickerCtrler.videoMaximumDuration = self.config.videoMaximumDuration;
+        }
+        
+        [self presentViewController:pickerCtrler animated:YES completion:nil];
+    }
+}
+
+- (void)mp_didFinishMakingVideoWithAsset:(PHAsset *)asset url:(NSURL *)url {
+    [self dismissViewControllerAnimated:YES completion:nil];
+    
+    MSTImagePickerController *pickerCtrler = (MSTImagePickerController *)self.navigationController;
+    
+    if ([pickerCtrler.MSTDelegate respondsToSelector:@selector(MSTImagePickerController:didFinishPickingVideoWithURL:identifier:)]) {
+        [pickerCtrler.MSTDelegate MSTImagePickerController:pickerCtrler didFinishPickingVideoWithURL:url identifier:asset.localIdentifier];
     }
 }
 
@@ -339,18 +367,8 @@ static NSString * const reuserIdentifier = @"MSTPhotoGridCell";
     }
     
     if (pushToCamera) {
-#warning waiting for updating 判断照相机授权。视频拍摄情况，判断语音授权。
-        if ([UIImagePickerController availableMediaTypesForSourceType:UIImagePickerControllerSourceTypeCamera]) {
-            UIImagePickerController *pickerCtrler = [[UIImagePickerController alloc] init];
-            pickerCtrler.sourceType = UIImagePickerControllerSourceTypeCamera;
-            pickerCtrler.delegate = self;
-            if (self.config.allowsMakingVideo) {
-                pickerCtrler.mediaTypes = @[(NSString *)kUTTypeImage, (NSString *)kUTTypeMovie];
-                pickerCtrler.videoMaximumDuration = self.config.videoMaximumDuration;
-            }
-            
-            [self presentViewController:pickerCtrler animated:YES completion:nil];
-        }
+        //跳转到UIImagePickerController
+        [self mp_jumpToUIImagePickerController];
     } else {
         MSTAssetModel *model = _album.models[item];
         if (model.type == MSTAssetModelMediaTypeVideo) {
@@ -473,16 +491,28 @@ static NSString * const reuserIdentifier = @"MSTPhotoGridCell";
             }
         } else if ([mediaType isEqualToString:(NSString *)kUTTypeMovie]) {
             NSURL *url = info[UIImagePickerControllerMediaURL];
-            
-            if (self.config.customAlbumName.length) {
-                //保存到自定义相册
-                [[MSTPhotoManager sharedInstance] saveVideoToCustomAlbumWithURL:url albumName:self.config.customAlbumName completionBlcok:^(PHAsset *asset, NSString *error) {
-                    if (error) NSLog(@"Save video to custom album error: %@", error);
-                }];
+
+            if (self.config.isVideoAutoSave) {
+                if (self.config.customAlbumName.length) {
+                    //保存到自定义相册
+                    [[MSTPhotoManager sharedInstance] saveVideoToCustomAlbumWithURL:url albumName:self.config.customAlbumName completionBlcok:^(PHAsset *asset, NSString *error) {
+                        if (error) {
+                            NSLog(@"Save video to custom album error: %@", error);
+                        } else {
+                            [self mp_didFinishMakingVideoWithAsset:asset url:url];
+                        }
+                    }];
+                } else {
+                    [[MSTPhotoManager sharedInstance] saveVideoToSystemAlbumWithURL:url completionBlock:^(PHAsset *asset, NSString *error) {
+                        if (error) {
+                            NSLog(@"Save video to system album error: %@", error);
+                        } else {
+                            [self mp_didFinishMakingVideoWithAsset:asset url:url];
+                        }
+                    }];
+                }
             } else {
-                [[MSTPhotoManager sharedInstance] saveVideoToSystemAlbumWithURL:url completionBlock:^(PHAsset *asset, NSString *error) {
-                    if (error) NSLog(@"Save video to system album error: %@", error);
-                }];
+                [self mp_didFinishMakingVideoWithAsset:nil url:url];
             }
         }
     } completionHandler:^(BOOL success, NSError * _Nullable error) {
