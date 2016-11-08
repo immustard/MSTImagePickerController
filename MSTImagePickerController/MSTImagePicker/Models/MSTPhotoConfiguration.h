@@ -21,6 +21,12 @@
 @property (assign, nonatomic) int maxSelectCount;
 
 /**
+ 获取的图片最大宽度，当选定『原图』时，该值无效。
+ 该值最小为 720，默认为 828
+ */
+@property (assign, nonatomic) CGFloat maxImageWidth;
+
+/**
  一行显示多少个，默认为 4
  */
 @property (assign, nonatomic) int numsInRow;

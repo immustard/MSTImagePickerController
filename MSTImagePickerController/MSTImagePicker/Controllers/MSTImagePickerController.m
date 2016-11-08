@@ -120,32 +120,17 @@
 - (void)didFinishPicking:(BOOL)isFullImage {
     __block NSInteger photoCount = self.pickedModels.count;
     NSMutableArray *images = [NSMutableArray array];
-    if (!isFullImage) {
-        //不是原图
-        for (MSTAssetModel *model in self.pickedModels) {
-            MSTPickingModel *pickingModel = [[MSTPickingModel alloc] init];
-            pickingModel.type = model.type;
-            pickingModel.identifier = model.identifier;
-            if (model.type == MSTAssetModelMediaTypeLivePhoto && self.config.isCallBackLivePhoto) {
-                [[MSTPhotoManager sharedInstance] getLivePhotoFromPHAsset:model.asset completionBlock:^(PHLivePhoto *livePhoto) {
-                    pickingModel.livePhoto = livePhoto;
-                    
-                    [[MSTPhotoManager sharedInstance] getPreviewImageFromPHAsset:model.asset isHighQuality:YES completionBlock:^(UIImage *result, NSDictionary *info, BOOL isDegraded) {
-                        photoCount--;
-                        
-                        pickingModel.image = result;
-                        [images addObject:pickingModel];
-                        
-                        if (!photoCount) {
-                            //回调
-                            if ([self.MSTDelegate respondsToSelector:@selector(MSTImagePickerController:didFinishPickingMediaWithArray:)]) {
-                                [self.MSTDelegate MSTImagePickerController:self didFinishPickingMediaWithArray:images];
-                            }
-                        }
-                    }];
-                }];
-            } else {
-                [[MSTPhotoManager sharedInstance] getPreviewImageFromPHAsset:model.asset isHighQuality:YES completionBlock:^(UIImage *result, NSDictionary *info, BOOL isDegraded) {
+    
+    for (MSTAssetModel *model in self.pickedModels) {
+        MSTPickingModel *pickingModel = [[MSTPickingModel alloc] init];
+        pickingModel.type = model.type;
+        pickingModel.identifier = model.identifier;
+        
+        if (model.type == MSTAssetModelMediaTypeLivePhoto && self.config.isCallBackLivePhoto) {
+            [[MSTPhotoManager sharedInstance] getLivePhotoFromPHAsset:model.asset completionBlock:^(PHLivePhoto *livePhoto) {
+                pickingModel.livePhoto = livePhoto;
+                
+                [[MSTPhotoManager sharedInstance] getPickingImageFromPHAsset:model.asset isFullImage:isFullImage maxImageWidth:self.config.maxImageWidth completionBlock:^(UIImage *result, NSDictionary *info, BOOL isDegraded) {
                     photoCount--;
                     
                     pickingModel.image = result;
@@ -158,10 +143,22 @@
                         }
                     }
                 }];
-            }
+            }];
+        } else {
+            [[MSTPhotoManager sharedInstance] getPickingImageFromPHAsset:model.asset isFullImage:isFullImage maxImageWidth:self.config.maxImageWidth completionBlock:^(UIImage *result, NSDictionary *info, BOOL isDegraded) {
+                photoCount--;
+                
+                pickingModel.image = result;
+                [images addObject:pickingModel];
+                
+                if (!photoCount) {
+                    //回调
+                    if ([self.MSTDelegate respondsToSelector:@selector(MSTImagePickerController:didFinishPickingMediaWithArray:)]) {
+                        [self.MSTDelegate MSTImagePickerController:self didFinishPickingMediaWithArray:images];
+                    }
+                }
+            }];
         }
-    } else {
-        //原图
     }
 }
 
@@ -259,6 +256,10 @@
 }
 
 - (void)mp_doneButtonDidClicked:(UIButton *)sender {
+    sender.enabled = NO;
+    
+    [self dismissViewControllerAnimated:YES completion:nil];
+    
     [self didFinishPicking:_originalImageButton.isSelected];
 }
 
@@ -417,10 +418,19 @@
 #pragma mark - Setter
 - (void)setAllowsMutiSelected:(BOOL)allowsMutiSelected {
     self.config.allowsMutiSelected = allowsMutiSelected;
+    
+    if (!allowsMutiSelected) self.config.maxSelectCount = 1;
 }
 
 - (void)setMaxSelectCount:(int)maxSelectCount {
+    if (!self.config.allowsMutiSelected) maxSelectCount = 1;
+    
     self.config.maxSelectCount = maxSelectCount;
+}
+
+- (void)setMaxImageWidth:(CGFloat)maxImageWidth {
+    if (maxImageWidth < 720) maxImageWidth = 720;
+    self.config.maxImageWidth = maxImageWidth;
 }
 
 - (void)setNumsInRow:(int)numsInRow {

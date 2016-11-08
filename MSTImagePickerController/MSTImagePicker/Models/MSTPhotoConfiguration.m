@@ -19,6 +19,7 @@
         
         config.allowsMutiSelected = YES;
         config.maxSelectCount = 9;
+        config.maxImageWidth = 828;
         config.numsInRow = 4;
         config.allowsMasking = YES;
         config.allowsSelectedAnimation = YES;

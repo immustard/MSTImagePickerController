@@ -53,6 +53,13 @@
     [self.navigationController setNavigationBarHidden:YES animated:NO];
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
+    MSTPhotoPreviewImageCell *cell = (MSTPhotoPreviewImageCell *)[_myCollectionView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:_currentItem inSection:0]];
+    [cell didDisplayed];
+}
+
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
@@ -80,11 +87,6 @@
     [self.myCollectionView setContentSize:CGSizeMake((self.view.width + 20)*5, self.view.height)];
 
     [self.myCollectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:_currentItem inSection:0] atScrollPosition:UICollectionViewScrollPositionLeft animated:NO];
-    
-#warning waiting for fixing 这里的 cell 为 nil
-    //清晰显示，但是失败了。。。=-=
-    MSTPhotoPreviewImageCell *cell = (MSTPhotoPreviewImageCell *)[_myCollectionView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:_currentItem inSection:0]];
-    [cell didDisplayed];
     
     MSTPhotoConfiguration *config = [MSTPhotoConfiguration defaultConfiguration];
     _pickerStyle = config.themeStyle;
@@ -219,7 +221,13 @@
 }
 
 - (void)mp_doneButtonDidClicked:(UIButton *)sender {
+    [self dismissViewControllerAnimated:YES completion:nil];
     
+    sender.enabled = NO;
+    
+    MSTImagePickerController *pickerCtrler = (MSTImagePickerController *)self.navigationController;
+    
+    [pickerCtrler didFinishPicking:self.originalImageButton.isSelected];
 }
 
 - (void)mp_originalImageButtonDidClicked:(UIButton *)sender {

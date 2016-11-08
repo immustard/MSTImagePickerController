@@ -16,6 +16,7 @@
 @interface MSTVideoPreviewController () {
     BOOL _isPlay;
     PHAsset *_asset;
+    AVPlayerItem *_playerItem;
 }
 @property (strong, nonatomic) UIImageView *imageView;
 @property (strong, nonatomic) UIButton *playButton;
@@ -46,6 +47,16 @@
 - (instancetype)initWithAsset:(PHAsset *)asset {
     if (self = [super init]) {
         _asset = asset;
+        [[MSTPhotoManager sharedInstance] getAVPlayerItemFromPHAsset:_asset completionBlock:^(AVPlayerItem *item) {
+                _playerItem = item;
+        }];
+    }
+    return self;
+}
+
+- (instancetype)initWithURL:(NSURL *)url {
+    if (self = [super init]) {
+        _playerItem = [[AVPlayerItem alloc] initWithURL:url];
     }
     return self;
 }
@@ -59,16 +70,12 @@
 }
 
 - (void)mp_setupSubviews {
-    [[MSTPhotoManager sharedInstance] getAVPlayerItemFromPHAsset:_asset completionBlock:^(AVPlayerItem *item) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            self.player = [AVPlayer playerWithPlayerItem:item];
-            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(mp_endPlaying) name:AVPlayerItemDidPlayToEndTimeNotification object:nil];
-        });
-    }];
+    self.player = [AVPlayer playerWithPlayerItem:_playerItem];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(mp_endPlaying) name:AVPlayerItemDidPlayToEndTimeNotification object:nil];
     self.showsPlaybackControls = NO;
     
-    [self mp_setupCustomToolBar];
     [self playButton];
+    [self mp_setupCustomToolBar];
 }
 
 - (void)mp_setupCustomToolBar {
@@ -114,7 +121,16 @@
 }
 
 - (void)mp_doneButtonDidClicked:(UIButton *)sender {
+    [self dismissViewControllerAnimated:YES completion:nil];
     
+    MSTImagePickerController *pickerCtrler = (MSTImagePickerController *)self.navigationController;
+    
+    if ([pickerCtrler.MSTDelegate respondsToSelector:@selector(MSTImagePickerController:didFinishPickingVideoWithURL:identifier:)]) {
+        [[PHImageManager defaultManager] requestAVAssetForVideo:_asset options:nil resultHandler:^(AVAsset * _Nullable asset, AVAudioMix * _Nullable audioMix, NSDictionary * _Nullable info) {
+            AVURLAsset *urlAsset = (AVURLAsset *)asset;
+            [pickerCtrler.MSTDelegate MSTImagePickerController:pickerCtrler didFinishPickingVideoWithURL:urlAsset.URL identifier:_asset.localIdentifier];
+        }];
+    }
 }
 
 - (void)mp_endPlaying {

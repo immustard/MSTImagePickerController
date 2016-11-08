@@ -41,7 +41,7 @@
 }
 
 - (NSString *)description {
-    return [NSString stringWithFormat:@"<%@: %p> identifier:%@ | type: %zi", [self class], self, self.identifier, self.type];
+    return self.debugDescription;
 }
 
 - (NSString *)debugDescription {

@@ -259,7 +259,11 @@
 }
 
 - (void)getThumbnailImageFromPHAsset:(PHAsset *)asset photoWidth:(CGFloat)width completionBlock:(void (^)(UIImage *, NSDictionary *))completionBlock {
-    [self mp_getImageFromPHAsset:asset imageSize:CGSizeMake(width * 2.f, width * 2.f) isSynchronous:NO isFixOrientation:NO completionBlock:^(UIImage *result, NSDictionary *info) {
+    PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
+    options.resizeMode = PHImageRequestOptionsResizeModeFast;
+    options.synchronous = NO;
+    
+    [self mp_getImageFromPHAsset:asset imageSize:CGSizeMake(width * 2.f, width * 2.f) options:options isFixOrientation:NO completionBlock:^(UIImage *result, NSDictionary *info) {
         completionBlock ? completionBlock(result, info) : nil;
     }];
 }
@@ -273,16 +277,17 @@
     CGFloat pixelHeight = width / aspectRatio;
     CGSize imageSize = CGSizeMake(pixelWidth, pixelHeight);
     
-    [self mp_getImageFromPHAsset:asset imageSize:imageSize isSynchronous:NO isFixOrientation:YES completionBlock:^(UIImage *result, NSDictionary *info) {
+    PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
+    options.resizeMode = PHImageRequestOptionsResizeModeFast;
+    options.deliveryMode = isHighQuality ? PHImageRequestOptionsDeliveryModeHighQualityFormat : PHImageRequestOptionsDeliveryModeFastFormat;
+    options.synchronous = NO;
+    
+    [self mp_getImageFromPHAsset:asset imageSize:imageSize options:options isFixOrientation:YES completionBlock:^(UIImage *result, NSDictionary *info) {
         completionBlock ? completionBlock(result, info, [info[PHImageResultIsDegradedKey] boolValue]) : nil;
     }];
 }
 
-- (void)mp_getImageFromPHAsset:(PHAsset *)asset imageSize:(CGSize)imageSize isSynchronous:(BOOL)synchronous isFixOrientation:(BOOL)fixOrientation completionBlock:(void(^)(UIImage *result, NSDictionary *info))completionBlock {
-    PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
-    options.resizeMode = PHImageRequestOptionsResizeModeFast;
-    options.synchronous = synchronous;
-    
+- (void)mp_getImageFromPHAsset:(PHAsset *)asset imageSize:(CGSize)imageSize options:(PHImageRequestOptions *)options isFixOrientation:(BOOL)fixOrientation completionBlock:(void(^)(UIImage *result, NSDictionary *info))completionBlock {
     [self.imageManager requestImageForAsset:asset targetSize:imageSize contentMode:PHImageContentModeAspectFill options:options resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
         BOOL finished = (![[info objectForKey:PHImageCancelledKey] boolValue] && ![info objectForKey:PHImageErrorKey]);
         if (finished && result) {
@@ -311,15 +316,39 @@
     }];
 }
 
-- (void)getPickingImageFromPHAsset:(PHAsset *)asset isFullImage:(BOOL)isFullImage completionBlock:(void (^)(UIImage *))completionBlock {
+- (void)getPickingImageFromPHAsset:(PHAsset *)asset isFullImage:(BOOL)isFullImage maxImageWidth:(CGFloat)width completionBlock:(void (^)(UIImage *, NSDictionary *, BOOL))completionBlock {
     PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
-    options.resizeMode = PHImageRequestOptionsResizeModeExact;
-    options.synchronous = NO;
+    CGSize targetSize;
     
-    [self.cacheImageManager requestImageForAsset:asset targetSize:PHImageManagerMaximumSize contentMode:PHImageContentModeAspectFit options:options resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
+    if (isFullImage) {
+        options.resizeMode = PHImageRequestOptionsResizeModeNone;
+        options.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
+        options.synchronous = YES;
+        
+        targetSize = PHImageManagerMaximumSize;
+    } else {
+        options.resizeMode = PHImageRequestOptionsResizeModeExact;
+        options.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
+        options.synchronous = YES;
+        
+        if (width > asset.pixelWidth) {
+            targetSize = PHImageManagerMaximumSize;
+        } else {
+            CGFloat scale = [UIScreen mainScreen].scale;
+            CGFloat aspectRatio = asset.pixelWidth / (CGFloat)asset.pixelHeight;
+            CGFloat pixelWidth = width * scale;
+            CGFloat pixelHeight = width / aspectRatio;
+            targetSize = CGSizeMake(pixelWidth, pixelHeight);
+        }
+    }
+    
+    [self.imageManager requestImageForAsset:asset targetSize:targetSize contentMode:PHImageContentModeAspectFit options:options resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
         result = [UIImage fixOrientation:result];
-
-        completionBlock ? completionBlock(result) : nil;
+        
+        NSData *data = UIImageJPEGRepresentation(result, .3);
+        result = [UIImage imageWithData:data];
+        
+        completionBlock ? completionBlock(result, info, [info[PHImageResultIsDegradedKey] boolValue]) : nil;
     }];
 }
 
@@ -336,27 +365,20 @@
 - (void)getImageBytesWithArray:(NSArray<MSTAssetModel *> *)models completionBlock:(void (^)(NSString *))completionBlock {
     __block NSUInteger dataLength = 0;
     __block NSUInteger count = models.count;
+    
+    PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
+    options.resizeMode = PHImageRequestOptionsResizeModeNone;
+    options.synchronous = YES;
+    
     for (MSTAssetModel *model in models) {
-        [self.imageManager requestImageDataForAsset:model.asset options:nil resultHandler:^(NSData * _Nullable imageData, NSString * _Nullable dataUTI, UIImageOrientation orientation, NSDictionary * _Nullable info) {
+        [self.imageManager requestImageDataForAsset:model.asset options:options resultHandler:^(NSData * _Nullable imageData, NSString * _Nullable dataUTI, UIImageOrientation orientation, NSDictionary * _Nullable info) {
             count--;
             dataLength += imageData.length;
             if (count <= 0) {
-                completionBlock ? completionBlock([self mp_getBytesStringWithDataLength:dataLength]) : nil;
+                completionBlock ? completionBlock([NSByteCountFormatter stringFromByteCount:dataLength countStyle:NSByteCountFormatterCountStyleFile]) : nil;
             }
         }];
     }
-}
-
-- (NSString *)mp_getBytesStringWithDataLength:(NSUInteger)dataLength {
-    NSString *bytes;
-    if (dataLength >= 0.1 * (1024 * 1024)) {
-        bytes = [NSString stringWithFormat:@"%.02fM",dataLength/1024/1024.0];
-    } else if (dataLength >= 1024) {
-        bytes = [NSString stringWithFormat:@"%.02fK",dataLength/1024.0];
-    } else {
-        bytes = [NSString stringWithFormat:@"%ziB",dataLength];
-    }
-    return bytes;
 }
 
 #pragma mark - Lazy Load

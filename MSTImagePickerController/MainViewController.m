@@ -132,6 +132,14 @@
 
 - (void)MSTImagePickerController:(MSTImagePickerController *)picker didFinishPickingMediaWithArray:(NSArray<MSTPickingModel *> *)array {
     NSLog(@"difFinishArray:__%@", array);
+    for (int i = 0; i < array.count; ++i) {
+        MSTPickingModel *model = array[i];
+        
+        NSLog(@"^____byte:%@", [NSByteCountFormatter stringFromByteCount:UIImageJPEGRepresentation(model.image, 1).length countStyle:NSByteCountFormatterCountStyleFile]);
+        
+        NSString *string = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).firstObject;
+        [[NSFileManager defaultManager] createFileAtPath:[string stringByAppendingPathComponent:[NSString stringWithFormat:@"%i", i]] contents:UIImageJPEGRepresentation(model.image, 1) attributes:nil];
+    }
 }
 
 -(void)MSTImagePickerController:(MSTImagePickerController *)picker didFinishPickingVideoWithURL:(NSURL *)videoURL identifier:(NSString *)localIdentifier {

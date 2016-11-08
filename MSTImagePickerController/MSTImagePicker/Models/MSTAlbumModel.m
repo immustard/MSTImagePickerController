@@ -16,7 +16,7 @@
 }
 
 - (NSString *)description {
-    return [NSString stringWithFormat:@"<%@: %p> albumName:%@ | count:%zi", [self class], self, self.albumName, self.count];
+    return self.debugDescription;
 }
 
 - (NSString *)debugDescription {

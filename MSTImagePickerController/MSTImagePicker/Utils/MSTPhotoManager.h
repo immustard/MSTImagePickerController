@@ -127,9 +127,10 @@
 
  @param asset           图片内容
  @param isFullImage     是否为原图
+ @param width           最大图片宽度，isFullImage 为 NO 时生效
  @param completionBlock 回调
  */
-- (void)getPickingImageFromPHAsset:(PHAsset *)asset isFullImage:(BOOL)isFullImage completionBlock:(void(^)(UIImage *result))completionBlock;
+- (void)getPickingImageFromPHAsset:(PHAsset *)asset isFullImage:(BOOL)isFullImage maxImageWidth:(CGFloat)width completionBlock:(void(^)(UIImage *result, NSDictionary *info, BOOL isDegraded))completionBlock;
 
 /**
  读取视频

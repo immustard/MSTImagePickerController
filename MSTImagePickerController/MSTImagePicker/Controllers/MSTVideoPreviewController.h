@@ -14,4 +14,5 @@
 @interface MSTVideoPreviewController : AVPlayerViewController
 
 - (instancetype)initWithAsset:(PHAsset *)asset;
+- (instancetype)initWithURL:(NSURL *)url;
 @end
