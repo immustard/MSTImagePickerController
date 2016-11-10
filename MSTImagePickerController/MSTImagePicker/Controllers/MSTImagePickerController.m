@@ -61,9 +61,17 @@
     return self;
 }
 
+- (instancetype)initWithAccessType:(MSTImagePickerAccessType)accessType identifiers:(NSArray<NSString *> *)identifiers {
+    if (self = [self initWithAccessType:accessType]) {
+        self.pickedModelIdentifiers = [NSMutableArray arrayWithArray:identifiers];
+        [self mp_addPickModelsFromPickedIdentifiers];
+    }
+    return self;
+}
+
 #pragma mark - Instance Methods
 - (BOOL)addSelectedAsset:(MSTAssetModel *)asset {
-    if (self.pickedModels.count == self.config.maxSelectCount) {
+    if (self.pickedModelIdentifiers.count == self.config.maxSelectCount) {
         
         [self presentViewController:[self addAlertControllerWithTitle:[NSString stringWithFormat:NSLocalizedStringFromTable(@"str_get_to_maximum_selected", @"MSTImagePicker", @"最大选择数量提示"), self.config.maxSelectCount] actionTitle:NSLocalizedStringFromTable(@"str_i_see", @"MSTImagePicker", @"我知道了")] animated:YES completion:nil];
         
@@ -126,39 +134,40 @@
         pickingModel.type = model.type;
         pickingModel.identifier = model.identifier;
         
-        if (model.type == MSTAssetModelMediaTypeLivePhoto && self.config.isCallBackLivePhoto) {
-            [[MSTPhotoManager sharedInstance] getLivePhotoFromPHAsset:model.asset completionBlock:^(PHLivePhoto *livePhoto) {
-                pickingModel.livePhoto = livePhoto;
-                
-                [[MSTPhotoManager sharedInstance] getPickingImageFromPHAsset:model.asset isFullImage:isFullImage maxImageWidth:self.config.maxImageWidth completionBlock:^(UIImage *result, NSDictionary *info, BOOL isDegraded) {
-                    photoCount--;
-                    
-                    pickingModel.image = result;
-                    [images addObject:pickingModel];
-                    
-                    if (!photoCount) {
-                        //回调
-                        if ([self.MSTDelegate respondsToSelector:@selector(MSTImagePickerController:didFinishPickingMediaWithArray:)]) {
-                            [self.MSTDelegate MSTImagePickerController:self didFinishPickingMediaWithArray:images];
+        [[MSTPhotoManager defaultManager] getPickingImageFromPHAsset:model.asset isFullImage:isFullImage maxImageWidth:self.config.maxImageWidth completionBlock:^(UIImage *result, NSDictionary *info, BOOL isDegraded) {
+            pickingModel.image = result;
+            
+            if (model.type == MSTAssetModelMediaTypeLivePhoto && self.config.isCallBackLivePhoto) {
+                [[MSTPhotoManager defaultManager] getLivePhotoFromPHAsset:model.asset completionBlock:^(PHLivePhoto *livePhoto, BOOL isDegraded) {
+                    if (!isDegraded) {
+                        photoCount--;
+                        pickingModel.livePhoto = livePhoto;
+                        [images addObject:pickingModel];
+                        
+                        if (!photoCount) {
+                            //回调
+                            if ([self.MSTDelegate respondsToSelector:@selector(MSTImagePickerController:didFinishPickingMediaWithArray:)]) {
+                                dispatch_async(dispatch_get_main_queue(), ^{
+                                    [self.MSTDelegate MSTImagePickerController:self didFinishPickingMediaWithArray:images];
+                                });
+                            }
                         }
                     }
                 }];
-            }];
-        } else {
-            [[MSTPhotoManager sharedInstance] getPickingImageFromPHAsset:model.asset isFullImage:isFullImage maxImageWidth:self.config.maxImageWidth completionBlock:^(UIImage *result, NSDictionary *info, BOOL isDegraded) {
-                photoCount--;
-                
-                pickingModel.image = result;
+            } else {
                 [images addObject:pickingModel];
+                photoCount--;
                 
                 if (!photoCount) {
                     //回调
                     if ([self.MSTDelegate respondsToSelector:@selector(MSTImagePickerController:didFinishPickingMediaWithArray:)]) {
-                        [self.MSTDelegate MSTImagePickerController:self didFinishPickingMediaWithArray:images];
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [self.MSTDelegate MSTImagePickerController:self didFinishPickingMediaWithArray:images];
+                        });
                     }
                 }
-            }];
-        }
+            }
+        }];
     }
 }
 
@@ -213,7 +222,7 @@
 }
 
 - (void)mp_setupToolBar {
-    _toolBarEnbled = NO;
+    _toolBarEnbled = self.pickedModelIdentifiers.count ? YES : NO;
     [self mp_setupToolBarButtonEnbled];
     self.originalSizeLabel.text = @"";
 }
@@ -224,6 +233,7 @@
     [self.originalTextButton setEnabled:_toolBarEnbled];
     [self.doneButton setEnabled:_toolBarEnbled];
     self.pickedCountLabel.hidden = !_toolBarEnbled;
+    self.pickedCountLabel.text = [NSString stringWithFormat:@"%zi", self.pickedModelIdentifiers.count];
     
     if (_toolBarEnbled) {
         [self.originalImageButton setSelected:NO];
@@ -273,11 +283,18 @@
 
 - (void)mp_refreshOriginalImageSize {
     if (self.originalImageButton.isSelected && self.originalImageButton.isEnabled) {
-        [[MSTPhotoManager sharedInstance] getImageBytesWithArray:self.pickedModels completionBlock:^(NSString *result) {
+        [[MSTPhotoManager defaultManager] getImageBytesWithArray:self.pickedModels completionBlock:^(NSString *result) {
             self.originalSizeLabel.text = [NSString stringWithFormat:@"(%@)", result];
         }];
     } else {
         self.originalSizeLabel.text = @"";
+    }
+}
+
+//根据传进来的 identifers 封装 MSTAssetModel
+- (void)mp_addPickModelsFromPickedIdentifiers {
+    for (int i = 0; i < self.pickedModelIdentifiers.count; i++) {
+        [self.pickedModels addObject:[[MSTPhotoManager defaultManager] getMSTAssetModelWithIdentifier:self.pickedModelIdentifiers[i]]];
     }
 }
 

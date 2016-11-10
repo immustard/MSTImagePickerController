@@ -13,12 +13,11 @@
 
 @interface MSTPhotoManager ()
 @property (strong, nonatomic) PHImageManager *imageManager;
-@property (strong, nonatomic) PHCachingImageManager *cacheImageManager;
 @end
 
 @implementation MSTPhotoManager
 
-+ (instancetype)sharedInstance{
++ (instancetype)defaultManager {
     static MSTPhotoManager *instance = nil;
     
     static dispatch_once_t onceToken;
@@ -248,6 +247,13 @@
 }
 
 #pragma mark - Get
+- (MSTAssetModel *)getMSTAssetModelWithIdentifier:(NSString *)identifier {
+    PHAsset *asset = [PHAsset fetchAssetsWithLocalIdentifiers:@[identifier] options:nil].firstObject;
+    MSTAssetModel *model = [MSTAssetModel modelWithAsset:asset];
+    
+    return model;
+}
+
 - (void)getMSTAssetModelWithPHFetchResult:(PHFetchResult *)fetchResult completionBlock:(void (^)(NSArray<MSTAssetModel *> *))completionBlock {
     NSMutableArray *modelsArray = [NSMutableArray arrayWithCapacity:fetchResult.count];
     [fetchResult enumerateObjectsUsingBlock:^(PHAsset *asset, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -299,7 +305,7 @@
     }];
 }
 
-- (void)getLivePhotoFromPHAsset:(PHAsset *)asset completionBlock:(void (^)(PHLivePhoto *))completionBlock {
+- (void)getLivePhotoFromPHAsset:(PHAsset *)asset completionBlock:(void (^)(PHLivePhoto *, BOOL))completionBlock {
     CGFloat scale = [UIScreen mainScreen].scale;
     CGFloat width = [UIScreen mainScreen].bounds.size.width;
     
@@ -309,10 +315,10 @@
     CGSize imageSize = CGSizeMake(pixelWidth, pixelHeight);
     
     PHLivePhotoRequestOptions *options = [[PHLivePhotoRequestOptions alloc] init];
-    options.deliveryMode = PHImageRequestOptionsDeliveryModeOpportunistic;
+    options.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
     
     [self.imageManager requestLivePhotoForAsset:asset targetSize:imageSize contentMode:PHImageContentModeAspectFill options:options resultHandler:^(PHLivePhoto * _Nullable livePhoto, NSDictionary * _Nullable info) {
-        completionBlock ? completionBlock(livePhoto) : nil;
+        completionBlock ? completionBlock(livePhoto, [info[PHImageResultIsDegradedKey] boolValue]) : nil;
     }];
 }
 
@@ -382,13 +388,6 @@
 }
 
 #pragma mark - Lazy Load
-- (PHCachingImageManager *)cacheImageManager{
-    if (_cacheImageManager == nil) {
-        self.cacheImageManager = [[PHCachingImageManager alloc] init];
-    }
-    return _cacheImageManager;
-}
-
 - (PHImageManager *)imageManager {
     if (!_imageManager) {
         self.imageManager = [PHImageManager defaultManager];

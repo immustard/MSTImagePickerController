@@ -54,6 +54,8 @@
 		AD8C03A91DB5C8F3001F9EC9 /* MSTPhotoGridHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = AD8C03A71DB5C8F3001F9EC9 /* MSTPhotoGridHeaderView.m */; };
 		AD8C03B01DB5F416001F9EC9 /* NSDate+MSTUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = AD8C03AF1DB5F416001F9EC9 /* NSDate+MSTUtils.m */; };
 		AD8CDCC81DB4715700216D2D /* MSTPhotoGridCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AD8CDCC61DB4715700216D2D /* MSTPhotoGridCell.m */; };
+		AD9ABBBD1DD421AF0038E1D7 /* DisplayViewLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = AD9ABBBC1DD421AF0038E1D7 /* DisplayViewLayout.m */; };
+		AD9ABBC01DD424AB0038E1D7 /* DisplayCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AD9ABBBF1DD424AB0038E1D7 /* DisplayCollectionViewCell.m */; };
 		ADA1BDE41DC0948D0068123A /* icon_grid_video_badge@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = ADA1BDE31DC0948D0068123A /* icon_grid_video_badge@2x.png */; };
 		ADA5277D1DAF7AF8006C838E /* MSTAlbumListController.m in Sources */ = {isa = PBXBuildFile; fileRef = ADA5276A1DAF7AF8006C838E /* MSTAlbumListController.m */; };
 		ADA5277E1DAF7AF8006C838E /* MSTImagePickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = ADA5276C1DAF7AF8006C838E /* MSTImagePickerController.m */; };
@@ -175,6 +177,10 @@
 		AD8C03AF1DB5F416001F9EC9 /* NSDate+MSTUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+MSTUtils.m"; sourceTree = "<group>"; };
 		AD8CDCC51DB4715700216D2D /* MSTPhotoGridCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSTPhotoGridCell.h; sourceTree = "<group>"; };
 		AD8CDCC61DB4715700216D2D /* MSTPhotoGridCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSTPhotoGridCell.m; sourceTree = "<group>"; };
+		AD9ABBBB1DD421AF0038E1D7 /* DisplayViewLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DisplayViewLayout.h; sourceTree = "<group>"; };
+		AD9ABBBC1DD421AF0038E1D7 /* DisplayViewLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DisplayViewLayout.m; sourceTree = "<group>"; };
+		AD9ABBBE1DD424AB0038E1D7 /* DisplayCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DisplayCollectionViewCell.h; sourceTree = "<group>"; };
+		AD9ABBBF1DD424AB0038E1D7 /* DisplayCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DisplayCollectionViewCell.m; sourceTree = "<group>"; };
 		ADA1BDE31DC0948D0068123A /* icon_grid_video_badge@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "icon_grid_video_badge@2x.png"; path = "MSTImagePickerController/MSTImagePicker/Resources/icon_grid_video_badge@2x.png"; sourceTree = SOURCE_ROOT; };
 		ADA527691DAF7AF8006C838E /* MSTAlbumListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSTAlbumListController.h; sourceTree = "<group>"; };
 		ADA5276A1DAF7AF8006C838E /* MSTAlbumListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSTAlbumListController.m; sourceTree = "<group>"; };
@@ -353,6 +359,10 @@
 				AD04551E1DBEFD2F0099D877 /* 3rd */,
 				AD05CE711DA9CD14005AB1F0 /* MainViewController.h */,
 				AD05CE721DA9CD14005AB1F0 /* MainViewController.m */,
+				AD9ABBBB1DD421AF0038E1D7 /* DisplayViewLayout.h */,
+				AD9ABBBC1DD421AF0038E1D7 /* DisplayViewLayout.m */,
+				AD9ABBBE1DD424AB0038E1D7 /* DisplayCollectionViewCell.h */,
+				AD9ABBBF1DD424AB0038E1D7 /* DisplayCollectionViewCell.m */,
 				AD05CE741DA9CD14005AB1F0 /* Main.storyboard */,
 				AD05CE6B1DA9CD14005AB1F0 /* Supporting Files */,
 			);
@@ -670,6 +680,7 @@
 				ADA5277D1DAF7AF8006C838E /* MSTAlbumListController.m in Sources */,
 				ADA5277F1DAF7AF8006C838E /* MSTPhotoGridController.m in Sources */,
 				AD0455481DBEFD4E0099D877 /* IQUITextFieldView+Additions.m in Sources */,
+				AD9ABBC01DD424AB0038E1D7 /* DisplayCollectionViewCell.m in Sources */,
 				AD04554D1DBEFD4E0099D877 /* IQKeyboardReturnKeyHandler.m in Sources */,
 				ADA527831DAF7AF8006C838E /* UIImage+MSTUtiles.m in Sources */,
 				AD04554C1DBEFD4E0099D877 /* IQKeyboardManager.m in Sources */,
@@ -691,6 +702,7 @@
 				ADA5277E1DAF7AF8006C838E /* MSTImagePickerController.m in Sources */,
 				AD8C03A51DB5B399001F9EC9 /* MSTMoment.m in Sources */,
 				ADA527821DAF7AF8006C838E /* MSTPhotoManager.m in Sources */,
+				AD9ABBBD1DD421AF0038E1D7 /* DisplayViewLayout.m in Sources */,
 				AD04554B1DBEFD4E0099D877 /* IQUIWindow+Hierarchy.m in Sources */,
 				AD05CE701DA9CD14005AB1F0 /* AppDelegate.m in Sources */,
 				ADA527841DAF7AF8006C838E /* MSTAlbumListCell.m in Sources */,

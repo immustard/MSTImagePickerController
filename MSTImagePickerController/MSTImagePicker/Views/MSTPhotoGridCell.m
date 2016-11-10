@@ -58,7 +58,7 @@
 - (void)setAsset:(MSTAssetModel *)asset {
     _asset = asset;
     
-    [[MSTPhotoManager sharedInstance] getThumbnailImageFromPHAsset:asset.asset photoWidth:self.contentView.width completionBlock:^(UIImage *result, NSDictionary *info) {
+    [[MSTPhotoManager defaultManager] getThumbnailImageFromPHAsset:asset.asset photoWidth:self.contentView.width completionBlock:^(UIImage *result, NSDictionary *info) {
         self.imageView.image = result;
     }];
     MSTPhotoConfiguration *config = [MSTPhotoConfiguration defaultConfiguration];

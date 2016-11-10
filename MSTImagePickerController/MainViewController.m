@@ -9,9 +9,12 @@
 #import "MainViewController.h"
 #import "MSTImagePickerController.h"
 #import "UIView+MSTUtils.h"
+#import "DisplayCollectionViewCell.h"
 
-@interface MainViewController ()<UIPickerViewDelegate, UIPickerViewDataSource, MSTImagePickerControllerDelegate> {
+@interface MainViewController ()<UIScrollViewDelegate, UIPickerViewDelegate, UIPickerViewDataSource, UICollectionViewDelegate, UICollectionViewDataSource, MSTImagePickerControllerDelegate> {
     NSInteger _sourceType;
+    MSTImagePickerController *imagePicker;
+    NSArray *_modelsArray;
 }
 @property (weak, nonatomic) IBOutlet UIPickerView *sourceTypePickerView;
 @property (weak, nonatomic) IBOutlet UISwitch *isMultiSelected;
@@ -32,6 +35,7 @@
 @property (weak, nonatomic) IBOutlet UISwitch *isVideoAutoSave;
 @property (weak, nonatomic) IBOutlet UITextField *videoMaximumDuration;
 @property (weak, nonatomic) IBOutlet UITextField *customAlbumName;
+@property (weak, nonatomic) IBOutlet UICollectionView *displayCollectionView;
 
 @end
 
@@ -45,26 +49,28 @@
     [self.sourceTypePickerView selectRow:1 inComponent:0 animated:NO];
 }
 
-- (IBAction)endEditing:(UITapGestureRecognizer *)sender {
-    [_numberOfRow resignFirstResponder];
-    [_maxSelectedNum resignFirstResponder];
-}
-
 - (IBAction)runButtonDidClicked:(UIButton *)sender {
-    MSTImagePickerController *imagePicker;
+    MSTImagePickerAccessType type;
     switch (_sourceType) {
         case 0:
-            imagePicker = [[MSTImagePickerController alloc] initWithAccessType:MSTImagePickerAccessTypePhotosWithoutAlbums];
+            type = MSTImagePickerAccessTypePhotosWithoutAlbums;
             break;
         case 1:
-            imagePicker = [[MSTImagePickerController alloc] initWithAccessType:MSTImagePickerAccessTypePhotosWithAlbums];
+            type = MSTImagePickerAccessTypePhotosWithAlbums;
             break;
         case 2:
-            imagePicker = [[MSTImagePickerController alloc] initWithAccessType:MSTImagePickerAccessTypeAlbums];
+            type = MSTImagePickerAccessTypeAlbums;
             break;
         default:
             break;
     }
+    imagePicker = [[MSTImagePickerController alloc] initWithAccessType:type];
+    [self mp_setupImagePickerController];
+    
+    [self presentViewController:imagePicker animated:YES completion:nil];
+}
+
+- (void)mp_setupImagePickerController {
     imagePicker.MSTDelegate = self;
     
     imagePicker.allowsMutiSelected = _isMultiSelected.isOn;
@@ -85,7 +91,12 @@
     imagePicker.isVideoAutoSave = _isVideoAutoSave.isOn;
     imagePicker.videoMaximumDuration = _videoMaximumDuration.text.doubleValue;
     imagePicker.customAlbumName = _customAlbumName.text;
-    [self presentViewController:imagePicker animated:YES completion:nil];
+}
+
+#pragma mark - UIScrollViewDelegate
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
+    [_numberOfRow resignFirstResponder];
+    [_maxSelectedNum resignFirstResponder];
 }
 
 #pragma mark - UIPickerViewDataSource & Delegate
@@ -125,21 +136,64 @@
     _sourceType = row;
 }
 
+#pragma mark - UICollectionViewDataSource & Delegate
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
+    NSLog(@"numberOfItems:%zi", _modelsArray.count);
+    return _modelsArray.count+1;
+}
+
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+    DisplayCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"cellID" forIndexPath:indexPath];
+    if (indexPath.item >= _modelsArray.count) {
+        cell.image = [UIImage imageNamed:@"icon_add"];
+    } else {
+        MSTPickingModel *model = _modelsArray[indexPath.item];
+        cell.image = model.image;
+    }
+    
+    NSLog(@"cellForItem:%zi", _modelsArray.count);
+    
+    return cell;
+}
+
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.item >= _modelsArray.count) {
+        NSMutableArray *array = [NSMutableArray array];
+        
+        for (int i = 0; i < _modelsArray.count; i++) {
+            MSTPickingModel *model = _modelsArray[i];
+            [array addObject:model.identifier];
+        }
+        MSTImagePickerAccessType type;
+        switch (_sourceType) {
+            case 0:
+                type = MSTImagePickerAccessTypePhotosWithoutAlbums;
+                break;
+            case 1:
+                type = MSTImagePickerAccessTypePhotosWithAlbums;
+                break;
+            case 2:
+                type = MSTImagePickerAccessTypeAlbums;
+                break;
+            default:
+                break;
+        }
+        imagePicker = [[MSTImagePickerController alloc] initWithAccessType:type identifiers:array];
+        [self mp_setupImagePickerController];
+        
+        [self presentViewController:imagePicker animated:YES completion:nil];
+    }
+}
+
 #pragma mark - MSTImagePickerControllerDelegate
 - (void)MSTImagePickerControllerDidCancel:(MSTImagePickerController *)picker {
     NSLog(@"mstImagePickerControllerDidCancel");
 }
 
 - (void)MSTImagePickerController:(MSTImagePickerController *)picker didFinishPickingMediaWithArray:(NSArray<MSTPickingModel *> *)array {
-    NSLog(@"difFinishArray:__%@", array);
-    for (int i = 0; i < array.count; ++i) {
-        MSTPickingModel *model = array[i];
-        
-        NSLog(@"^____byte:%@", [NSByteCountFormatter stringFromByteCount:UIImageJPEGRepresentation(model.image, 1).length countStyle:NSByteCountFormatterCountStyleFile]);
-        
-        NSString *string = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).firstObject;
-        [[NSFileManager defaultManager] createFileAtPath:[string stringByAppendingPathComponent:[NSString stringWithFormat:@"%i", i]] contents:UIImageJPEGRepresentation(model.image, 1) attributes:nil];
-    }
+    _modelsArray = array;
+    NSLog(@"difFinishArray:__%zi", array.count);
+    [self.displayCollectionView reloadData];
 }
 
 -(void)MSTImagePickerController:(MSTImagePickerController *)picker didFinishPickingVideoWithURL:(NSURL *)videoURL identifier:(NSString *)localIdentifier {

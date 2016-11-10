@@ -26,7 +26,7 @@
 - (void)setContent:(PHFetchResult *)content {
     _content = content;
     
-    [[MSTPhotoManager sharedInstance] getMSTAssetModelWithPHFetchResult:content completionBlock:^(NSArray<MSTAssetModel *> *models) {
+    [[MSTPhotoManager defaultManager] getMSTAssetModelWithPHFetchResult:content completionBlock:^(NSArray<MSTAssetModel *> *models) {
         self.models = models;
     }];
 }

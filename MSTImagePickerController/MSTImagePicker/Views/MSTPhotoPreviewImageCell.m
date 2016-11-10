@@ -84,14 +84,16 @@
     if (model.type == MSTAssetModelMediaTypeLivePhoto && [UIDevice currentDevice].systemVersion.floatValue >= 9.1 && [MSTPhotoConfiguration defaultConfiguration].isCallBackLivePhoto) {
         _isLivePhoto = YES;
         
-        [[MSTPhotoManager sharedInstance] getLivePhotoFromPHAsset:model.asset completionBlock:^(PHLivePhoto *livePhoto) {
-            self.livePhotoView.livePhoto = livePhoto;
-            [self mp_resizeSubviews];
+        [[MSTPhotoManager defaultManager] getLivePhotoFromPHAsset:model.asset completionBlock:^(PHLivePhoto *livePhoto, BOOL isDegraded) {
+            if (!isDegraded) {
+                self.livePhotoView.livePhoto = livePhoto;
+                [self mp_resizeSubviews];
+            }
         }];
     } else {
         _isLivePhoto = NO;
         
-        [[MSTPhotoManager sharedInstance] getPreviewImageFromPHAsset:model.asset isHighQuality:NO completionBlock:^(UIImage *result, NSDictionary *info, BOOL isDegraded) {
+        [[MSTPhotoManager defaultManager] getPreviewImageFromPHAsset:model.asset isHighQuality:NO completionBlock:^(UIImage *result, NSDictionary *info, BOOL isDegraded) {
             self.imageView.image = result;
             [self mp_resizeSubviews];
         }];
@@ -101,7 +103,7 @@
 #pragma mark - Instance Methods
 - (void)didDisplayed {
     if (!_isLivePhoto) {
-        [[MSTPhotoManager sharedInstance] getPreviewImageFromPHAsset:_model.asset isHighQuality:YES completionBlock:^(UIImage *result, NSDictionary *info, BOOL isDegraded) {
+        [[MSTPhotoManager defaultManager] getPreviewImageFromPHAsset:_model.asset isHighQuality:YES completionBlock:^(UIImage *result, NSDictionary *info, BOOL isDegraded) {
             if (!isDegraded) {
                 self.imageView.image = result;
                 [self mp_resizeSubviews];

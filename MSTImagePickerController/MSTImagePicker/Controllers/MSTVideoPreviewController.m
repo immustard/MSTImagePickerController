@@ -47,7 +47,7 @@
 - (instancetype)initWithAsset:(PHAsset *)asset {
     if (self = [super init]) {
         _asset = asset;
-        [[MSTPhotoManager sharedInstance] getAVPlayerItemFromPHAsset:_asset completionBlock:^(AVPlayerItem *item) {
+        [[MSTPhotoManager defaultManager] getAVPlayerItemFromPHAsset:_asset completionBlock:^(AVPlayerItem *item) {
                 _playerItem = item;
         }];
     }

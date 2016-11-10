@@ -163,11 +163,20 @@
 /**
  构造器
  
- @param accessType 根据需要确定构造方法
+ @param accessType  根据需要确定构造方法
  
- @return 实例
+ @return            实例
  */
 - (instancetype)initWithAccessType:(MSTImagePickerAccessType)accessType;
+
+/**
+ 构造器
+
+ @param accessType  根据需要确定构造方法
+ @param identifiers 已经选中过的图片的 identifier
+ @return            实例
+ */
+- (instancetype)initWithAccessType:(MSTImagePickerAccessType)accessType identifiers:(NSArray <NSString *>*)identifiers;
 
 
 

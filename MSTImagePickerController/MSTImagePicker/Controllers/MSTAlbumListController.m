@@ -45,7 +45,7 @@
     __weak typeof(self) weakSelf = self;
     MSTPhotoConfiguration *config = [MSTPhotoConfiguration defaultConfiguration];
     //读取相册信息
-    [[MSTPhotoManager sharedInstance] loadAlbumInfoIsShowEmpty:config.isShowEmptyAlbum isDesc:config.isPhotosDesc isOnlyShowImage:config.isOnlyShowImages CompletionBlock:^(PHFetchResult *customAlbum, NSArray *albumModelArray) {
+    [[MSTPhotoManager defaultManager] loadAlbumInfoIsShowEmpty:config.isShowEmptyAlbum isDesc:config.isPhotosDesc isOnlyShowImage:config.isOnlyShowImages CompletionBlock:^(PHFetchResult *customAlbum, NSArray *albumModelArray) {
         _colletionResult = customAlbum;
         weakSelf.albumModelsArray = albumModelArray;
         dispatch_async(dispatch_get_main_queue(), ^{

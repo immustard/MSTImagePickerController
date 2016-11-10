@@ -245,7 +245,7 @@
 - (void)mp_refreshOriginalImageSize {
     if (self.originalImageButton.isSelected) {
         MSTAssetModel *model = _albumModel.models[_currentItem];
-        [[MSTPhotoManager sharedInstance] getImageBytesWithArray:@[model] completionBlock:^(NSString *result) {
+        [[MSTPhotoManager defaultManager] getImageBytesWithArray:@[model] completionBlock:^(NSString *result) {
             self.originalSizeLabel.text = [NSString stringWithFormat:@"(%@)", result];
         }];
     } else {

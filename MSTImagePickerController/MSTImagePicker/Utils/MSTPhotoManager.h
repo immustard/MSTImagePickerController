@@ -13,7 +13,7 @@
 @interface MSTPhotoManager : NSObject
 
 /** 单例 */
-+ (instancetype)sharedInstance;
++ (instancetype)defaultManager;
 
 /**
  检查 app 授权
@@ -89,6 +89,13 @@
 
 
 /**
+ 根据 identifier 得到 MSTAssetModel
+
+ @param identifier      标识符
+ */
+- (MSTAssetModel *)getMSTAssetModelWithIdentifier:(NSString *)identifier;
+
+/**
  根据相册封装 assetModel
 
  @param fetchResult     相册信息
@@ -120,7 +127,7 @@
  @param asset           live photo 内容
  @param completionBlock 回调
  */
-- (void)getLivePhotoFromPHAsset:(PHAsset *)asset completionBlock:(void(^)(PHLivePhoto *livePhoto))completionBlock;
+- (void)getLivePhotoFromPHAsset:(PHAsset *)asset completionBlock:(void(^)(PHLivePhoto *livePhoto, BOOL isDegraded))completionBlock;
 
 /**
  读取选定照片
