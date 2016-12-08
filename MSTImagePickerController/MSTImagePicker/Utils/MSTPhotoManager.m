@@ -333,10 +333,10 @@
         
         targetSize = PHImageManagerMaximumSize;
     } else {
-        options.resizeMode = PHImageRequestOptionsResizeModeExact;
+        options.resizeMode = PHImageRequestOptionsResizeModeFast;
         options.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
         options.synchronous = YES;
-        
+//        targetSize = PHImageManagerMaximumSize;
         if (width > asset.pixelWidth) {
             targetSize = PHImageManagerMaximumSize;
         } else {
@@ -350,8 +350,11 @@
     
     [self.imageManager requestImageForAsset:asset targetSize:targetSize contentMode:PHImageContentModeAspectFit options:options resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
         result = [UIImage fixOrientation:result];
+        if (!isFullImage) {
+            result = [result scaleImageWithMaxWidth:width];
+        }
         
-        NSData *data = UIImageJPEGRepresentation(result, .3);
+        NSData *data = UIImageJPEGRepresentation(result, .45);
         result = [UIImage imageWithData:data];
         
         completionBlock ? completionBlock(result, info, [info[PHImageResultIsDegradedKey] boolValue]) : nil;

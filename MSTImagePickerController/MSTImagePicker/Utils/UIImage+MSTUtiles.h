@@ -28,4 +28,6 @@
  */
 - (UIImage*)resizeImageWithNewSize:(CGSize)newSize;
 
+- (UIImage*)scaleImageWithMaxWidth:(CGFloat)maxWidth;
+
 @end

@@ -73,9 +73,9 @@
 - (void)mp_setupImagePickerController {
     imagePicker.MSTDelegate = self;
     
-    imagePicker.allowsMutiSelected = _isMultiSelected.isOn;
     imagePicker.maxSelectCount = _maxSelectedNum.text.intValue;
     imagePicker.numsInRow = _numberOfRow.text.intValue;
+    imagePicker.allowsMutiSelected = _isMultiSelected.isOn;
     imagePicker.allowsMasking = _isShowMasking.isOn;
     imagePicker.allowsSelectedAnimation = _isShowSelectedAnimation.isOn;
     imagePicker.themeStyle = _showThemeType.selectedSegmentIndex;
@@ -150,8 +150,6 @@
         MSTPickingModel *model = _modelsArray[indexPath.item];
         cell.image = model.image;
     }
-    
-    NSLog(@"cellForItem:%zi", _modelsArray.count);
     
     return cell;
 }

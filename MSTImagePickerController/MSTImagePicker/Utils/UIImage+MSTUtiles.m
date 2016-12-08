@@ -135,4 +135,38 @@
     }
     return self;
 }
+
+- (UIImage *)scaleImageWithMaxWidth:(CGFloat)maxWidth {
+    float whratio = self.size.width / self.size.height;
+    
+    if(whratio > 1.0f) {
+        CGFloat width = maxWidth;
+        if(self.size.width < width)
+            return self;
+        
+        CGFloat height = self.size.height * width / self.size.width;
+        CGSize sizeNew = CGSizeMake(width, height);
+        
+        UIGraphicsBeginImageContext(sizeNew);
+        [self drawInRect:CGRectMake(0, 0, sizeNew.width, sizeNew.height)];
+        UIImage* sImg = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+        
+        return sImg;
+    } else {
+        CGFloat height = maxWidth;
+        if(self.size.height < height)
+            return self;
+        
+        CGFloat width = self.size.width * height / self.size.height;
+        CGSize sizeNew = CGSizeMake(width, height);
+        
+        UIGraphicsBeginImageContext(sizeNew);
+        [self drawInRect:CGRectMake(0, 0, sizeNew.width, sizeNew.height)];
+        UIImage* sImg = UIGraphicsGetImageFromCurrentImageContext();
+        
+        UIGraphicsEndImageContext();
+        return sImg;
+    }
+}
 @end
