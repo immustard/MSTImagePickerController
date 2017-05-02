@@ -22,6 +22,8 @@
 @property (strong, nonatomic) UIImageView *imageView;
 @property (strong, nonatomic) PHLivePhotoView *livePhotoView;
 
+@property (strong, nonatomic) UIImageView *liveBadgeImageView;
+
 @end
 
 @implementation MSTPhotoPreviewImageCell
@@ -74,12 +76,32 @@
     return _livePhotoView;
 }
 
+
+- (UIImageView *)liveBadgeImageView {
+    if (!_liveBadgeImageView) {
+        self.liveBadgeImageView = [[UIImageView alloc] initWithImage:[PHLivePhotoView livePhotoBadgeImageWithOptions:PHLivePhotoBadgeOptionsOverContent]];
+        _liveBadgeImageView.contentMode = UIViewContentModeScaleAspectFill;
+        _liveBadgeImageView.clipsToBounds = YES;
+        _liveBadgeImageView.translatesAutoresizingMaskIntoConstraints = NO;
+        _liveBadgeImageView.hidden = YES;
+        [self.livePhotoView addSubview:_liveBadgeImageView];
+        
+        NSLayoutConstraint *leading = [NSLayoutConstraint constraintWithItem:_liveBadgeImageView attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.livePhotoView attribute:NSLayoutAttributeLeading multiplier:1 constant:0];
+        NSLayoutConstraint *top = [NSLayoutConstraint constraintWithItem:_liveBadgeImageView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.livePhotoView attribute:NSLayoutAttributeTop multiplier:1 constant:0];
+        NSLayoutConstraint *width = [NSLayoutConstraint constraintWithItem:_liveBadgeImageView attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.livePhotoView attribute:NSLayoutAttributeLeading multiplier:1 constant:30];
+        NSLayoutConstraint *height = [NSLayoutConstraint constraintWithItem:_liveBadgeImageView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.livePhotoView attribute:NSLayoutAttributeTop multiplier:1 constant:30];
+        [self.livePhotoView addConstraints:@[leading, top, width, height]];
+    }
+    return _liveBadgeImageView;
+}
+
 #pragma mark - Setter
 - (void)setModel:(MSTAssetModel *)model {
     _model = model;
     
     self.imageView.image = nil;
     self.livePhotoView.livePhoto = nil;
+    self.liveBadgeImageView.hidden = YES;
     
     if (model.type == MSTAssetModelMediaTypeLivePhoto && [UIDevice currentDevice].systemVersion.floatValue >= 9.1 && [MSTPhotoConfiguration defaultConfiguration].isCallBackLivePhoto) {
         _isLivePhoto = YES;
@@ -87,6 +109,8 @@
         [[MSTPhotoManager defaultManager] getLivePhotoFromPHAsset:model.asset completionBlock:^(PHLivePhoto *livePhoto, BOOL isDegraded) {
             if (!isDegraded) {
                 self.livePhotoView.livePhoto = livePhoto;
+                if ([MSTPhotoConfiguration defaultConfiguration].isShowLivePhotoIcon)
+                    self.liveBadgeImageView.hidden = NO;
                 [self mp_resizeSubviews];
             }
         }];

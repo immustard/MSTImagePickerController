@@ -8,7 +8,7 @@
 
 #import <Photos/Photos.h>
 
-@class MSTAssetModel;
+@class MSTAssetModel, MSTCameraView;
 
 @protocol MSTPhotoGridCellDelegate <NSObject>
 
@@ -29,5 +29,7 @@
 @interface MSTPhotoGridCameraCell : UICollectionViewCell
 
 @property (strong, nonatomic) UIImage *cameraImage;
+
+@property (strong, nonatomic) MSTCameraView *cameraView;
 
 @end

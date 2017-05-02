@@ -66,12 +66,12 @@ static NSString * const reuserIdentifier = @"MSTPhotoGridCell";
 #pragma mark - Class Methods
 + (UICollectionViewFlowLayout *)flowLayoutWithNumInALine:(int)num {
     UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];
-    CGSize screenSize = [UIScreen mainScreen].bounds.size;
+    MSTPhotoConfiguration *config = [MSTPhotoConfiguration defaultConfiguration];
     
     flowLayout.minimumInteritemSpacing = 0;
-    flowLayout.itemSize = CGSizeMake((screenSize.width-4) / (CGFloat)num - 4, (screenSize.width-4) / (CGFloat)num - 4);
-    flowLayout.minimumLineSpacing = 4;
-    flowLayout.sectionInset = UIEdgeInsetsMake(4, 4, 4, 4);
+    flowLayout.itemSize = CGSizeMake(config.gridWidth, config.gridWidth);
+    flowLayout.minimumLineSpacing = config.gridPadding;
+    flowLayout.sectionInset = UIEdgeInsetsMake(config.gridPadding, config.gridPadding, config.gridPadding, config.gridPadding);
     
     return flowLayout;
 }

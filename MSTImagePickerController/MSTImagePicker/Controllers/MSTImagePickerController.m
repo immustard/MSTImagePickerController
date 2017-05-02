@@ -433,10 +433,10 @@
 }
 
 #pragma mark - Setter
-- (void)setAllowsMutiSelected:(BOOL)allowsMutiSelected {
-    self.config.allowsMutiSelected = allowsMutiSelected;
+- (void)setMutiSelected:(BOOL)mutiSelected {
+    self.config.mutiSelected = mutiSelected;
     
-    if (!allowsMutiSelected) self.config.maxSelectCount = 1;
+    if (!mutiSelected) self.config.maxSelectCount = 1;
 }
 
 - (void)setMaxSelectCount:(int)maxSelectCount {
@@ -454,12 +454,12 @@
     self.config.numsInRow = numsInRow;
 }
 
-- (void)setAllowsMasking:(BOOL)allowsMasking {
-    self.config.allowsMasking = allowsMasking;
+- (void)setMasking:(BOOL)masking {
+    self.config.masking = masking;
 }
 
-- (void)setAllowsSelectedAnimation:(BOOL)allowsSelectedAnimation {
-    self.config.allowsSelectedAnimation = allowsSelectedAnimation;
+- (void)setSelectedAnimation:(BOOL)selectedAnimation {
+    self.config.selectedAnimation = selectedAnimation;
 }
 
 - (void)setThemeStyle:(MSTImagePickerStyle)themeStyle {
@@ -470,44 +470,55 @@
     self.config.photoMomentGroupType = photoMomentGroupType;
 }
 
-- (void)setIsPhotosDesc:(BOOL)isPhotosDesc {
-    self.config.isPhotosDesc = isPhotosDesc;
+- (void)setPhotosDesc:(BOOL)photosDesc {
+    self.config.photosDesc = photosDesc;
 }
 
-- (void)setIsShowAlbumThumbnail:(BOOL)isShowAlbumThumbnail {
-    self.config.isShowAlbumThumbnail = isShowAlbumThumbnail;
+- (void)setShowAlbumThumbnail:(BOOL)showAlbumThumbnail {
+    self.config.showAlbumThumbnail = showAlbumThumbnail;
 }
 
-- (void)setIsShowAlbumNumber:(BOOL)isShowAlbumNumber {
-    self.config.isShowAlbumNumber = isShowAlbumNumber;
+- (void)setShowAlbumNumber:(BOOL)showAlbumNumber {
+    self.config.showAlbumNumber = showAlbumNumber;
 }
 
-- (void)setIsShowEmptyAlbum:(BOOL)isShowEmptyAlbum {
-    self.config.isShowEmptyAlbum = isShowEmptyAlbum;
+- (void)setShowEmptyAlbum:(BOOL)showEmptyAlbum {
+    self.config.showEmptyAlbum = showEmptyAlbum;
 }
 
-- (void)setIsOnlyShowImages:(BOOL)isOnlyShowImages {
-    self.config.isOnlyShowImages = isOnlyShowImages;
+- (void)setOnlyShowImages:(BOOL)onlyShowImages {
+    self.config.onlyShowImages = onlyShowImages;
 }
 
-- (void)setIsShowLivePhotoIcon:(BOOL)isShowLivePhotoIcon {
-    self.config.isShowLivePhotoIcon = isShowLivePhotoIcon;
+- (void)setShowLivePhotoIcon:(BOOL)showLivePhotoIcon {
+    self.config.showLivePhotoIcon = showLivePhotoIcon;
 }
 
-- (void)setIsFirstCamera:(BOOL)isFirstCamera {
-    self.config.isFirstCamera = isFirstCamera;
+- (void)setCallBackLivePhoto:(BOOL)callBackLivePhoto {
+    self.config.callBackLivePhoto = callBackLivePhoto;
+    
+    if (!callBackLivePhoto)
+        self.config.showLivePhotoIcon = NO;
 }
 
-- (void)setAllowsMakingVideo:(BOOL)allowsMakingVideo {
-    self.config.allowsMakingVideo = allowsMakingVideo;
+- (void)setFirstCamera:(BOOL)firstCamera {
+    self.config.firstCamera = firstCamera;
 }
 
-- (void)setIsVideoAutoSave:(BOOL)isVideoAutoSave {
-    self.config.isVideoAutoSave = isVideoAutoSave;
+- (void)setDynamicCamera:(BOOL)dynamicCamera {
+    self.config.dynamicCamera = dynamicCamera;
 }
 
-- (void)setAllowsPickGIF:(BOOL)allowsPickGIF {
-    self.config.allowsPickGIF = allowsPickGIF;
+- (void)setMakingVideo:(BOOL)makingVideo {
+    self.config.makingVideo = makingVideo;
+}
+
+- (void)setVideoAutoSave:(BOOL)videoAutoSave {
+    self.config.videoAutoSave = videoAutoSave;
+}
+
+- (void)setPickGIF:(BOOL)pickGIF {
+    self.config.pickGIF = pickGIF;
 }
 
 - (void)setVideoMaximumDuration:(NSTimeInterval)videoMaximumDuration {

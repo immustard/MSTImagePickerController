@@ -75,20 +75,20 @@
     
     imagePicker.maxSelectCount = _maxSelectedNum.text.intValue;
     imagePicker.numsInRow = _numberOfRow.text.intValue;
-    imagePicker.allowsMutiSelected = _isMultiSelected.isOn;
-    imagePicker.allowsMasking = _isShowMasking.isOn;
-    imagePicker.allowsSelectedAnimation = _isShowSelectedAnimation.isOn;
+    imagePicker.mutiSelected = _isMultiSelected.isOn;
+    imagePicker.masking = _isShowMasking.isOn;
+    imagePicker.selectedAnimation = _isShowSelectedAnimation.isOn;
     imagePicker.themeStyle = _showThemeType.selectedSegmentIndex;
     imagePicker.photoMomentGroupType = _photoGroupType.selectedSegmentIndex;
-    imagePicker.isPhotosDesc = _isDesc.isOn;
-    imagePicker.isShowAlbumThumbnail = _isShowThumbnail.isOn;
-    imagePicker.isShowAlbumNumber = _isShowAlbumNum.isOn;
-    imagePicker.isShowEmptyAlbum = _isShowEmptyAlbum.isOn;
-    imagePicker.isOnlyShowImages = _isOnlyShowImage.isOn;
-    imagePicker.isShowLivePhotoIcon = _isShowLive.isOn;
-    imagePicker.isFirstCamera = _isFirstCamera.isOn;
-    imagePicker.allowsMakingVideo = _allowsMakingVideo.isOn;
-    imagePicker.isVideoAutoSave = _isVideoAutoSave.isOn;
+    imagePicker.photosDesc = _isDesc.isOn;
+    imagePicker.showAlbumThumbnail = _isShowThumbnail.isOn;
+    imagePicker.showAlbumNumber = _isShowAlbumNum.isOn;
+    imagePicker.showEmptyAlbum = _isShowEmptyAlbum.isOn;
+    imagePicker.onlyShowImages = _isOnlyShowImage.isOn;
+    imagePicker.showLivePhotoIcon = _isShowLive.isOn;
+    imagePicker.firstCamera = _isFirstCamera.isOn;
+    imagePicker.makingVideo = _allowsMakingVideo.isOn;
+    imagePicker.videoAutoSave = _isVideoAutoSave.isOn;
     imagePicker.videoMaximumDuration = _videoMaximumDuration.text.doubleValue;
     imagePicker.customAlbumName = _customAlbumName.text;
 }
@@ -172,8 +172,6 @@
                 break;
             case 2:
                 type = MSTImagePickerAccessTypeAlbums;
-                break;
-            default:
                 break;
         }
         imagePicker = [[MSTImagePickerController alloc] initWithAccessType:type identifiers:array];

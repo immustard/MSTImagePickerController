@@ -12,6 +12,7 @@
 #import "MSTPhotoManager.h"
 #import "UIView+MSTUtils.h"
 #import "MSTAssetModel.h"
+#import "MSTCameraView.h"
 
 @interface MSTPhotoGridCell ()
 
@@ -235,6 +236,8 @@
 - (instancetype)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
         self.imageView.image = [UIImage imageNamed:@"icon_album_camera"];
+        if ([MSTPhotoConfiguration defaultConfiguration].dynamicCamera)
+            [self.cameraView startSession];
     }
     return self;
 }
@@ -254,6 +257,24 @@
         [self.contentView addConstraints:@[top, leading, trailing, bottom]];
     }
     return _imageView;
+}
+
+- (MSTCameraView *)cameraView {
+    if (!_cameraView) {
+        self.cameraView = [[MSTCameraView alloc] init];
+        _cameraView.translatesAutoresizingMaskIntoConstraints = NO;
+
+        [_cameraView setPreviewLayerFrame:CGRectMake(0, 0, [MSTPhotoConfiguration defaultConfiguration].gridWidth, [MSTPhotoConfiguration defaultConfiguration].gridWidth)];
+        
+        [self.contentView addSubview:_cameraView];
+        
+        NSLayoutConstraint *top = [NSLayoutConstraint constraintWithItem:_cameraView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeTop multiplier:1 constant:0];
+        NSLayoutConstraint *leading = [NSLayoutConstraint constraintWithItem:_cameraView attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeLeading multiplier:1 constant:0];
+        NSLayoutConstraint *trailing = [NSLayoutConstraint constraintWithItem:_cameraView attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeTrailing multiplier:1 constant:0];
+        NSLayoutConstraint *bottom = [NSLayoutConstraint constraintWithItem:_cameraView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
+        [self.contentView addConstraints:@[top, leading, trailing, bottom]];
+    }
+    return _cameraView;
 }
 
 - (void)setCameraImage:(UIImage *)cameraImage {

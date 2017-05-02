@@ -75,6 +75,7 @@
 		ADD1FC751DB71B40002642CC /* MSTPhotoPreviewImageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = ADD1FC741DB71B40002642CC /* MSTPhotoPreviewImageCell.m */; };
 		ADEE8AAB1DCC706000179B3E /* MSTPickingModel.m in Sources */ = {isa = PBXBuildFile; fileRef = ADEE8AAA1DCC706000179B3E /* MSTPickingModel.m */; };
 		ADEE8AAE1DCC707D00179B3E /* MSTAssetBaseModel.m in Sources */ = {isa = PBXBuildFile; fileRef = ADEE8AAD1DCC707D00179B3E /* MSTAssetBaseModel.m */; };
+		D3C9DE1A1EB81AC500F1A4C0 /* MSTCameraView.m in Sources */ = {isa = PBXBuildFile; fileRef = D3C9DE191EB81AC500F1A4C0 /* MSTCameraView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -217,6 +218,8 @@
 		ADEE8AAA1DCC706000179B3E /* MSTPickingModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSTPickingModel.m; sourceTree = "<group>"; };
 		ADEE8AAC1DCC707D00179B3E /* MSTAssetBaseModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSTAssetBaseModel.h; sourceTree = "<group>"; };
 		ADEE8AAD1DCC707D00179B3E /* MSTAssetBaseModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSTAssetBaseModel.m; sourceTree = "<group>"; };
+		D3C9DE181EB81AC500F1A4C0 /* MSTCameraView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSTCameraView.h; sourceTree = "<group>"; };
+		D3C9DE191EB81AC500F1A4C0 /* MSTCameraView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSTCameraView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -481,6 +484,8 @@
 				ADD1FC731DB71B40002642CC /* MSTPhotoPreviewImageCell.h */,
 				ADD1FC741DB71B40002642CC /* MSTPhotoPreviewImageCell.m */,
 				ADD1FC761DB740F8002642CC /* MSTPhotoPreviewCellDelegate.h */,
+				D3C9DE181EB81AC500F1A4C0 /* MSTCameraView.h */,
+				D3C9DE191EB81AC500F1A4C0 /* MSTCameraView.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -580,7 +585,7 @@
 				TargetAttributes = {
 					AD05CE671DA9CD14005AB1F0 = {
 						CreatedOnToolsVersion = 8.0;
-						DevelopmentTeam = B2M4QJR2FL;
+						DevelopmentTeam = Z8G5JYKB3P;
 						ProvisioningStyle = Automatic;
 					};
 					AD05CE801DA9CD14005AB1F0 = {
@@ -698,6 +703,7 @@
 				AD04554F1DBEFD4E0099D877 /* IQBarButtonItem.m in Sources */,
 				AD05CE731DA9CD14005AB1F0 /* MainViewController.m in Sources */,
 				AD8C03A91DB5C8F3001F9EC9 /* MSTPhotoGridHeaderView.m in Sources */,
+				D3C9DE1A1EB81AC500F1A4C0 /* MSTCameraView.m in Sources */,
 				AD67CBE61DBF32B800C38F72 /* MSTAssetModel.m in Sources */,
 				ADA5277E1DAF7AF8006C838E /* MSTImagePickerController.m in Sources */,
 				AD8C03A51DB5B399001F9EC9 /* MSTMoment.m in Sources */,
@@ -884,7 +890,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = B2M4QJR2FL;
+				DEVELOPMENT_TEAM = Z8G5JYKB3P;
 				INFOPLIST_FILE = MSTImagePickerController/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -897,7 +903,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = B2M4QJR2FL;
+				DEVELOPMENT_TEAM = Z8G5JYKB3P;
 				INFOPLIST_FILE = MSTImagePickerController/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

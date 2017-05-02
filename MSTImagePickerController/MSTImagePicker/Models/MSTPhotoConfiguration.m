@@ -17,29 +17,38 @@
     dispatch_once(&onceToken, ^{
         config = [[MSTPhotoConfiguration alloc] init];
         
-        config.allowsMutiSelected = YES;
+        config.mutiSelected = YES;
         config.maxSelectCount = 9;
         config.maxImageWidth = 1280;
         config.numsInRow = 4;
-        config.allowsMasking = YES;
-        config.allowsSelectedAnimation = YES;
+        config.masking = YES;
+        config.selectedAnimation = YES;
         config.themeStyle = MSTImagePickerStyleDark;
         config.photoMomentGroupType = MSTImageMomentGroupTypeNone;
-        config.isPhotosDesc = YES;
-        config.isShowAlbumThumbnail = YES;
-        config.isShowAlbumNumber = YES;
-        config.isShowEmptyAlbum = NO;
-        config.isOnlyShowImages = NO;
-        config.isShowLivePhotoIcon = YES;
-        config.isCallBackLivePhoto = YES;
-        config.isFirstCamera = YES;
-        config.allowsMakingVideo = YES;
-        config.isVideoAutoSave = YES;
+        config.photosDesc = YES;
+        config.showAlbumThumbnail = YES;
+        config.showAlbumNumber = YES;
+        config.showEmptyAlbum = NO;
+        config.onlyShowImages = NO;
+        config.showLivePhotoIcon = YES;
+        config.callBackLivePhoto = YES;
+        config.firstCamera = YES;
+        config.dynamicCamera = NO;
+        config.makingVideo = YES;
+        config.videoAutoSave = YES;
         config.videoMaximumDuration = 60.f;
-        config.allowsPickGIF = YES;
+        config.pickGIF = YES;
+        
+        config.gridPadding = 4;
     });
     
     return config;
+}
+
+- (CGFloat)gridWidth {
+    CGSize screenSize = [UIScreen mainScreen].bounds.size;
+    
+    return (screenSize.width-4) / (CGFloat)self.numsInRow - self.gridPadding;
 }
 
 @end

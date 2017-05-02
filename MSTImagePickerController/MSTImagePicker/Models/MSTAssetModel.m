@@ -35,9 +35,10 @@
 }
 
 - (NSTimeInterval)videoDuration {
-    if (self.type == MSTAssetModelMediaTypeVideo) return self.asset.duration;
-    
-    return 0.f;
+    if (self.type == MSTAssetModelMediaTypeVideo)
+        return self.asset.duration;
+    else
+        return 0.f;
 }
 
 - (NSString *)description {
