@@ -103,8 +103,8 @@ static NSString * const reuserIdentifier = @"MSTPhotoGridCell";
 - (void)mp_setupViews {
     self.view.backgroundColor = [UIColor whiteColor];
     self.automaticallyAdjustsScrollViewInsets = NO;
-    self.collectionView.top = 64;
-    self.collectionView.height = self.view.height - 64 - 44;
+    self.collectionView.mst_top = 64;
+    self.collectionView.mst_height = self.view.mst_height - 64 - 44;
     
     [self.collectionView registerClass:[MSTPhotoGridCell class] forCellWithReuseIdentifier:reuserIdentifier];
     [self.collectionView registerClass:[MSTPhotoGridHeaderView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"MSTPhotoGridHeaderView"];

@@ -38,7 +38,7 @@
 #pragma mark - Lazy Load
 - (UIScrollView *)myScrollView {
     if (!_myScrollView) {
-        self.myScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(10, 0, self.width - 20, self.height)];
+        self.myScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(10, 0, self.mst_width - 20, self.mst_height)];
         _myScrollView.bouncesZoom = YES;
         _myScrollView.minimumZoomScale = 1.f;
         _myScrollView.maximumZoomScale = 2.5f;
@@ -168,49 +168,49 @@
 
 - (void)mp_resizeSubviews {
     if (!_isLivePhoto) {
-        self.imageView.origin = CGPointZero;
-        self.imageView.width = self.myScrollView.width;
+        self.imageView.mst_origin = CGPointZero;
+        self.imageView.mst_width = self.myScrollView.mst_width;
         
         UIImage *image = self.imageView.image;
-        if (image.size.height / image.size.width > self.height / self.myScrollView.width) {
-            _imageView.height = floor(image.size.height / (image.size.width / self.myScrollView.width));
+        if (image.size.height / image.size.width > self.mst_height / self.myScrollView.mst_width) {
+            _imageView.mst_height = floor(image.size.height / (image.size.width / self.myScrollView.mst_width));
         } else {
-            CGFloat height = image.size.height / image.size.width * self.myScrollView.width;
-            if (height < 1 || isnan(height)) height = self.height;
+            CGFloat height = image.size.height / image.size.width * self.myScrollView.mst_width;
+            if (height < 1 || isnan(height)) height = self.mst_height;
             height = floor(height);
-            _imageView.height = height;
-            _imageView.centerY = self.height / 2;
+            _imageView.mst_height = height;
+            _imageView.mst_centerY = self.mst_height / 2;
         }
         
-        if (_imageView.height > self.height && _imageView.height - self.height <= 1) {
-            _imageView.height = self.height;
+        if (_imageView.mst_height > self.mst_height && _imageView.mst_height - self.mst_height <= 1) {
+            _imageView.mst_height = self.mst_height;
         }
         
-        _myScrollView.contentSize = CGSizeMake(_myScrollView.width, MAX(_imageView.height, self.height));
+        _myScrollView.contentSize = CGSizeMake(_myScrollView.mst_width, MAX(_imageView.mst_height, self.mst_height));
         [_myScrollView scrollRectToVisible:self.bounds animated:NO];
-        _myScrollView.alwaysBounceVertical = _imageView.height <= self.height ? NO : YES;
+        _myScrollView.alwaysBounceVertical = _imageView.mst_height <= self.mst_height ? NO : YES;
     } else {
-        self.livePhotoView.origin = CGPointZero;
-        self.livePhotoView.width = self.myScrollView.width;
+        self.livePhotoView.mst_origin = CGPointZero;
+        self.livePhotoView.mst_width = self.myScrollView.mst_width;
         
         PHLivePhoto *photo = self.livePhotoView.livePhoto;
-        if (photo.size.height / photo.size.width > self.height / self.myScrollView.width) {
-            _livePhotoView.height = floor(photo.size.height / (photo.size.width / self.myScrollView.width));
+        if (photo.size.height / photo.size.width > self.mst_height / self.myScrollView.mst_width) {
+            _livePhotoView.mst_height = floor(photo.size.height / (photo.size.width / self.myScrollView.mst_width));
         } else {
-            CGFloat height = photo.size.height / photo.size.width * self.myScrollView.width;
-            if (height < 1 || isnan(height)) height = self.height;
+            CGFloat height = photo.size.height / photo.size.width * self.myScrollView.mst_width;
+            if (height < 1 || isnan(height)) height = self.mst_height;
             height = floor(height);
-            _livePhotoView.height = height;
-            _livePhotoView.centerY = self.height / 2;
+            _livePhotoView.mst_height = height;
+            _livePhotoView.mst_centerY = self.mst_height / 2;
         }
         
-        if (_livePhotoView.height > self.height && _livePhotoView.height - self.height <= 1) {
-            _livePhotoView.height = self.height;
+        if (_livePhotoView.mst_height > self.mst_height && _livePhotoView.mst_height - self.mst_height <= 1) {
+            _livePhotoView.mst_height = self.mst_height;
         }
         
-        _myScrollView.contentSize = CGSizeMake(_myScrollView.width, MAX(_livePhotoView.height, self.height));
+        _myScrollView.contentSize = CGSizeMake(_myScrollView.mst_width, MAX(_livePhotoView.mst_height, self.mst_height));
         [_myScrollView scrollRectToVisible:self.bounds animated:NO];
-        _myScrollView.alwaysBounceHorizontal = _livePhotoView.height <= self.height ? NO : YES;
+        _myScrollView.alwaysBounceHorizontal = _livePhotoView.mst_height <= self.mst_height ? NO : YES;
     }
 }
 

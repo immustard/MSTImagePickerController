@@ -248,7 +248,8 @@
             [self mp_setupToolBarButtonEnbled];
         }
         self.pickedCountLabel.text = [NSString stringWithFormat:@"%zi", self.pickedModelIdentifiers.count];
-        if (self.config.allowsSelectedAnimation) [self.pickedCountLabel addSpringAnimation];
+        if (self.config.allowsSelectedAnimation)
+            [self.pickedCountLabel addSpringAnimation];
     } else {
         _toolBarEnbled = NO;
         [self mp_setupToolBarButtonEnbled];
@@ -359,7 +360,7 @@
 - (UIButton *)originalImageButton {
     if (!_originalImageButton) {
         self.originalImageButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _originalImageButton.frame = CGRectMake(self.previewButton.right, 5, 34, 34);
+        _originalImageButton.frame = CGRectMake(self.previewButton.mst_right, 5, 34, 34);
         [_originalImageButton setImage:[UIImage imageNamed:@"icon_full_image_normal"] forState:UIControlStateNormal];
         [_originalImageButton setImage:[UIImage imageNamed:@"icon_full_image_selected"] forState:UIControlStateSelected];
         [_originalImageButton setImageEdgeInsets:UIEdgeInsetsMake(5, 5, 5, 5)];
@@ -376,7 +377,7 @@
         NSString *string = NSLocalizedStringFromTable(@"str_original", @"MSTImagePicker", @"原图");
         
         self.originalTextButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _originalTextButton.frame = CGRectMake(self.originalImageButton.right, 0, [self mp_calculateWidthWithString:string textSize:15], 44);
+        _originalTextButton.frame = CGRectMake(self.originalImageButton.mst_right, 0, [self mp_calculateWidthWithString:string textSize:15], 44);
         [_originalTextButton setTitle:string forState:UIControlStateNormal];
         _originalTextButton.titleLabel.font = [UIFont systemFontOfSize:15];
         [_originalTextButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
@@ -394,7 +395,7 @@
         NSString *string = NSLocalizedStringFromTable(@"str_done", @"MSTImagePicker", @"完成");
         
         self.doneButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _doneButton.frame = CGRectMake(self.toolbar.width-[self mp_calculateWidthWithString:string textSize:17]-20, 0, [self mp_calculateWidthWithString:string textSize:17] + 20, 44);
+        _doneButton.frame = CGRectMake(self.toolbar.mst_width-[self mp_calculateWidthWithString:string textSize:17]-20, 0, [self mp_calculateWidthWithString:string textSize:17] + 20, 44);
         [_doneButton setTitle:string forState:UIControlStateNormal];
         [_doneButton setTitleColor:[UIColor colorWithRed:0.65 green:0.82 blue:0.88 alpha:1.00] forState:UIControlStateDisabled];
         [_doneButton setTitleColor:[UIColor colorWithRed:0.36 green:0.79 blue:0.96 alpha:1.00] forState:UIControlStateNormal];
@@ -409,12 +410,12 @@
 
 - (UILabel *)pickedCountLabel {
     if (!_pickedCountLabel) {
-        self.pickedCountLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.doneButton.left - 28, 8, 28, 28)];
+        self.pickedCountLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.doneButton.mst_left - 28, 8, 28, 28)];
         _pickedCountLabel.textColor = [UIColor whiteColor];
         _pickedCountLabel.font = [UIFont systemFontOfSize:15];
         _pickedCountLabel.backgroundColor = [UIColor colorWithRed:0.36 green:0.79 blue:0.96 alpha:1.00];
         _pickedCountLabel.textAlignment = NSTextAlignmentCenter;
-        [_pickedCountLabel MSTAddCornorRadius:14];
+        [_pickedCountLabel mst_cornerRadius:14];
         
         [self.toolbar addSubview:_pickedCountLabel];
     }
@@ -423,7 +424,7 @@
 
 - (UILabel *)originalSizeLabel {
     if (!_originalSizeLabel) {
-        self.originalSizeLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.originalTextButton.right, 0, 80, 44)];
+        self.originalSizeLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.originalTextButton.mst_right, 0, 80, 44)];
         _originalSizeLabel.font = [UIFont systemFontOfSize:13];
         _originalSizeLabel.textColor = [UIColor blackColor];
         

@@ -84,7 +84,7 @@
     self.automaticallyAdjustsScrollViewInsets = NO;
     
     self.myCollectionView.contentOffset = CGPointMake(0, 0);
-    [self.myCollectionView setContentSize:CGSizeMake((self.view.width + 20)*5, self.view.height)];
+    [self.myCollectionView setContentSize:CGSizeMake((self.view.mst_width + 20)*5, self.view.mst_height)];
 
     [self.myCollectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:_currentItem inSection:0] atScrollPosition:UICollectionViewScrollPositionLeft animated:NO];
     
@@ -211,7 +211,7 @@
     flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
     flowLayout.minimumInteritemSpacing = 0;
     flowLayout.minimumLineSpacing = 0;
-    flowLayout.itemSize = CGSizeMake(self.view.width + 20, self.view.height);
+    flowLayout.itemSize = CGSizeMake(self.view.mst_width + 20, self.view.mst_height);
     
     return flowLayout;
 }
@@ -279,7 +279,7 @@
 #pragma mark - Lazy Load
 - (UICollectionView *)myCollectionView {
     if (!_myCollectionView) {
-        self.myCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(-10, 0, self.view.width + 20, self.view.height) collectionViewLayout:[self mp_flowLayout]];
+        self.myCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(-10, 0, self.view.mst_width + 20, self.view.mst_height) collectionViewLayout:[self mp_flowLayout]];
         _myCollectionView.pagingEnabled = YES;
         _myCollectionView.showsHorizontalScrollIndicator = NO;
         _myCollectionView.scrollsToTop = NO;
@@ -323,7 +323,7 @@
         NSString *string = NSLocalizedStringFromTable(@"str_original", @"MSTImagePicker", @"原图");
         
         self.originalTextButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _originalTextButton.frame = CGRectMake(self.originalImageButton.right, 0, [self mp_calculateWidthWithString:string textSize:15], 44);
+        _originalTextButton.frame = CGRectMake(self.originalImageButton.mst_right, 0, [self mp_calculateWidthWithString:string textSize:15], 44);
         [_originalTextButton setTitle:string forState:UIControlStateNormal];
         _originalTextButton.titleLabel.font = [UIFont systemFontOfSize:15];
         
@@ -350,19 +350,19 @@
 
 - (UILabel *)pickedCountLabel {
     if (!_pickedCountLabel) {
-        self.pickedCountLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.doneButton.left - 28, 8, 28, 28)];
+        self.pickedCountLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.doneButton.mst_left - 28, 8, 28, 28)];
         _pickedCountLabel.textColor = [UIColor whiteColor];
         _pickedCountLabel.font = [UIFont systemFontOfSize:15];
         _pickedCountLabel.backgroundColor = [UIColor colorWithRed:0.36 green:0.79 blue:0.96 alpha:1.00];
         _pickedCountLabel.textAlignment = NSTextAlignmentCenter;
-        [_pickedCountLabel MSTAddCornorRadius:14];
+        [_pickedCountLabel mst_cornerRadius:14];
     }
     return _pickedCountLabel;
 }
 
 - (UILabel *)originalSizeLabel {
     if (!_originalSizeLabel) {
-        self.originalSizeLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.originalTextButton.right, 0, 80, 44)];
+        self.originalSizeLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.originalTextButton.mst_right, 0, 80, 44)];
         _originalSizeLabel.font = [UIFont systemFontOfSize:13];
     }
     return _originalSizeLabel;
@@ -391,9 +391,9 @@
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     CGFloat offSetWidth = scrollView.contentOffset.x;
-    offSetWidth = offSetWidth +  ((self.view.width + 20) * 0.5);
+    offSetWidth = offSetWidth +  ((self.view.mst_width + 20) * 0.5);
     
-    NSInteger currentItem = offSetWidth / (self.view.width + 20);
+    NSInteger currentItem = offSetWidth / (self.view.mst_width + 20);
     
     if (_currentItem != currentItem) {
         _currentItem = currentItem;

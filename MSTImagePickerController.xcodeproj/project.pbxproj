@@ -585,7 +585,7 @@
 				TargetAttributes = {
 					AD05CE671DA9CD14005AB1F0 = {
 						CreatedOnToolsVersion = 8.0;
-						DevelopmentTeam = Z8G5JYKB3P;
+						DevelopmentTeam = B2M4QJR2FL;
 						ProvisioningStyle = Automatic;
 					};
 					AD05CE801DA9CD14005AB1F0 = {
@@ -890,11 +890,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = Z8G5JYKB3P;
+				DEVELOPMENT_TEAM = B2M4QJR2FL;
 				INFOPLIST_FILE = MSTImagePickerController/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = come.mustard.MSTImagePickerController;
+				PRODUCT_BUNDLE_IDENTIFIER = come.mustard.MSTImagePickerControllerrrr;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -903,11 +903,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = Z8G5JYKB3P;
+				DEVELOPMENT_TEAM = B2M4QJR2FL;
 				INFOPLIST_FILE = MSTImagePickerController/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = come.mustard.MSTImagePickerController;
+				PRODUCT_BUNDLE_IDENTIFIER = come.mustard.MSTImagePickerControllerrrr;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
